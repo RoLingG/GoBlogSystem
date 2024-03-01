@@ -2,18 +2,19 @@ mysql:
   host: 127.0.0.1
   port: 3306
   db: GoRoLingG
-  user: rolingg
+  username: rolingg
   password: roling233.
   loglevel: dev
 
 system:
   host: "0.0.0.0"
   port: 8080
-  env: dev
+  #  env: dev  这里改成release，再在enter里加上gin.setmode获取env就可以消除掉运行时提示的release
+  env: release
 
 logger:
   level: info
   prefix: '[GoRoLingG]'
-  director: log
+#  director: log 未完工，这里要写日志存储的位置，得回去复习logrus的用法
   show_line: true
   log_in_console: true

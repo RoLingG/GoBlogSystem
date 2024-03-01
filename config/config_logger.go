@@ -1,6 +1,6 @@
 package config
 
-type logger struct {
+type Logger struct {
 	Level        string `yaml:"level"`
 	Prefix       string `yaml:"prefix"`
 	Director     string `yaml:"director"`       //目录
