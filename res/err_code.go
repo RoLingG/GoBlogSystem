@@ -3,7 +3,7 @@ package res
 type ErrorCode int
 
 const (
-	SettingsError = 1000 //定义settings系统错误
+	SettingsError = 1001 //定义settings系统错误
 )
 
 // 这里可以从json文件里面读
