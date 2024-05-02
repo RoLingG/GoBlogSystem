@@ -37,7 +37,8 @@ func InitRouter() *gin.Engine {
 
 	//方法三
 	//如果要分组,则要router.Group()
-	apiRouterGroup := router.Group("api")
+	apiRouterGroup := router.Group("/api")
+	//xxxGroup := router.Group("/xxx")
 
 	routerGroup := RouterGroup{apiRouterGroup}
 	//系统配置(settings)api

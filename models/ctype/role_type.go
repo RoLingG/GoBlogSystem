@@ -11,6 +11,7 @@ const (
 	PermissionDisableUser Role = 4 //被ban用户
 )
 
+// 枚举，算是gorm里面的一个重要知识
 func (role Role) MarshalJSON() ([]byte, error) {
 	return json.Marshal(role.String())
 }

@@ -4,17 +4,49 @@ mysql:
   db: GoRoLingG
   username: rolingg
   password: roling233.
-  loglevel: dev
-
-system:
-  host: "0.0.0.0"
-  port: 8080
-  #  env: dev  这里改成release，再在enter里加上gin.setmode获取env就可以消除掉运行时提示的release
-  env: release
-
+  log_level: ""
+  config: ""
 logger:
   level: info
   prefix: '[GoRoLingG]'
-#  director: log 未完工，这里要写日志存储的位置，得回去复习logrus的用法
+  director: ""
   show_line: true
   log_in_console: true
+system:
+  host: 0.0.0.0
+  port: 8080
+  env: release
+site_info:
+  created_at: ""
+  beian: ""
+  title: ""
+  qq_image: ""
+  version: "2.0"
+  email: ""
+  wechat_image: ""
+  name: ""
+  job: ""
+  addr: ""
+  slogan: ""
+  slogan_en: ""
+  web: ""
+  github_url: ""
+email:
+  host:
+  port:
+  user:
+  password:
+  default_from_email:
+  use_ssl:
+  user_tls:
+JWT:
+  secret:
+  expires:
+  issuer:
+QiNiu:
+  access_key:
+  secret_key:
+  bucket:
+  cdn:
+  zone:
+  size:
