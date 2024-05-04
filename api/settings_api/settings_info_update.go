@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 接口程序数量减少，但是代码增多
+/*
+	之所以不会有mysql那些是因为那些要一开始就配置好，这些可以动态修改的配置才有意义。
+*/
+
+// 接口程序数量减少，但是代码增多(待优化)
 // 某一项配置信息更新
 func (SettingsApi) SettingsInfoUpdateView(c *gin.Context) {
 	var cr SettingsUri

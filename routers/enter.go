@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 	routerGroup := RouterGroup{apiRouterGroup}
 	//系统配置(settings)api
 	routerGroup.SettingsRouter()
+	//图片上传配置(images)api
+	routerGroup.ImagesRouter()
 
 	return router
 }

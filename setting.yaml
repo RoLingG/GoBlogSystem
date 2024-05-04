@@ -16,6 +16,9 @@ system:
   host: 0.0.0.0
   port: 8080
   env: release
+upload:
+  size: 2
+  path: upload/file
 site_info:
   created_at: ""
   beian: ""
@@ -36,6 +39,7 @@ JWT:
   expires: 0
   issuer: ""
 QiNiu:
+  isenable: false
   access_key: ""
   secret_key: ""
   bucket: ""

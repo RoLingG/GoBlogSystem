@@ -1,6 +1,7 @@
 package config
 
 type QiNiu struct {
+	Isenable  bool    `json:"isenable" yaml:"isenable"` //是否启用七牛存储，默认不启用
 	AccessKey string  `json:"access_key" yaml:"access_key"`
 	SecretKey string  `json:"secret_key" yaml:"secret_key"`
 	Bucket    string  `json:"bucket" yaml:"bucket"` //存储桶
