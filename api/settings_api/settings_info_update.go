@@ -8,19 +8,60 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (SettingsApi) SettingsInfoUpdate(c *gin.Context) {
-	var cr config.SiteInfo
-	err := c.ShouldBindJSON(&cr)
+// 接口程序数量减少，但是代码增多
+// 某一项配置信息更新
+func (SettingsApi) SettingsInfoUpdateView(c *gin.Context) {
+	var cr SettingsUri
+	err := c.ShouldBindUri(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
-	global.Config.SiteInfo = cr
-	err = core.SetYaml()
-	if err != nil {
-		global.Log.Error(err)
-		res.FailWithMsg(err.Error(), c)
+
+	switch cr.Name {
+	case "site":
+		var Update_info config.SiteInfo
+		err := c.ShouldBindJSON(&Update_info)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+		}
+		global.Config.SiteInfo = Update_info
+		res.OKWithData(global.Config.SiteInfo, c)
+	case "email":
+		var Update_info config.Email
+		err := c.ShouldBindJSON(&Update_info)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+		}
+		global.Config.Email = Update_info
+		res.OKWithData(global.Config.Email, c)
+	case "qq":
+		var Update_info config.QQ
+		err := c.ShouldBindJSON(&Update_info)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+		}
+		global.Config.QQ = Update_info
+		res.OKWithData(global.Config.QQ, c)
+	case "qiniu":
+		var Update_info config.QiNiu
+		err := c.ShouldBindJSON(&Update_info)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+		}
+		global.Config.QiNiu = Update_info
+		res.OKWithData(global.Config.QiNiu, c)
+	case "jwt":
+		var Update_info config.JWT
+		err := c.ShouldBindJSON(&Update_info)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+		}
+		global.Config.JWT = Update_info
+		res.OKWithData(global.Config.JWT, c)
+	default:
+		res.FailWithMsg("没有对应的配置信息", c)
 		return
 	}
-	res.OKWithoutData(c)
+	core.SetYaml()
 }

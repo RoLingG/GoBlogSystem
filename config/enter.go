@@ -7,5 +7,6 @@ type Config struct {
 	SiteInfo SiteInfo `yaml:"site_info"`
 	JWT      JWT      `yaml:"JWT"`
 	QiNiu    QiNiu    `yaml:"QiNiu"`
-	Email    Email    `yaml:"email"`
+	Email    Email    `yaml:"Email"`
+	QQ       QQ       `yaml:"QQ"`
 }

@@ -19,6 +19,6 @@ import "GoRoLingG/api"
 // 通过routers\enter里的RouterGroup进行两个文件之间的连接
 func (router RouterGroup) SettingsRouter() {
 	settingsApi := api.ApiGroupApp.SettingsApi
-	router.GET("settings", settingsApi.SettingsInfoView)
-	router.PUT("settings", settingsApi.SettingsInfoUpdate)
+	router.GET("settings/:name", settingsApi.SettingsInfoView)
+	router.PUT("settings/:name", settingsApi.SettingsInfoUpdateView)
 }

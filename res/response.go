@@ -29,7 +29,7 @@ func OK(data any, msg string, c *gin.Context) {
 }
 
 func OKWithData(data any, c *gin.Context) {
-	Result(Success, data, "成功", c)
+	Result(Success, data, "操作成功", c)
 }
 
 func OKWithMsg(msg string, c *gin.Context) {
@@ -37,7 +37,7 @@ func OKWithMsg(msg string, c *gin.Context) {
 }
 
 func OKWithoutData(c *gin.Context) {
-	Result(Success, map[string]any{}, "成功", c)
+	Result(Success, map[string]any{}, "操作成功", c)
 }
 
 func Fail(data any, msg string, c *gin.Context) {

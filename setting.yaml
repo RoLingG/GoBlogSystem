@@ -19,9 +19,9 @@ system:
 site_info:
   created_at: ""
   beian: ""
-  title: ""
+  title: 127.0.0.1
   qq_image: ""
-  version: "2.0"
+  version: ""
   email: ""
   wechat_image: ""
   name: ""
@@ -31,22 +31,26 @@ site_info:
   slogan_en: ""
   web: ""
   github_url: ""
-email:
-  host:
-  port:
-  user:
-  password:
-  default_from_email:
-  use_ssl:
-  user_tls:
 JWT:
-  secret:
-  expires:
-  issuer:
+  secret: ""
+  expires: 0
+  issuer: ""
 QiNiu:
-  access_key:
-  secret_key:
-  bucket:
-  cdn:
-  zone:
-  size:
+  access_key: ""
+  secret_key: ""
+  bucket: ""
+  cdn: ""
+  zone: ""
+  size: 0
+Email:
+  host: 127.0.0.1
+  port: 0
+  user: ""
+  password: ""
+  default_from_email: ""
+  use_ssl: false
+  user_tls: false
+QQ:
+  app_id: ""
+  key: ""
+  redirect: ""
