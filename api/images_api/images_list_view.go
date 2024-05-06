@@ -14,11 +14,17 @@ func (ImagesApi) ImagesListView(c *gin.Context) {
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 	}
-	//将获取列表集成成一个function，封装起来便于广泛利用
+	//将获取列表集成为一个function，封装起来便于广泛利用
 	list, count, err := common.CommonList(models.ImageModel{}, common.Option{
 		PageModel: cr,
 		Debug:     true,
 	})
+
+	if err != nil {
+		res.FailWithMsg(err.Error(), c)
+		return
+	}
+
 	res.OKWithList(list, count, c)
 	return
 }
