@@ -11,6 +11,13 @@ type Response struct {
 	Msg  string `json:"msg"`
 }
 
+// ListResponse 这里list用泛型T作为类型是因为list会被高频使用，每次使用的时候list的类型都是不确定的。
+// ListResponse 如果不使用泛型作为类型，那每次都要定义list是什么结构体类型，达不到封装的效果
+type ListResponse[T any] struct {
+	Count int64 `json:"count"`
+	List  T     `json:"list"`
+}
+
 const (
 	Success = 0
 	Error   = 7
@@ -36,8 +43,19 @@ func OKWithMsg(msg string, c *gin.Context) {
 	Result(Success, map[string]any{}, msg, c)
 }
 
+func OKWithDataAndMsg(data any, msg string, c *gin.Context) {
+	Result(Success, data, msg, c)
+}
+
 func OKWithoutData(c *gin.Context) {
 	Result(Success, map[string]any{}, "操作成功", c)
+}
+
+func OKWithList(list any, count int64, c *gin.Context) {
+	OKWithData(ListResponse[any]{
+		count,
+		list,
+	}, c)
 }
 
 func Fail(data any, msg string, c *gin.Context) {

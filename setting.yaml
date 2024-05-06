@@ -4,8 +4,8 @@ mysql:
   db: GoRoLingG
   username: rolingg
   password: roling233.
-  log_level: ""
-  config: ""
+  log_level: dev
+  config: "charset=utf8mb4&parseTime=True&loc=Local"
 logger:
   level: info
   prefix: '[GoRoLingG]'
@@ -16,7 +16,7 @@ system:
   host: 0.0.0.0
   port: 8080
   env: release
-upload:
+images_upload:
   size: 2
   path: upload/file
 site_info:

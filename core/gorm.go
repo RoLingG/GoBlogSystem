@@ -17,14 +17,18 @@ func InitGorm() *gorm.DB {
 	}
 	dsn := global.Config.Mysql.Dsn()
 
+	//sql日志
 	var mysqlLogger logger.Interface
+
 	if global.Config.System.Env == "dev" {
 		//开发环境显示所有的sql
 		mysqlLogger = logger.Default.LogMode(logger.Info)
 	} else {
 		mysqlLogger = logger.Default.LogMode(logger.Error)
 	}
-	//global.MysqlLog = logger.Default.LogMode(logger.Info)	//sql的日志，暂时还没写
+
+	//sql日志配置，可以不用debug()去看了
+	global.MysqlLog = logger.Default.LogMode(logger.Info)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: mysqlLogger,
