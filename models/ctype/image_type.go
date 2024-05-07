@@ -14,6 +14,7 @@ func (image ImageType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(image.String())
 }
 
+// 判断数据库内的图片类型
 func (image ImageType) String() string {
 	var str string
 	switch image {

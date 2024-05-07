@@ -1,6 +1,7 @@
 package res
 
 import (
+	"GoRoLingG/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -64,6 +65,11 @@ func Fail(data any, msg string, c *gin.Context) {
 
 func FailWithMsg(msg string, c *gin.Context) {
 	Result(Error, map[string]any{}, msg, c)
+}
+
+func FailWithError(err error, obj any, c *gin.Context) {
+	msg := utils.GetValidMsg(err, obj)
+	FailWithMsg(msg, c)
 }
 
 func FailWithCode(code ErrorCode, c *gin.Context) {

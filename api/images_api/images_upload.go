@@ -3,6 +3,8 @@ package images_api
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
+	"GoRoLingG/models/ctype"
+	"GoRoLingG/plugins/qiniu"
 	"GoRoLingG/res"
 	"GoRoLingG/utils"
 	"fmt"
@@ -101,15 +103,39 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 			resList = append(resList, FileUploadResponse{
 				FileName:  imageModel.Path,
 				IsSuccess: true,
-				Msg:       "图片入库传输无效，图片重复传输",
+				Msg:       "图片重复传输,图片入库传输无效",
 			})
-			imageMsg = "图片入库传输无效，图片重复传输"
+			imageMsg = "图片重复传输,图片入库传输无效"
+			continue
+		}
+
+		//判断是否将图片存储于七牛云
+		if global.Config.QiNiu.Isenable {
+			filePath, err = qiniu.UploadImages(byteData, fileName, "goblogImage")
+			if err != nil {
+				global.Log.Error(err)
+				continue
+			}
+			resList = append(resList, FileUploadResponse{
+				FileName:  filePath,
+				IsSuccess: true,
+				Msg:       "图片于七牛云上传成功",
+			})
+			//图片入库
+			global.DB.Create(&models.ImageModel{
+				Model:     models.Model{},
+				Path:      filePath,
+				Hash:      imageHash,
+				Name:      fileName,
+				ImageType: ctype.QiNiu,
+			})
 			continue
 		}
 
 		//图片大小没问题，则判断图片存储是否成功
 		err = c.SaveUploadedFile(file, filePath)
 		if err != nil {
+			//图片大小有问题
 			global.Log.Error(err)
 			resList = append(resList, FileUploadResponse{
 				FileName:  file.Filename,
@@ -127,10 +153,11 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 		})
 		//图片入库
 		global.DB.Create(&models.ImageModel{
-			Model: models.Model{},
-			Path:  filePath,
-			Hash:  imageHash,
-			Name:  fileName,
+			Model:     models.Model{},
+			Path:      filePath,
+			Hash:      imageHash,
+			Name:      fileName,
+			ImageType: ctype.Local,
 		})
 		imageMsg = "图片上传成功"
 	}

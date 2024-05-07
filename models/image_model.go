@@ -15,9 +15,11 @@ type ImageModel struct {
 	ImageType ctype.ImageType `gorm:"default:1" json:"image_type"` //图片存储类型
 }
 
+// hook钩子函数,当要删除图片的前一段时间触发
 func (image ImageModel) BeforeDelete(db *gorm.DB) (err error) {
+	//判断是否是本地图片，如果是本地图片则既要删除数据库数据，也要删除本地图片资源
 	if image.ImageType == ctype.Local {
-		//本地图片删除要删除本地图片存储
+		//删除本地图片存储资源
 		err = os.Remove(image.Path)
 		if err != nil {
 			global.Log.Error(err)
