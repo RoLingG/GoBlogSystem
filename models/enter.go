@@ -4,10 +4,16 @@ import "time"
 
 type Model struct {
 	ID       uint      `gorm:"primarykey" json:"id"`
-	CreateAt time.Time `gorm:"default:2021-01-01 00:00:00" json:"create_at"`
-	UpdateAt time.Time `gorm:"default:2021-01-01 00:00:00" json:"-"`
+	CreateAt time.Time `gorm:"default:current_timestamp(3)" json:"create_at"`
+	UpdateAt time.Time `gorm:"default:current_timestamp(3)" json:"-"`
+
+	//Error 1067 (42000): Invalid default value for 'create_at'
+	//[0.000ms] [rows:0] ALTER TABLE `image_models` MODIFY COLUMN `create_at` datetime(3) NULL DEFAULT current_timestamp
+	//这里我一开始会出现上面的报错是因为一开始设置的下面两个对象
 	//CreateAt time.Time `json:"create_at"`
 	//UpdateAt time.Time `json:"-"`
+	//可以看到这两个对象并没有设置初始值，我看不顺眼给了个初始值（gorm:"default:current_timestamp"
+	//然后衰仔的是time.Time在gorm模型里对应的mysql的类型是datetime(3)，妈的它默认设置了精度，所以加个精度就好了，虽然很蠢，但我还是得提醒自己
 }
 
 // APIPOST的参数，不设置默认值都是0

@@ -8,4 +8,5 @@ type QiNiu struct {
 	CDN       string  `json:"cdn" yaml:"cdn"`       //访问图片的地址前缀
 	Zone      string  `json:"zone" yaml:"zone"`     //存储地区
 	Size      float64 `json:"size" yaml:"size"`     //存储大小限制，单位大小为MB
+	Prefix    string  `json:"prefix" yaml:"prefix"` //存储目录，或叫图片存储前缀
 }

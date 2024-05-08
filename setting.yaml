@@ -39,13 +39,14 @@ JWT:
   expires: 0
   issuer: ""
 QiNiu:
-  isenable: true
+  isenable: false
   access_key: LTvM4DFAMAXfEPxmfT3YLkQl_WEa1t2oK61VTxwf
   secret_key: HSbFlBfEb7lLauhBXx5o9BPWLRwu-IW-3Q9i4Jjj
   bucket: rggoblog
-  cdn: rolingg.top
+  cdn: http://img.rolingg.top/
   zone: z2
   size: 5
+  prefix: goblogImage
 Email:
   host: 127.0.0.1
   port: 0
