@@ -24,8 +24,11 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 		option.Sort = "create_at desc" //默认按照时间往前排,desc(降序),asc(升序)
 	}
 
+	query := DB.Where(model)
 	//加上select可不用select *，优化sql语句
-	count = DB.Select("id").Find(&list).RowsAffected
+	count = query.Select("id").Find(&list).RowsAffected
+	//query因为会受上一次query的查询影响，所以这里要再赋值重置一遍
+	query = DB.Where(model)
 
 	//页码有效检测
 	totalPages := int(count) / option.Limit
@@ -46,6 +49,6 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 		return list, 0, fmt.Errorf("无效的页码: %d, 总页数: %d", currentPage, totalPages)
 	}
 
-	err = DB.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
+	err = query.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
 	return list, count, err
 }
