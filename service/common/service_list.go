@@ -13,6 +13,7 @@ type Option struct {
 }
 
 // 封装统一用列表查询的方法，包括分页
+// 这里的model即便函数内没有显式使用也不能删掉，因为它能让GORM实际的定义到所要操作的model，删了就不知道要对哪个model进行操作了
 func CommonList[T any](model T, option Option) (list []T, count int64, err error) {
 	DB := global.DB //默认无日志
 	if option.Debug {
@@ -24,6 +25,7 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 		option.Sort = "create_at desc" //默认按照时间往前排,desc(降序),asc(升序)
 	}
 
+	//count = DB.Select("id").Find(&list).RowsAffected
 	query := DB.Where(model)
 	//加上select可不用select *，优化sql语句
 	count = query.Select("id").Find(&list).RowsAffected
@@ -50,5 +52,6 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 	}
 
 	err = query.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
+	//err = DB.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
 	return list, count, err
 }
