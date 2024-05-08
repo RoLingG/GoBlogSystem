@@ -10,28 +10,15 @@ import (
 	"os"
 )
 
-var (
-	//图片上传白名单
-	WhiteImagesList = []string{
-		".jpg",
-		".png",
-		".jpeg",
-		".gif",
-		".webp",
-		".svg",
-		".ico",
-	}
-)
-
 // 上传图片，返回图片url
 func (ImagesApi) ImagesUploadView(c *gin.Context) {
-	Imagesform, err := c.MultipartForm()
+	ImagesForm, err := c.MultipartForm()
 	if err != nil {
 		res.FailWithMsg(err.Error(), c)
 		return
 	}
 	//Post参数名设置
-	fileList, ok := Imagesform.File["images"]
+	fileList, ok := ImagesForm.File["images"]
 	if !ok {
 		res.FailWithMsg("图片不存在", c)
 		return
@@ -48,7 +35,7 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 		}
 	}
 
-	//不存在数据，则创建一个list，对每个图片上传进行回复其上传结果
+	//创建一个list，对每个图片上传进行回复其上传结果
 	var resList []image_service.FileUploadResponse
 
 	//for循环轮询post过来的每个图片进行上传判断
@@ -73,6 +60,7 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 			}
 		}
 		//如果是成功且是七牛云存储，还得保存
+		//(七牛云上传是在service.Service.ImageService.ImageUploadService()这里就已经上传到七牛云了，因此只用存储到resList用于返回给前端对应信息就行)
 		resList = append(resList, uploadRes)
 	}
 

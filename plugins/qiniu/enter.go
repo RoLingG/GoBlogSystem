@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// 获取上传的toke
+// 获取七牛云上传的toke
 func getToken(q config.QiNiu) string {
 	accessKey := q.AccessKey
 	secretKey := q.SecretKey
@@ -25,7 +25,7 @@ func getToken(q config.QiNiu) string {
 	return upToken
 }
 
-// 获取上传的配置
+// 获取七牛云上传的配置
 func getConfig(q config.QiNiu) storage.Config {
 	cfg := storage.Config{}
 	//空间对应的机房
@@ -38,7 +38,7 @@ func getConfig(q config.QiNiu) storage.Config {
 	return cfg
 }
 
-// uploadImages 上传图片
+// uploadImages 七牛云上传图片
 func UploadImages(data []byte, imageName string, prefix string) (filePath string, err error) {
 	if !global.Config.QiNiu.Isenable {
 		return "", errors.New("请启用七牛云上传")

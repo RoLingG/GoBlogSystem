@@ -29,7 +29,7 @@ type FileUploadResponse struct {
 	Msg       string `json:"msg"`
 }
 
-// 文件上传
+// 文件上传(主要是上传到数据库)
 func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes FileUploadResponse) {
 	//判断图片后缀是否为白名单内的后缀
 	//先获取图片上传完整路径(包括图片名)
@@ -39,8 +39,10 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	//↓这里就和之前不一样了，因为本地存储拿的是这个uploadRes.FileName，但之前这个uploadRes.FileName是先定义为filename，再定义为filePath
 	//↓但filename的时候已经传过去了，会导致本地物理存储的位置没能定义到filePath指定的路径
 	uploadRes.FileName = filePath
+
 	//获取图片后缀
 	suffix := strings.ToLower(path.Ext(fileName))
+	//对应白名单判断图片后缀是否合法
 	if !utils.InList(suffix, WhiteImagesList) {
 		uploadRes.Msg = "图片后缀非法"
 		return
@@ -59,7 +61,9 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	if err != nil {
 		global.Log.Error(err)
 	}
+	//将文件对象byte化
 	byteData, err := io.ReadAll(fileObj)
+	//将byte化的对象进行MD5加密
 	imageHash := utils.Md5(byteData)
 	//通过哈希的方式，去数据库中查图片是否存在
 	var imageModel models.ImageModel
@@ -70,18 +74,21 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 		uploadRes.Msg = "图片已存在,图片入库传输无效"
 		return
 	}
+	//默认上传到本地进行存储
 	fileType := ctype.Local
 	uploadRes.Msg = "图片于本地上传成功"
 	uploadRes.IsSuccess = true
 
 	//判断是否将图片存储于七牛云
 	if global.Config.QiNiu.Isenable {
+		//qiniu.UploadImages()方法会返回一个七牛云的CDN地址，和一个对应的key
 		filePath, err = qiniu.UploadImages(byteData, fileName, global.Config.QiNiu.Prefix)
 		if err != nil {
 			global.Log.Error(err)
 			uploadRes.Msg = err.Error()
 			return
 		}
+		//成功上传，则获取七牛云对应图片的外链
 		uploadRes.FileName = filePath
 		uploadRes.IsSuccess = true
 		uploadRes.Msg = "图片于七牛云上传成功"

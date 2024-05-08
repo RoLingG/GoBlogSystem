@@ -3,6 +3,7 @@ package utils
 import (
 	"github.com/go-playground/validator/v10"
 	"reflect"
+	"regexp"
 )
 
 // 返回结构体中msg的参数
@@ -22,4 +23,26 @@ func GetValidMsg(err error, obj any) string {
 		}
 	}
 	return err.Error()
+}
+
+//检验url是否合法
+//func ValidateURL(str string) (bool, error) {
+//	u, err := url.ParseRequestURI(str)
+//	if err != nil {
+//		return false, err
+//	}
+//	if u.Scheme == "" || u.Host == "" {
+//		return false, fmt.Errorf("invalid URL format: scheme and host are required")
+//	}
+//	return true, nil
+//}
+
+// 正则检验url是否合法
+func ValidateURL(str string) bool {
+	// 正则表达式用于匹配一个简单的 URL 格式
+	// 这个正则表达式并不涵盖所有可能的 URL 格式，但可以作为基本的验证
+	re := regexp.MustCompile(
+		`^(https?|ftp):\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$`,
+	)
+	return re.MatchString(str)
 }
