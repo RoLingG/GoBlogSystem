@@ -1,0 +1,167 @@
+basePath: /
+definitions:
+  advert_api.AdvertRequest:
+    properties:
+      href:
+        type: string
+      images:
+        type: string
+      is_show:
+        type: boolean
+      title:
+        type: string
+    required:
+    - href
+    - images
+    - title
+    type: object
+  models.AdvertModel:
+    properties:
+      create_at:
+        type: string
+      href:
+        type: string
+      id:
+        type: integer
+      images:
+        type: string
+      is_show:
+        type: boolean
+      title:
+        type: string
+    type: object
+  models.RemoveRequest:
+    properties:
+      id_list:
+        items:
+          type: integer
+        type: array
+    type: object
+  res.ListResponse-models_AdvertModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.AdvertModel'
+    type: object
+  res.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+host: 127.0.0.01:8080
+info:
+  contact: {}
+  description: GoRoLingG API文档
+  title: GoRoLingG API文档
+  version: "1.0"
+paths:
+  /api/advertList:
+    get:
+      description: 广告列表，用于展示广告
+      parameters:
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_AdvertModel'
+              type: object
+      summary: 广告列表
+      tags:
+      - 广告管理
+  /api/advertRemove:
+    delete:
+      description: 广告删除，用于批量删除广告
+      parameters:
+      - description: 广告id列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: 广告删除
+      tags:
+      - 广告管理
+  /api/advertUpdate/:id:
+    put:
+      description: 广告更新
+      parameters:
+      - description: 广告的一些参数
+        in: body
+        name: _
+        required: true
+        schema:
+          $ref: '#/definitions/advert_api.AdvertRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: 广告更新
+      tags:
+      - 广告管理
+  /api/advertUpload:
+    post:
+      description: 创建广告
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/advert_api.AdvertRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建广告
+      tags:
+      - 广告管理
+swagger: "2.0"

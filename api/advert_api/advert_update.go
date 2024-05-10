@@ -9,6 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AdvertUpdateView 广告更新
+// @Tags 广告管理
+// @Summary 广告更新
+// @Description	广告更新
+// @Param _ body AdvertRequest true	"广告的一些参数"
+// @Router /api/advertUpdate/:id [put]
+// @Produce json
+// @Success 200 {object} res.Response{data=string}
 func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 	id := c.Param("id") //因为AdvertRequest类型里面没有ID，但是修改要id，所以我们从前端拿id来进行修改
 	var cr AdvertRequest
@@ -19,7 +27,7 @@ func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 	}
 
 	//创建对应表的ORM实例对象
-	var advert models.AdverModel
+	var advert models.AdvertModel
 	//需要修改的对应ID广告是否存在判断
 	err = global.DB.Debug().Take(&advert, id).Error
 	//有err就说明在数据库中不存在该ID对应的广告
@@ -29,7 +37,7 @@ func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 	}
 
 	//重新赋值一遍，清空上一次操作，可以用session替代这种怪怪的做法，但我不会（
-	advert = models.AdverModel{}
+	advert = models.AdvertModel{}
 	//标题是否重复判断
 	err = global.DB.Debug().Take(&advert, "title = ?", cr.Title).Error
 	//无err就说明在数据库中找到了
@@ -58,7 +66,7 @@ func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 	}
 
 	//入库，这里updates的结构体实例如果属性过多的话，可以找个结构体转map的函数去进行快速转换，这样就方便很多，要用的话可以终端输入go get github.com/fatih/structs
-	err = global.DB.Debug().Where(id).Updates(&models.AdverModel{
+	err = global.DB.Debug().Where(id).Updates(&models.AdvertModel{
 		Title:  cr.Title,
 		Href:   cr.Href,
 		Images: cr.Images,

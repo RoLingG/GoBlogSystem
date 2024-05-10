@@ -8,7 +8,14 @@ import (
 	"strings"
 )
 
-// 广告列表
+// AdvertListView 广告列表
+// @Tags 广告管理
+// @Summary 广告列表
+// @Description	广告列表，用于展示广告
+// @Param data query models.PageModel false	"查询参数"
+// @Router /api/advertList [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=res.ListResponse[models.AdvertModel]}
 func (AdvertApi) AdvertListView(c *gin.Context) {
 	var cr models.PageModel
 	err := c.ShouldBindQuery(&cr)
@@ -23,7 +30,7 @@ func (AdvertApi) AdvertListView(c *gin.Context) {
 		//Referer包含admin，则可以看IsShow两种情况的内容
 		isShow = false
 	}
-	list, count, err := common.CommonList(models.AdverModel{IsShow: isShow}, common.Option{
+	list, count, err := common.CommonList(models.AdvertModel{IsShow: isShow}, common.Option{
 		PageModel: cr,
 		Debug:     true,
 	})

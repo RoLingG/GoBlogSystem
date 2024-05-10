@@ -1,0 +1,10 @@
+swag相当于一个在线的API测试工具，只要配置好就能用
+在API对应的程序里写上下面这些，修改对应的内容，就能用了
+//@Tags 标签
+//@Summary 标题
+//@Description	描述，可以有多个
+//@Param limit query string false "表示单个参数"  用于查询参数，false就禁用，true就启用
+//@Param data body/query request_Request false	"表示多个参数"	传入参数是data，body是json参数，false就禁用，true就启用
+//@Router API对应的路由
+//@Produce json
+//@Success 200 {object} gin.H{"msg":"响应"}

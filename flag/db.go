@@ -13,7 +13,7 @@ func Makemigrations() {
 		&models.ImageModel{},
 		&models.TagModel{},
 		&models.MessageModel{},
-		&models.AdverModel{},
+		&models.AdvertModel{},
 		&models.UserModel{},
 		&models.CommentModel{},
 		&models.ArticleModel{},

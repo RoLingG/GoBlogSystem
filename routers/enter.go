@@ -3,6 +3,8 @@ package routers
 import (
 	"GoRoLingG/global"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	gs "github.com/swaggo/gin-swagger"
 )
 
 //方法一：无RouterGroup这个struct
@@ -21,6 +23,8 @@ type RouterGroup struct {
 func InitRouter() *gin.Engine {
 	gin.SetMode(global.Config.System.Env)
 	router := gin.Default()
+	//设置swagger路由，让网页也能访问swagger
+	router.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 
 	//router.GET("", func(c *gin.Context) {
 	//	c.String(200, "测试用连接")

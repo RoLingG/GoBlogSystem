@@ -17,6 +17,16 @@ type AdvertRequest struct {
 	//想要gin能接受零值，就用*bool
 }
 
+//注意，swag的使用要紧贴着使用的函数，不然不生效
+
+// AdvertCreateView 添加广告
+// @Tags 广告管理
+// @Summary 创建广告
+// @Description	创建广告
+// @Param data body AdvertRequest true	"表示多个参数"
+// @Router /api/advertUpload [post]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (AdvertApi) AdvertCreateView(c *gin.Context) {
 	var cr AdvertRequest
 	err := c.ShouldBindJSON(&cr)
@@ -26,7 +36,7 @@ func (AdvertApi) AdvertCreateView(c *gin.Context) {
 	}
 
 	//广告重复判断
-	var advert models.AdverModel
+	var advert models.AdvertModel
 	err = global.DB.Take(&advert, "title = ?", cr.Title).Error
 	//无err就说明在数据库中找到了
 	if err == nil {
@@ -47,7 +57,7 @@ func (AdvertApi) AdvertCreateView(c *gin.Context) {
 	}
 
 	//入库
-	err = global.DB.Create(&models.AdverModel{
+	err = global.DB.Create(&models.AdvertModel{
 		Title:  cr.Title,
 		Href:   cr.Href,
 		Images: cr.Images,

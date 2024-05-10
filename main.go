@@ -2,11 +2,17 @@ package main
 
 import (
 	"GoRoLingG/core"
+	_ "GoRoLingG/docs"
 	"GoRoLingG/flag"
 	"GoRoLingG/global"
 	"GoRoLingG/routers"
 )
 
+// @title GoRoLingG API文档
+// @version	1.0
+// @description GoRoLingG API文档
+// @host 127.0.0.01:8080
+// @BasePath /
 func main() {
 	//读取配置文件，main中调用InitConfig
 	//fmt.Println(global.Config)
