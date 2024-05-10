@@ -1,0 +1,29 @@
+swag相当于一个在线的API测试工具，只要配置好就能用
+在API对应的程序里写上下面这些，修改对应的内容，就能用了
+下面是对各个swag标签的解释
+
+//@Tags 标签
+//@Summary 标题
+//@Description	描述，可以有多个
+
+//@Param limit query string false "表示单个参数"  用于查询query参数，false就禁用，true就启用
+//@Param data body/query request_Request false	"表示多个参数"	传入参数是data，body是json参数，false就禁用，true就启用
+当然这个是根据情况而定的，例如图片上传的是form-data的file文件，那我们可以定义接受的文件类型，然后再根据代码区写Param。
+参数名为"images"，类型为formData，传参数值是file类型，能上传多个文件
+//@Accept multipart/form-data
+//@Param images formData file true "上传的图片文件"
+
+//@Router API对应的路由
+实战例子
+// @Router /api/imagesList [get]
+
+使用 @Produces 时，你告诉客户端，这个API可以产生（返回）哪些格式的响应体。这通常用于当你的API可以返回多种不同格式的数据时，比如JSON、XML等。
+//@Produce json
+
+响应，甚至可以有多个
+//@Success 200 {object} gin.H{"msg":"响应"}   模版
+实战例子
+// @Success 200 {object} res.Response{data=object} "操作成功"
+// @Failure 400 {string} string "请求参数错误"
+// @Failure 500 {string} string "内部服务器错误"
+// @Failure default {string} string "未知错误"

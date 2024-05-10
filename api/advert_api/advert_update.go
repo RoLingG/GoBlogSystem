@@ -13,7 +13,7 @@ import (
 // @Tags 广告管理
 // @Summary 广告更新
 // @Description	广告更新
-// @Param _ body AdvertRequest true	"广告的一些参数"
+// @Param _ body AdvertRequest true	"广告更新的一些参数"
 // @Router /api/advertUpdate/:id [put]
 // @Produce json
 // @Success 200 {object} res.Response{data=string}

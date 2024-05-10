@@ -11,6 +11,16 @@ import (
 )
 
 // 上传图片，返回图片url
+
+// ImagesUploadView 添加图片
+// @Tags 图片管理
+// @Summary 添加图片
+// @Description	添加图片，提供图片上传功能
+// @Accept multipart/form-data
+// @Param images formData file true "上传的图片文件"
+// @Produce json
+// @Router /api/imagesUpload [post]
+// @Success 200 {object} res.Response{data=object} "操作成功"
 func (ImagesApi) ImagesUploadView(c *gin.Context) {
 	ImagesForm, err := c.MultipartForm()
 	if err != nil {

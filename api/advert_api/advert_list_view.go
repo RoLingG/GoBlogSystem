@@ -12,7 +12,7 @@ import (
 // @Tags 广告管理
 // @Summary 广告列表
 // @Description	广告列表，用于展示广告
-// @Param data query models.PageModel false	"查询参数"
+// @Param data query models.PageModel false	"查询广告列表的一些参数"
 // @Router /api/advertList [get]
 // @Produce json
 // @Success 200 {object} res.Response{data=res.ListResponse[models.AdvertModel]}

@@ -23,7 +23,7 @@ type AdvertRequest struct {
 // @Tags 广告管理
 // @Summary 创建广告
 // @Description	创建广告
-// @Param data body AdvertRequest true	"表示多个参数"
+// @Param data body AdvertRequest true	"添加新广告的一些参数"
 // @Router /api/advertUpload [post]
 // @Produce json
 // @Success 200 {object} res.Response{}

@@ -12,7 +12,7 @@ import (
 // @Tags 广告管理
 // @Summary 广告删除
 // @Description	广告删除，用于批量删除广告
-// @Param data body models.RemoveRequest true	"广告id列表"
+// @Param data body models.RemoveRequest true	"要删除的广告id列表"
 // @Router /api/advertRemove [delete]
 // @Produce json
 // @Success 200 {object} res.Response{data=string}

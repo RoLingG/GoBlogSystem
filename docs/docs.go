@@ -85,7 +85,7 @@ const docTemplate = `{
                 "summary": "广告删除",
                 "parameters": [
                     {
-                        "description": "广告id列表",
+                        "description": "要删除的广告id列表",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -128,7 +128,7 @@ const docTemplate = `{
                 "summary": "广告更新",
                 "parameters": [
                     {
-                        "description": "广告的一些参数",
+                        "description": "广告更新的一些参数",
                         "name": "_",
                         "in": "body",
                         "required": true,
@@ -171,7 +171,7 @@ const docTemplate = `{
                 "summary": "创建广告",
                 "parameters": [
                     {
-                        "description": "表示多个参数",
+                        "description": "添加新广告的一些参数",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -185,6 +185,194 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/imagesList": {
+            "get": {
+                "description": "图片列表，用于显示所有的图片",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片管理"
+                ],
+                "summary": "图片列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "模糊匹配的关键字",
+                        "name": "key",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页限制显示量",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页数",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.ListResponse-models_ImageModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/imagesRemove": {
+            "delete": {
+                "description": "图片删除，用于批量删除数据库内的图片数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片管理"
+                ],
+                "summary": "图片删除",
+                "parameters": [
+                    {
+                        "description": "要删除的图片id列表",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RemoveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/imagesUpdate": {
+            "put": {
+                "description": "图片更新，用于更新图片名字",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片管理"
+                ],
+                "summary": "图片更新",
+                "parameters": [
+                    {
+                        "description": "要更新的图片id和更改后的name",
+                        "name": "_",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/images_api.ImageUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/imagesUpload": {
+            "post": {
+                "description": "添加图片，提供图片上传功能",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片管理"
+                ],
+                "summary": "添加图片",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传的图片文件",
+                        "name": "images",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "操作成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -214,6 +402,36 @@ const docTemplate = `{
                 }
             }
         },
+        "ctype.ImageType": {
+            "type": "integer",
+            "enum": [
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "Local": "本地",
+                "QiNiu": "七牛云"
+            },
+            "x-enum-varnames": [
+                "Local",
+                "QiNiu"
+            ]
+        },
+        "images_api.ImageUpdateRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AdvertModel": {
             "type": "object",
             "properties": {
@@ -237,6 +455,37 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ImageModel": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "hash": {
+                    "description": "图片哈希值，用于判断重复图片",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_type": {
+                    "description": "图片存储类型",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/ctype.ImageType"
+                        }
+                    ]
+                },
+                "name": {
+                    "description": "图片名称",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "图片路径",
+                    "type": "string"
+                }
+            }
+        },
         "models.RemoveRequest": {
             "type": "object",
             "properties": {
@@ -256,6 +505,17 @@ const docTemplate = `{
                 },
                 "list": {
                     "$ref": "#/definitions/models.AdvertModel"
+                }
+            }
+        },
+        "res.ListResponse-models_ImageModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "list": {
+                    "$ref": "#/definitions/models.ImageModel"
                 }
             }
         },
