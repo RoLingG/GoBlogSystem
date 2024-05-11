@@ -45,12 +45,14 @@ func InitRouter() *gin.Engine {
 	//xxxGroup := router.Group("/xxx")
 
 	routerGroup := RouterGroup{apiRouterGroup}
-	//系统配置(settings)api
+	//系统配置(settings)api的路由
 	routerGroup.SettingsRouter()
-	//图片上传配置(images)api
+	//图片上传配置(images)api的路由
 	routerGroup.ImagesRouter()
-	//广告上传配置(advert)api
+	//广告上传配置(advert)api的路由
 	routerGroup.AdvertRouter()
+	//菜单上传配置(menu)api的路由
+	routerGroup.MenuRouter()
 
 	return router
 }

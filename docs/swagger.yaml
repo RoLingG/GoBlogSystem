@@ -26,6 +26,15 @@ definitions:
     x-enum-varnames:
     - Local
     - QiNiu
+  images_api.ImageResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      path:
+        type: string
+    type: object
   images_api.ImageUpdateRequest:
     properties:
       id:
@@ -245,6 +254,26 @@ paths:
                   $ref: '#/definitions/res.ListResponse-models_ImageModel'
               type: object
       summary: 图片列表
+      tags:
+      - 图片管理
+  /api/imagesNameList:
+    get:
+      description: 图片列表，用于精简显示所有的图片数据
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/images_api.ImageResponse'
+                  type: array
+              type: object
+      summary: 图片列表精简查询
       tags:
       - 图片管理
   /api/imagesRemove:

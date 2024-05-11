@@ -1,0 +1,4 @@
+air，用于自动重启程序，便利开发
+使用go install github.com/cosmtrek/air@latest进行下载第三方库，版本1.16及其以后(会生成air.exe文件)
+下载好之后直接在cmd里输入air即可启动自动重启
+想要设置air，在cmd输入air init会在项目根目录下生成一个.air.toml的文件，在里面配置就行

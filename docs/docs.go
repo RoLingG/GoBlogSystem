@@ -248,6 +248,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/imagesNameList": {
+            "get": {
+                "description": "图片列表，用于精简显示所有的图片数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片管理"
+                ],
+                "summary": "图片列表精简查询",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/images_api.ImageResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/imagesRemove": {
             "delete": {
                 "description": "图片删除，用于批量删除数据库内的图片数据",
@@ -416,6 +451,20 @@ const docTemplate = `{
                 "Local",
                 "QiNiu"
             ]
+        },
+        "images_api.ImageResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
         },
         "images_api.ImageUpdateRequest": {
             "type": "object",
