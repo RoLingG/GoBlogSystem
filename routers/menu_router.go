@@ -7,4 +7,5 @@ func (router RouterGroup) MenuRouter() {
 	router.POST("/menusUpload", menusApi.MenuCreateView)
 	router.GET("/menusList", menusApi.MenuListView)
 	router.GET("/menusNameList", menusApi.MenuNameListView)
+	router.PUT("/menusUpdate/:id", menusApi.MenuUpdateView)
 }

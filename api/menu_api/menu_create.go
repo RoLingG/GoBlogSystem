@@ -15,14 +15,14 @@ type ImageSort struct {
 
 // 前端传过来的数据
 type MenuRequest struct {
-	MenuTitle     string      `json:"menu_title" binding:"required" msg:"请完善菜单项名称"`
-	MenuPath      string      `json:"menu_path" binding:"required" msg:"请完善菜单项路径"`
-	Slogan        string      `json:"slogan"`
-	Abstract      ctype.Array `json:"abstract"`
-	AbstractTime  int         `json:"abstract_time"`                         //简介的切换时间，单位为秒
-	MenuTime      int         `json:"menu_time"`                             //图片的切换时间，单位为秒
-	Sort          int         `json:"sort" binding:"required" msg:"请输入菜单序号"` //菜单的序号
-	ImageSortList []ImageSort `json:"image_sort_list"`                       //具体图片的顺序，要单独给ImageSortList创建一个类型是因为如果用[]imageModel要传的参数太多了，实际上我们只需要对应的ID和序号就行
+	MenuTitle     string      `json:"menu_title" binding:"required" structs:"menu_title" msg:"请完善菜单项名称"`
+	MenuPath      string      `json:"menu_path" binding:"required" structs:"menu_path" msg:"请完善菜单项路径"`
+	Slogan        string      `json:"slogan" structs:"slogan"`
+	Abstract      ctype.Array `json:"abstract" structs:"abstract"`
+	AbstractTime  int         `json:"abstract_time" structs:"abstract_time"`                //简介的切换时间，单位为秒
+	MenuTime      int         `json:"menu_time" structs:"menu_time"`                        //图片的切换时间，单位为秒
+	Sort          *int        `json:"sort" binding:"required" structs:"sort" msg:"请输入菜单序号"` //菜单的序号
+	ImageSortList []ImageSort `json:"image_sort_list" structs:"-"`                          //具体图片的顺序，要单独给ImageSortList创建一个类型是因为如果用[]imageModel要传的参数太多了，实际上我们只需要对应的ID和序号就行
 }
 
 func (MenuApi) MenuCreateView(c *gin.Context) {
@@ -66,7 +66,7 @@ func (MenuApi) MenuCreateView(c *gin.Context) {
 		Abstract:     cr.Abstract,
 		AbstractTime: cr.AbstractTime,
 		MenuTime:     cr.MenuTime,
-		Sort:         cr.Sort,
+		Sort:         *cr.Sort,
 	}
 	err = global.DB.Debug().Create(&menuModel).Error
 	if err != nil {
