@@ -24,7 +24,7 @@ func (MenuApi) MenuUpdateView(c *gin.Context) {
 		res.FailWithMsg("菜单项不存在，操作失败", c)
 		return
 	}
-	global.DB.Debug().Model(&menuModel).Association("MenuImage").Clear() //一对多操作，清空表对应条件的数据
+	global.DB.Debug().Model(&menuModel).Association("MenuImage").Clear() //一对多操作，因为外键想关联，所以清楚menu表也会清空第三张表姑关联着的数据
 	//清空后如果选择了image，就进行添加
 	if len(cr.ImageSortList) > 0 {
 		//操作第三张表

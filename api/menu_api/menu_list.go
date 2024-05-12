@@ -42,7 +42,8 @@ func (MenuApi) MenuListView(c *gin.Context) {
 	for _, menu := range menuList {
 		//menu就是一个菜单项，for循环遍历Menu表的每个菜单项
 		//var images []Image //当前菜单项所用图片合集，但是var images []Image这样子创建实例会导致其内部初始都为nil
-		images := []Image{} //这样子创建实例就会直接初始化内部值都为零值，使其就算没有数据也不会返回null
+		var images = make([]Image, 0)
+		//images := []Image{} //这样子创建实例就会直接初始化内部值都为零值，使其就算没有数据也不会返回null，也能解决问题，就是编译器会提示 有点不影响运行的小问题
 		for _, image := range menuImages {
 			//image为菜单项所使用的图片数据，根据for循环去判断MenuImage表内查询该菜单项所用的图片有哪些，用ID去对着判断
 			if menu.ID != image.MenuID {

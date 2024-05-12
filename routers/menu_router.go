@@ -8,4 +8,5 @@ func (router RouterGroup) MenuRouter() {
 	router.GET("/menusList", menusApi.MenuListView)
 	router.GET("/menusNameList", menusApi.MenuNameListView)
 	router.PUT("/menusUpdate/:id", menusApi.MenuUpdateView)
+	router.DELETE("/menusRemove", menusApi.MenuRemoveView)
 }

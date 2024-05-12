@@ -27,7 +27,7 @@ func (ImagesApi) ImagesRemoveView(c *gin.Context) {
 	var imagesList []models.ImageModel
 	count := global.DB.Find(&imagesList, cr.IDList).RowsAffected
 	if count == 0 {
-		res.FailWithMsg("图片不存在", c)
+		res.FailWithMsg("所要删除的图片不存在", c)
 		return
 	}
 	global.DB.Delete(&imagesList)

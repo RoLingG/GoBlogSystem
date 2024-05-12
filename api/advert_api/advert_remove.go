@@ -27,7 +27,7 @@ func (AdvertApi) AdvertRemoveView(c *gin.Context) {
 	var advertsList []models.AdvertModel
 	count := global.DB.Find(&advertsList, cr.IDList).RowsAffected
 	if count == 0 {
-		res.FailWithMsg("广告不存在", c)
+		res.FailWithMsg("所要删除的广告不存在", c)
 		return
 	}
 	global.DB.Delete(&advertsList)
