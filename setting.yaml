@@ -35,9 +35,9 @@ site_info:
   web: ""
   github_url: ""
 JWT:
-  secret: ""
-  expires: 0
-  issuer: ""
+  secret: XXX
+  expires: 2
+  issuer: "1234"
 QiNiu:
   isenable: false
   access_key: LTvM4DFAMAXfEPxmfT3YLkQl_WEa1t2oK61VTxwf

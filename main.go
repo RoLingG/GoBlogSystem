@@ -15,15 +15,10 @@ import (
 // @BasePath /
 func main() {
 	//读取配置文件，main中调用InitConfig
-	//fmt.Println(global.Config)
 	core.InitConfig()
 
 	//初始化日志
 	global.Log = core.InitLogger()
-	//global.Log.Warn("warn")
-	//global.Log.Error("error")
-	//global.Log.Info("info")
-	//global.Log.Debug("debug")
 
 	//连接数据库
 	global.DB = core.InitGorm()
