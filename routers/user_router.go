@@ -9,5 +9,6 @@ func (router RouterGroup) UserRouter() {
 	userApi := api.ApiGroupApp.UserApi
 	router.POST("/emailLogin", userApi.EmailLoginView)
 	router.GET("/userList", middleware.JwtAuth(), userApi.UserListView)
-	router.PUT("/userUpdateRole", middleware.JwtAdmin(), userApi.UserUpdateRoleView)
+	router.PUT("/userUpdateAdmin", middleware.JwtAdmin(), userApi.UserUpdateAdminView)
+	router.PUT("/userUpdatePassword", middleware.JwtAuth(), userApi.UserUpdatePasswordView)
 }
