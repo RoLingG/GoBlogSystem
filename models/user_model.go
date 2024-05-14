@@ -9,7 +9,7 @@ type UserModel struct {
 	//gorm.Model                     //gorm的Model自带逻辑删除，如果需要用就用gorm自带的
 	NickName      string           `gorm:"size:36" json:"nick_name"`
 	UserName      string           `gorm:"size:36" json:"user_name"`
-	Password      string           `gorm:"size:128" json:"password"`
+	Password      string           `gorm:"size:128" json:"-"`
 	Avatar        string           `gorm:"size:256" json:"avatar"`
 	Email         string           `gorm:"size:128" json:"email"`
 	Telephone     string           `gorm:"size:18" json:"telephone"`

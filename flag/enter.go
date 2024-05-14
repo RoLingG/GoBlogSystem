@@ -1,6 +1,9 @@
 package flag
 
-import sysflag "flag"
+import (
+	sysflag "flag"
+	"github.com/fatih/structs"
+)
 
 // 迁移表结构的脚手架
 type Option struct {
@@ -21,12 +24,24 @@ func Parse() Option {
 }
 
 // IsWebStop 是否停止web项目
-func IsWebStop(option Option) bool {
-	if option.DB {
-		return true
+func IsWebStop(option Option) (f bool) {
+	//将命令行参数map化
+	maps := structs.Map(&option)
+	//用for循环maps去检测命令行参数类型，从而进行情况选择
+	//(一般来说maps里只有一个参数，因为命令行一般执行的都是单参数操作，用for循环检测多是为了以后多参数也可以用)
+	for _, v := range maps {
+		switch val := v.(type) {
+		case string:
+			if val != "" {
+				f = true
+			}
+		case bool:
+			if val != false {
+				f = true
+			}
+		}
 	}
-	//return true
-	return false
+	return f
 }
 
 // SwitchOption 根据命令执行不同的函数
@@ -39,5 +54,5 @@ func SwitchOption(option Option) {
 		CreateUser(option.User)
 		return
 	}
-	//sysflag.Usage() //有而外的内容则直接不生效	暂时有问题
+	sysflag.Usage() //有而外的内容则直接不生效
 }
