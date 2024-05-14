@@ -15,19 +15,10 @@ import (
 //}
 
 func (UserApi) UserListView(c *gin.Context) {
-	//判断是否是管理员
-	token := c.Request.Header.Get("token")
-	if token == "" {
-		res.FailWithMsg("token为空，未登录", c)
-		return
-	}
-	claims, err := jwt.ParseToken(token)
-	if err != nil {
-		res.FailWithMsg("token解析错误", c)
-		return
-	}
+	_claims, _ := c.Get("claims")         //从jwt.auth中获取claims
+	claims := _claims.(*jwt.CustomClaims) //断言
 	var cr models.PageModel
-	err = c.ShouldBindQuery(&cr)
+	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 	}

@@ -1,9 +1,12 @@
 package routers
 
-import "GoRoLingG/api"
+import (
+	"GoRoLingG/api"
+	"GoRoLingG/middleware"
+)
 
 func (router RouterGroup) UserRouter() {
 	userApi := api.ApiGroupApp.UserApi
 	router.POST("/emailLogin", userApi.EmailLoginView)
-	router.GET("/userList", userApi.UserListView)
+	router.GET("/userList", middleware.JwtAuth(), userApi.UserListView)
 }
