@@ -17,6 +17,7 @@ func GenToken(user JwtPayLoad) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim) //NewWithClaims()会生成一个jwt框架，也就是创建一个token实例
-	return token.SignedString(MySecret)                       //token对象调用SignedString(Secret)会通过Secret密钥给jwt签名，生成token字符串。这个过程先生成待签名字符串，然后生成签名，最后组合在一起形成完整的jwt
+	completeToken, err := token.SignedString(MySecret)        //token对象调用SignedString(Secret)会通过Secret密钥给jwt签名，生成token字符串。这个过程先生成待签名字符串，然后生成签名，最后组合在一起形成完整的jwt
+	return completeToken, err
 	//生成的jwt用.对header、Payload、Signature进行拼接header.Payload.Signature
 }

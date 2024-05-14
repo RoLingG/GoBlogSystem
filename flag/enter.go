@@ -25,7 +25,8 @@ func IsWebStop(option Option) bool {
 	if option.DB {
 		return true
 	}
-	return true
+	//return true
+	return false
 }
 
 // SwitchOption 根据命令执行不同的函数
@@ -38,5 +39,5 @@ func SwitchOption(option Option) {
 		CreateUser(option.User)
 		return
 	}
-	sysflag.Usage() //有而外的内容则直接不生效
+	//sysflag.Usage() //有而外的内容则直接不生效	暂时有问题
 }

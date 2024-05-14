@@ -53,6 +53,8 @@ func InitRouter() *gin.Engine {
 	routerGroup.AdvertRouter()
 	//菜单上传配置(menu)api的路由
 	routerGroup.MenuRouter()
+	//用户上传配置(user)api的路由
+	routerGroup.UserRouter()
 
 	return router
 }

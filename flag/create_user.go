@@ -43,6 +43,7 @@ func CreateUser(permission string) {
 		global.Log.Error("用户已存在，请修改用户名后重新创建用户")
 		return
 	}
+	//校验两次密码是否相等
 	if password != rePassword {
 		global.Log.Error("两次密码不相同，请重新确认密码")
 		return
