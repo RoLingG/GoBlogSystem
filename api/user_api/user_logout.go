@@ -3,10 +3,9 @@ package user_api
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/res"
+	"GoRoLingG/service"
 	"GoRoLingG/utils/jwt"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func (UserApi) UserLogoutView(c *gin.Context) {
@@ -15,11 +14,8 @@ func (UserApi) UserLogoutView(c *gin.Context) {
 
 	token := c.Request.Header.Get("token") //从传过来的header获取token
 
-	//需要计算距离当前时间的token还有多久过期
-	exp := claims.ExpiresAt   //获取token过期时间
-	now := time.Now()         //获取当前时间
-	diff := exp.Time.Sub(now) //用token过期时间-当前时间就算出距离当前还有多久过期
-	err := global.Redis.Set(fmt.Sprintf("logout_%s", token), "", diff).Err()
+	//通过service内的方法去进行用户注销操作，涉及redis
+	err := service.Service.UserService.UserLogoutService(claims, token)
 	if err != nil {
 		global.Log.Error(err)
 		res.FailWithMsg("注销失败", c)

@@ -19,7 +19,7 @@ type RouterGroup struct {
 	*gin.RouterGroup
 }
 
-// 路由初始化,建议每一个模块的路由都新建一个文件
+// InitRouter 路由初始化,建议每一个模块的路由都新建一个文件
 func InitRouter() *gin.Engine {
 	gin.SetMode(global.Config.System.Env)
 	router := gin.Default()
