@@ -27,7 +27,7 @@ func init() {
 }
 
 func main() {
-	err := rdb.Set("test1", "test1", 10*time.Second).Err() //新增一个set类型的kv，10s后过期
+	err := rdb.Set("test1", "test1", 10*time.Second).Err() //添加set类型的新kv
 	rdb.Set("test2", "test2", 10*time.Second)
 	rdb.Set("test3", "test3", 10*time.Second)
 	fmt.Println(err)
