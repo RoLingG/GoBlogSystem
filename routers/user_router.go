@@ -12,4 +12,6 @@ func (router RouterGroup) UserRouter() {
 	router.PUT("/userUpdateAdmin", middleware.JwtAdmin(), userApi.UserUpdateAdminView)
 	router.PUT("/userUpdatePassword", middleware.JwtAuth(), userApi.UserUpdatePasswordView)
 	router.POST("/userLogout", middleware.JwtAuth(), userApi.UserLogoutView)
+	router.DELETE("/userRemove", middleware.JwtAdmin(), userApi.UserRemove)
+	router.POST("/userBindEmail", middleware.JwtAuth(), userApi.UserBindEmail)
 }

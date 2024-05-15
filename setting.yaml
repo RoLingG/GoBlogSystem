@@ -53,12 +53,12 @@ QiNiu:
   size: 5
   prefix: goblogImage
 Email:
-  host: 127.0.0.1
-  port: 0
-  user: ""
-  password: ""
+  host: smtp.qq.com
+  port: 465
+  user: rolingg@qq.com
+  password: omnykcvbqsgkjcaj
   default_from_email: ""
-  use_ssl: false
+  use_ssl: true
   user_tls: false
 QQ:
   app_id: ""
