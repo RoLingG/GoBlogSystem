@@ -6,6 +6,11 @@ mysql:
   password: roling233.
   log_level: dev
   config: "charset=utf8mb4&parseTime=True&loc=Local"
+redis:
+  ip: 127.0.0.1
+  port: 6379
+  password: ""
+  pool_size: 100
 logger:
   level: info
   prefix: '[GoRoLingG]'

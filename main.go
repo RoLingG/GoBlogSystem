@@ -22,7 +22,8 @@ func main() {
 
 	//连接数据库
 	global.DB = core.InitGorm()
-	//fmt.Println(global.DB)
+	//连接Redis
+	global.Redis = core.ConnectRedis()
 
 	//flag迁移数据库肯定是在连接数据库之后，路由连接之前
 	//命令行参数绑定

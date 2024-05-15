@@ -4,6 +4,9 @@ import (
 	"github.com/dgrijalva/jwt-go/v4"
 )
 
+/*
+	注意：JWT是客户端生成的，并非服务端生成
+*/
 // JwtPayLoad jwt中Payload的数据
 type JwtPayLoad struct {
 	UserName string `json:"user_name"`
