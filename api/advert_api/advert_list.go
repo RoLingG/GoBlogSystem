@@ -21,6 +21,7 @@ func (AdvertApi) AdvertListView(c *gin.Context) {
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
+		return
 	}
 	//判断Referer 是否包含admin，如果包含则全部返回；如果不包含，就返回is_show=true
 	//isShow默认为true，当走不进if时，就说明不包含admin，也就只能看为IsShow为true的内容

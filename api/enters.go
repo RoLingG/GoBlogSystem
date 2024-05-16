@@ -4,7 +4,9 @@ import (
 	"GoRoLingG/api/advert_api"
 	"GoRoLingG/api/images_api"
 	"GoRoLingG/api/menu_api"
+	"GoRoLingG/api/message_api"
 	"GoRoLingG/api/settings_api"
+	"GoRoLingG/api/tag_api"
 	"GoRoLingG/api/user_api"
 )
 
@@ -14,6 +16,8 @@ type ApiGroup struct {
 	AdvertApi   advert_api.AdvertApi
 	MenuApi     menu_api.MenuApi
 	UserApi     user_api.UserApi
+	TagApi      tag_api.TagApi
+	MessageApi  message_api.MessageApi
 }
 
 var ApiGroupApp = new(ApiGroup)

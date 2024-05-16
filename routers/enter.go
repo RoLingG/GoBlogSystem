@@ -56,6 +56,10 @@ func InitRouter() *gin.Engine {
 	routerGroup.MenuRouter()
 	//用户上传配置(user)api的路由
 	routerGroup.UserRouter()
+	//文章tag上传配置(tag)api的路由
+	routerGroup.TagRouter()
+	//消息上传配置(message)api的路由
+	routerGroup.MessageRouter()
 
 	return router
 }
