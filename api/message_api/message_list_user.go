@@ -23,6 +23,7 @@ type Message struct {
 
 type MessageGroup map[uint]*Message //消息组
 
+// MessageListUserView 普通用户消息列表
 func (MessageApi) MessageListUserView(c *gin.Context) {
 	//根据jwt的token获取当前用户信息
 	_claims, _ := c.Get("claims")

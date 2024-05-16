@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// MessageListAdminView 管理员消息列表
 func (MessageApi) MessageListAdminView(c *gin.Context) {
 	var cr models.PageModel
 	err := c.ShouldBindQuery(&cr)

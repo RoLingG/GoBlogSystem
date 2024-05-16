@@ -12,6 +12,7 @@ type MessageRecordRequest struct {
 	UserID uint `json:"user_id" binding:"required" msg:"请输入查询的用户id"`
 }
 
+// MessageRecordView 消息记录接口
 func (MessageApi) MessageRecordView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

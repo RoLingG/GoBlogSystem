@@ -13,7 +13,7 @@ type MessageRequest struct {
 	Content    string `json:"content" binding:"required"`      // 消息内容
 }
 
-// 发布消息
+// MessageCreateView 发布消息
 func (MessageApi) MessageCreateView(c *gin.Context) {
 	// 当前用户发布消息
 	// SendUserID 就是当前登录人的id
