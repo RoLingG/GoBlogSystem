@@ -25,6 +25,7 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 	//设置swagger路由，让网页也能访问swagger
 	router.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
+	//router.GET("/login", user_api.UserApi{}.QQLoginView)
 
 	//router.GET("", func(c *gin.Context) {
 	//	c.String(200, "测试用连接")

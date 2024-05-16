@@ -23,10 +23,12 @@ func (router RouterGroup) UserRouter() {
 	//在Gin路由组中启用了session会话中间件
 	router.Use(sessions.Sessions("sessions", store))
 	router.POST("/emailLogin", userApi.EmailLoginView)
+	router.POST("/userCreate", middleware.JwtAdmin(), userApi.UserCreateView)
 	router.GET("/userList", middleware.JwtAuth(), userApi.UserListView)
 	router.PUT("/userUpdateAdmin", middleware.JwtAdmin(), userApi.UserUpdateAdminView)
 	router.PUT("/userUpdatePassword", middleware.JwtAuth(), userApi.UserUpdatePasswordView)
 	router.POST("/userLogout", middleware.JwtAuth(), userApi.UserLogoutView)
 	router.DELETE("/userRemove", middleware.JwtAdmin(), userApi.UserRemove)
 	router.POST("/userBindEmail", middleware.JwtAuth(), userApi.UserBindEmail)
+	router.POST("/qqLogin", userApi.QQLoginView)
 }

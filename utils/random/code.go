@@ -6,8 +6,10 @@ import (
 	"time"
 )
 
+// 验证码包含的字符集
 var stringCode = "adcdefghijklmnopqrstuvwxyz0123456789"
 
+// RandCode 随机验证码生成
 func RandCode(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	// 创建一个空的字符串，用于存放最终的随机字符串
