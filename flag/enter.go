@@ -16,7 +16,7 @@ type Option struct {
 func Parse() Option {
 	db := sysflag.Bool("db", false, "初始化数据库")
 	user := sysflag.String("u", "", "创建用户")
-	es := sysflag.String("es", "", "")
+	es := sysflag.String("es", "", "ES处理")
 	//解析命令行参数写入注册的flag里
 	sysflag.Parse()
 	return Option{
@@ -59,6 +59,9 @@ func SwitchOption(option Option) {
 	}
 	if option.ES == "create" {
 		EsCreateIndex()
+		return
+	} else if option.ES == "delete" {
+		EsRemoveIndex()
 		return
 	}
 	sysflag.Usage() //有而外的内容则直接不生效
