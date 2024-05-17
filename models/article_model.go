@@ -195,6 +195,7 @@ func (article ArticleModel) Create() (err error) {
 
 // ISExistData 是否存在该文章
 func (article ArticleModel) ISExistData() bool {
+	//查询通用写法
 	res, err := global.ESClient.
 		Search(article.Index()).
 		Query(elastic.NewTermQuery("keyword", article.Title)).
