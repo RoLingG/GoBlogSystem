@@ -8,7 +8,7 @@ import (
 )
 
 type Option struct {
-	models.PageModel
+	models.PageInfo
 	Debug bool
 }
 

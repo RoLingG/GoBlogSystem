@@ -17,7 +17,7 @@ import (
 // @Produce json
 // @Success 200 {object} res.Response{data=res.ListResponse[models.AdvertModel]}
 func (AdvertApi) AdvertListView(c *gin.Context) {
-	var cr models.PageModel
+	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
@@ -32,8 +32,8 @@ func (AdvertApi) AdvertListView(c *gin.Context) {
 		isShow = false
 	}
 	list, count, err := common.CommonList(models.AdvertModel{IsShow: isShow}, common.Option{
-		PageModel: cr,
-		Debug:     true,
+		PageInfo: cr,
+		Debug:    true,
 	})
 
 	if err != nil {

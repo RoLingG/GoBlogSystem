@@ -9,15 +9,15 @@ import (
 
 // MessageListAdminView 管理员消息列表
 func (MessageApi) MessageListAdminView(c *gin.Context) {
-	var cr models.PageModel
+	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
 	list, count, err := common.CommonList(models.MessageModel{}, common.Option{
-		PageModel: cr,
-		Debug:     true,
+		PageInfo: cr,
+		Debug:    true,
 	})
 
 	if err != nil {

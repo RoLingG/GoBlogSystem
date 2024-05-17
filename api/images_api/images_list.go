@@ -18,15 +18,15 @@ import (
 // @Router /api/imagesList [get]
 // @Success 200 {object} res.Response{data=res.ListResponse[models.ImageModel]}
 func (ImagesApi) ImagesListView(c *gin.Context) {
-	var cr models.PageModel
+	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 	}
 	//将获取列表集成为一个function，封装起来便于广泛利用
 	list, count, err := common.CommonList(models.ImageModel{}, common.Option{
-		PageModel: cr,
-		Debug:     true,
+		PageInfo: cr,
+		Debug:    true,
 	})
 
 	if err != nil {

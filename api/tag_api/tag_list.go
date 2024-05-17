@@ -8,14 +8,14 @@ import (
 )
 
 func (TagApi) TagListView(c *gin.Context) {
-	var cr models.PageModel
+	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
 	list, count, err := common.CommonList(models.TagModel{}, common.Option{
-		PageModel: cr,
+		PageInfo: cr,
 	})
 
 	if err != nil {

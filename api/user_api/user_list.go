@@ -17,15 +17,15 @@ import (
 func (UserApi) UserListView(c *gin.Context) {
 	_claims, _ := c.Get("claims")         //从jwt.auth中获取claims
 	claims := _claims.(*jwt.CustomClaims) //断言
-	var cr models.PageModel
+	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 	}
 	var userList []models.UserModel
 	list, count, err := common.CommonList(models.UserModel{}, common.Option{
-		PageModel: cr,
-		Debug:     false,
+		PageInfo: cr,
+		Debug:    false,
 	})
 	if err != nil {
 		res.FailWithMsg(err.Error(), c)

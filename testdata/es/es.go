@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 var client *elastic.Client
@@ -116,7 +115,7 @@ func FindSourceList(key string, page, limit int) (demoList []DemoModel, count in
 	res, err := client.
 		Search(DemoModel{}.Index()).
 		Query(boolSearch).
-		Source(`{"_source": ["title"]}`). //相比于简单的关键字列表搜索，这里
+		FetchSourceContext(elastic.NewFetchSourceContext(true).Exclude("title")). //获取索引关键字，排除关键字相关内容
 		From((from - 1) * limit).
 		Size(limit).
 		Do(context.Background())
@@ -196,18 +195,18 @@ func main() {
 	//DemoModel{}.RemoveIndex()
 
 	//索引底下的数据创建
-	Create(&DemoModel{
-		Title:    "测试",
-		UserID:   6,
-		CreateAt: time.Now().Format("2006-01-02 15:04:05"),
-	})
+	//Create(&DemoModel{
+	//	Title:    "测试",
+	//	UserID:   6,
+	//	CreateAt: time.Now().Format("2006-01-02 15:04:05"),
+	//})
 
 	//列表查询
 	//list, count := FindList("", 1, 5) //添加之后马上去查是查不到的，要查得到需要去设置一下es的查询开关
 	//fmt.Println(list, count)
 
-	//关键字查询
-	//list, count := FindSourceList("测试", 1, 5) //暂时有问题
+	//排除关键字查询
+	//list, count := FindSourceList("测试", 1, 5)
 	//fmt.Println(list, count)
 
 	//更新
