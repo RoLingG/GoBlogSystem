@@ -60,6 +60,8 @@ func InitRouter() *gin.Engine {
 	routerGroup.TagRouter()
 	//消息上传配置(message)api的路由
 	routerGroup.MessageRouter()
+	//文章上传配置(article)api的路由
+	routerGroup.ArticleRouter()
 
 	return router
 }

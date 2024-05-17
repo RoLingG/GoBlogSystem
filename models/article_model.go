@@ -30,7 +30,7 @@ type ArticleModel struct {
 
 	Category string `json:"category"`          //文章分类
 	Source   string `json:"source,omit(list)"` //资源来源
-	Link     string `json:"link",omit(list)`   //原文链接
+	Link     string `json:"link,omit(list)"`   //原文链接
 	//Words    int    `json:"words"`             //文章总字数
 
 	ImageID  uint   `json:"image_id"`  //文章封面ID
@@ -177,5 +177,17 @@ func (article ArticleModel) RemoveIndex() error {
 		return err
 	}
 	logrus.Info("索引删除成功")
+	return nil
+}
+
+// Create 索引创建
+func (article ArticleModel) Create() (err error) {
+	indexResponse, err := global.ESClient.Index().Index(article.Index()).BodyJson(article).Do(context.Background())
+	if err != nil {
+		logrus.Error(err.Error())
+		return
+	}
+	logrus.Infof("%#v", indexResponse)
+	article.ID = indexResponse.Id //因为data是指针类型，所以会修改数据
 	return nil
 }
