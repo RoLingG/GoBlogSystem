@@ -104,6 +104,7 @@ func (ArticleApi) ArticleCreateView(c *gin.Context) {
 		CreateAt:     now,
 		UpdateAt:     now,
 		Title:        cr.Title,
+		Keyword:      cr.Title,
 		Abstract:     cr.Abstract,
 		Content:      cr.Content,
 		UserID:       userID,
@@ -115,6 +116,12 @@ func (ArticleApi) ArticleCreateView(c *gin.Context) {
 		ImageID:      cr.ImageID,
 		ImageUrl:     imageUrl,
 		Tags:         cr.Tags,
+	}
+	if article.ISExistData() {
+		//如果文章存在，则不添加文章
+		global.Log.Error(err)
+		res.FailWithMsg("文章已存在", c)
+		return
 	}
 
 	err = article.Create()

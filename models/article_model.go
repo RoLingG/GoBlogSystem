@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models/ctype"
 	"context"
+	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ type ArticleModel struct {
 	UpdateAt string `json:"update_at"` //更新时间
 
 	Title    string `json:"title"`              //文章标题
-	Keyword  string `json:"keyword,omit(list)"` // 关键字
+	Keyword  string `json:"keyword,omit(list)"` // 关键字，用于检测文章是否存在，值一般与title一致
 	Abstract string `json:"abstract"`           //文章简介
 	Content  string `json:"content,omit(list)"` //文章正文
 
@@ -190,4 +191,22 @@ func (article ArticleModel) Create() (err error) {
 	logrus.Infof("%#v", indexResponse)
 	article.ID = indexResponse.Id //因为data是指针类型，所以会修改数据
 	return nil
+}
+
+// ISExistData 是否存在该文章
+func (article ArticleModel) ISExistData() bool {
+	res, err := global.ESClient.
+		Search(article.Index()).
+		Query(elastic.NewTermQuery("keyword", article.Title)).
+		Size(1).
+		Do(context.Background())
+	if err != nil {
+		logrus.Error(err.Error())
+		return false
+	}
+	if res.Hits.TotalHits.Value > 0 {
+		//存在
+		return true
+	}
+	return false
 }
