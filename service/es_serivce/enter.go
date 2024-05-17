@@ -34,6 +34,7 @@ func CommonList(key string, limit, page int) (list []models.ArticleModel, count 
 		logrus.Error(err.Error())
 		return
 	}
+
 	count = int(res.Hits.TotalHits.Value) //搜索到结果总条数
 	articleList := []models.ArticleModel{}
 	for _, hit := range res.Hits.Hits {
@@ -52,4 +53,21 @@ func CommonList(key string, limit, page int) (list []models.ArticleModel, count 
 		articleList = append(articleList, article)
 	}
 	return articleList, count, err
+}
+
+func CommonDetail(id string) (article models.ArticleModel, err error) {
+	//get获取es内对应index(也就是article_index)中_id为id的文章数据
+	res, err := global.ESClient.Get().
+		Index(models.ArticleModel{}.Index()).
+		Id(id).
+		Do(context.Background())
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(res.Source, &article)
+	if err != nil {
+		return
+	}
+	article.ID = res.Id
+	return
 }
