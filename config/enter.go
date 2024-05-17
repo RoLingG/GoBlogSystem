@@ -11,4 +11,5 @@ type Config struct {
 	Email        Email        `yaml:"Email"`
 	QQ           QQ           `yaml:"QQ"`
 	ImagesUpload ImagesUpload `yaml:"images_upload"`
+	ES           ES           `yaml:"es"`
 }

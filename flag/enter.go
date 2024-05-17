@@ -9,17 +9,20 @@ import (
 type Option struct {
 	DB   bool
 	User string //-u admin 创建root用户 -u user 创建普通用户
+	ES   string //-es create 创建表索引 -es delete 删除表索引
 }
 
 // 解析命令行数
 func Parse() Option {
 	db := sysflag.Bool("db", false, "初始化数据库")
 	user := sysflag.String("u", "", "创建用户")
+	es := sysflag.String("es", "", "")
 	//解析命令行参数写入注册的flag里
 	sysflag.Parse()
 	return Option{
 		DB:   *db,
 		User: *user,
+		ES:   *es,
 	}
 }
 
@@ -52,6 +55,10 @@ func SwitchOption(option Option) {
 	}
 	if option.User == "admin" || option.User == "user" {
 		CreateUser(option.User)
+		return
+	}
+	if option.ES == "create" {
+		EsCreateIndex()
 		return
 	}
 	sysflag.Usage() //有而外的内容则直接不生效

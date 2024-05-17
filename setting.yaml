@@ -64,3 +64,8 @@ QQ:
   app_id: ""
   key: ""
   redirect: ""
+es:
+  host: "192.168.31.201"
+  port: 9200
+  user:
+  password:
