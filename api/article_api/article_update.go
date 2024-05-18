@@ -33,7 +33,7 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		return
 	}
 
-	//获取文章图片更新后的图片路径
+	//如果要更新文章的话，获取文章图片更新后的图片路径
 	var imageUrl string
 	if cr.ImageID != 0 {
 		err = global.DB.Model(models.ImageModel{}).Where("id = ?", cr.ImageID).Select("path").Scan(&imageUrl).Error //将图片表中的图片路径获取出来
@@ -56,6 +56,13 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		ImageID:  cr.ImageID,
 		ImageUrl: imageUrl,
 		Tags:     cr.Tags,
+	}
+
+	//检测对应id要更新的文章是否存在
+	err = article.GetDataByID(cr.ID)
+	if err != nil {
+		res.FailWithMsg("对应id的文章不存在", c)
+		return
 	}
 
 	maps := structs.Map(&article)  //将article map化，好进行添加，这里因为用了structs，所以ArticleModel里面的对应参数要加上structs标签

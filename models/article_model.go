@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models/ctype"
 	"context"
+	"encoding/json"
 	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 )
@@ -213,4 +214,16 @@ func (article ArticleModel) ISExistData() bool {
 		return true
 	}
 	return false
+}
+
+func (article *ArticleModel) GetDataByID(id string) error {
+	res, err := global.ESClient.Get().Index(article.Index()).Id(id).Do(context.Background())
+	//判断对应id的文章是否存在
+	if err != nil {
+		return err
+	}
+	//检查在反序列化过程中是否出现任何问题
+	//判断该article对应的结构体字段是否与es中存放的文章结构体匹配，不匹配则有err内容
+	err = json.Unmarshal(res.Source, article)
+	return err
 }
