@@ -63,5 +63,7 @@ func InitRouter() *gin.Engine {
 	//文章上传配置(article)api的路由
 	routerGroup.ArticleRouter()
 
+	routerGroup.DiggRouter()
+
 	return router
 }

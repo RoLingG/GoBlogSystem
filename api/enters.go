@@ -3,6 +3,7 @@ package api
 import (
 	"GoRoLingG/api/advert_api"
 	"GoRoLingG/api/article_api"
+	"GoRoLingG/api/digg_api"
 	"GoRoLingG/api/images_api"
 	"GoRoLingG/api/menu_api"
 	"GoRoLingG/api/message_api"
@@ -20,6 +21,7 @@ type ApiGroup struct {
 	TagApi      tag_api.TagApi
 	MessageApi  message_api.MessageApi
 	ArticleApi  article_api.ArticleApi
+	DiggApi     digg_api.DiggApi
 }
 
 var ApiGroupApp = new(ApiGroup)

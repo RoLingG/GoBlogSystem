@@ -3,6 +3,7 @@ package es_serivce
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
+	"GoRoLingG/service"
 	"context"
 	"encoding/json"
 	"errors"
@@ -79,6 +80,8 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 
 	count = int(res.Hits.TotalHits.Value) //搜索到结果总条数
 	articleList := []models.ArticleModel{}
+	diggInfo := service.Service.RedisService.GetDiggInfo()
+	LookInfo := service.Service.RedisService.GetLookInfo()
 	for _, hit := range res.Hits.Hits {
 		var article models.ArticleModel
 		data, err := hit.Source.MarshalJSON()
@@ -96,6 +99,52 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 			article.Title = title[0]
 		}
 		article.ID = hit.Id
+		//设置一个文章redis内点赞数大于等于10自动同步es和redis数据的机制
+		//for循环文章，当redis内该哈希表对应的id文章点赞数大于等于10，则触发同步数据机制，更新es表对应文章的点赞数的同时删除redis内对应id文章的点赞数据
+		digg, ok := diggInfo[hit.Id]
+		if ok && digg >= 10 {
+			// 更新 ES 中的文章点赞数
+			article.DiggCount = article.DiggCount + digg
+			_, updateErr := global.ESClient.Update().
+				Index(models.ArticleModel{}.Index()).
+				Id(hit.Id).
+				Doc(map[string]int{
+					"digg_count": article.DiggCount,
+				}).
+				Do(context.Background())
+			if updateErr != nil {
+				logrus.Error(updateErr.Error())
+				continue
+			}
+			logrus.Info(article.Title, "点赞数更新成功，新点赞数为:", article.DiggCount)
+			// 从 Redis 中删除点赞数
+			service.Service.RedisService.DiggClearByID(hit.Id)
+		} else {
+			article.DiggCount = article.DiggCount + digg
+		}
+		//设置一个文章redis内浏览量大于等于10自动同步es和redis数据的机制
+		//for循环文章，当redis内该哈希表对应的id文章浏览量大于等于10，则触发同步数据机制，更新es表对应文章的浏览量的同时删除redis内对应id文章的浏览量数据
+		look, ok := LookInfo[hit.Id]
+		if ok && look >= 10 {
+			// 更新 ES 中的文章点赞数
+			article.LookCount = article.LookCount + look
+			_, updateErr := global.ESClient.Update().
+				Index(models.ArticleModel{}.Index()).
+				Id(hit.Id).
+				Doc(map[string]int{
+					"look_count": article.LookCount,
+				}).
+				Do(context.Background())
+			if updateErr != nil {
+				logrus.Error(updateErr.Error())
+				continue
+			}
+			logrus.Info(article.Title, "浏览数更新成功，新浏览数为:", article.LookCount)
+			// 从 Redis 中删除点赞数
+			service.Service.RedisService.LookClearByID(hit.Id)
+		} else {
+			article.LookCount = article.LookCount + look
+		}
 		articleList = append(articleList, article)
 	}
 	return articleList, count, err
@@ -115,6 +164,8 @@ func CommonDetail(id string) (article models.ArticleModel, err error) {
 		return
 	}
 	article.ID = res.Id
+	//访问一次文章详细内容，文章浏览量+1
+	article.LookCount = article.LookCount + service.Service.RedisService.GetLook(res.Id)
 	return
 }
 
