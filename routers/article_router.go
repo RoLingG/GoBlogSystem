@@ -12,4 +12,5 @@ func (router RouterGroup) ArticleRouter() {
 	router.GET("/articleCalendar", articleApi.ArticleCalendarView)
 	router.GET("/articleTagsList", articleApi.ArticleTagsListView)
 	router.GET("/articleDetail/:id", articleApi.ArticleDetailView)
+	router.PUT("/articleUpdate", articleApi.ArticleUpdateView)
 }
