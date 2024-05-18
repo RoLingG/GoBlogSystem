@@ -17,6 +17,7 @@ func Makemigrations() {
 		&models.UserModel{},
 		&models.CommentModel{},
 		//&models.ArticleModel{},
+		&models.UserCollectModel{},
 		&models.MenuModel{},
 		&models.MenuImageModel{},
 		&models.FeedBackModel{},

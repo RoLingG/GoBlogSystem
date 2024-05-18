@@ -78,7 +78,7 @@ func (ArticleModel) Mapping() string {
       "digg_count": {
         "type": "integer"
       },
-      "collects_count": {
+      "collect_count": {
         "type": "integer"
       },
       "user_id": {

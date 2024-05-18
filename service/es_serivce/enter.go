@@ -28,6 +28,7 @@ func (o *Option) GetForm() int {
 	return (o.Page - 1) * o.Limit
 }
 
+// CommonList 列表查询分页
 func CommonList(option Option) (list []models.ArticleModel, count int, err error) {
 	boolSearch := elastic.NewBoolQuery()
 	if option.Key != "" {
@@ -189,4 +190,14 @@ func CommDetailByKeyword(key string) (model models.ArticleModel, err error) {
 	}
 	model.ID = hit.Id
 	return
+}
+
+func ArticleUpdate(id string, data map[string]any) error {
+	_, err := global.ESClient.
+		Update().
+		Index(models.ArticleModel{}.Index()).
+		Id(id).
+		Doc(data).
+		Do(context.Background())
+	return err
 }

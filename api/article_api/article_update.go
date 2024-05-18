@@ -5,6 +5,7 @@ import (
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
+	"GoRoLingG/service/es_serivce"
 	"context"
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
@@ -107,5 +108,13 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		res.FailWithMsg("文章更新失败", c)
 		return
 	}
+
+	err = es_serivce.ArticleUpdate(cr.ID, maps)
+	if err != nil {
+		global.Log.Error()
+		res.FailWithMsg("文章更新失败", c)
+		return
+	}
+
 	res.OKWithMsg("文章更新成功", c)
 }
