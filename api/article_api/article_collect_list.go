@@ -8,7 +8,6 @@ import (
 	"GoRoLingG/utils/jwt"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic/v7"
 )
@@ -26,19 +25,20 @@ func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 	var cr models.PageInfo
 	c.ShouldBindQuery(&cr)
 
-	var articleIDList []interface{}
-	//分页
+	//根据当前登录用户的id获取他收藏的文章，并有分页
 	list, count, err := common.CommonList(models.UserCollectModel{UserID: claims.UserID}, common.Option{
 		PageInfo: cr,
 	})
+
+	var articleIDList []interface{} //用于存储当前用户收藏的所有文章id
 	var collectMap = map[string]string{}
-	//获取文章id列表
+	//获取当前登录用户收藏的文章id列表
 	for _, model := range list {
 		articleIDList = append(articleIDList, model.ArticleID)
-		collectMap[model.ArticleID] = model.CreateAt.Format("2006-01-02 15:04:05") //获取收藏文章的map，只需要文章id和创建时间，key为文章id，对应的value为文章创建的时间
+		collectMap[model.ArticleID] = model.CreateAt.Format("2006-01-02 15:04:05") //获取收藏文章的map，只需要文章id和创建时间，key为文章id，与key对应的value为文章创建的时间
 	}
 
-	//传id列表查es
+	//传id列表查es，去获取文章
 	var collectList = make([]CollectResponse, 0)
 	boolSearch := elastic.NewTermsQuery("_id", articleIDList...)
 	result, err := global.ESClient.
@@ -50,7 +50,7 @@ func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 		res.FailWithMsg(err.Error(), c)
 		return
 	}
-	fmt.Println(result.Hits.TotalHits.Value, articleIDList)
+	//fmt.Println(result.Hits.TotalHits.Value, articleIDList)
 	for _, hit := range result.Hits.Hits {
 		var article models.ArticleModel
 		err = json.Unmarshal(hit.Source, &article)
@@ -58,6 +58,8 @@ func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 			global.Log.Error(err)
 			continue
 		}
+		//hit.Source里有除了_id之外的所有数据信息
+		//因为这里ArticleModel的ID不再是mysql那种自增的，而是es的文章_id，所以要进行赋值获取
 		article.ID = hit.Id
 		collectList = append(collectList, CollectResponse{
 			ArticleModel: article,

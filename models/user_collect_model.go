@@ -6,6 +6,6 @@ import "time"
 type UserCollectModel struct {
 	UserID    uint      `gorm:"primaryKey"`
 	UserModel UserModel `gorm:"foreignKey:UserID"`
-	ArticleID string    `gorm:"size:32"`
+	ArticleID string    `gorm:"size:32;primaryKey"`
 	CreateAt  time.Time `gorm:"default:current_timestamp(3)"`
 }

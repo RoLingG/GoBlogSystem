@@ -37,9 +37,10 @@ func (ArticleApi) ArticleUserCollectView(c *gin.Context) {
 		})
 		// 给文章的收藏数 +1
 		num = 1
+	} else {
+		// 找到文章 取消收藏文章
+		global.DB.Delete(&collect)
 	}
-	// 找到文章 取消收藏文章
-	global.DB.Delete(&collect)
 
 	// 更新文章收藏数
 	err = es_serivce.ArticleUpdate(cr.ID, map[string]any{
