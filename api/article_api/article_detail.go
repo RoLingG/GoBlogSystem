@@ -5,7 +5,7 @@ import (
 	"GoRoLingG/models"
 	"GoRoLingG/res"
 	"GoRoLingG/service"
-	"GoRoLingG/service/es_serivce"
+	"GoRoLingG/service/es_service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +17,7 @@ func (ArticleApi) ArticleDetailView(c *gin.Context) {
 		return
 	}
 	service.Service.RedisService.Look(cr.ID)
-	article, err := es_serivce.CommonDetail(cr.ID)
+	article, err := es_service.CommonDetail(cr.ID)
 	if err != nil {
 		global.Log.Error(err)
 		res.FailWithMsg("文章详情查询出错", c)

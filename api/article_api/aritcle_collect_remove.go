@@ -4,7 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
-	"GoRoLingG/service/es_serivce"
+	"GoRoLingG/service/es_service"
 	"GoRoLingG/utils/jwt"
 	"context"
 	"encoding/json"
@@ -58,7 +58,7 @@ func (ArticleApi) ArticleUserCollectRemoveView(c *gin.Context) {
 		//es中对应文章的收藏数-1
 		collectCount := article.CollectCount - 1
 		//更新文章数据
-		err = es_serivce.ArticleUpdate(hit.Id, map[string]any{
+		err = es_service.ArticleUpdate(hit.Id, map[string]any{
 			"collect_count": collectCount,
 		})
 		if err != nil {

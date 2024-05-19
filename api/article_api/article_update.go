@@ -5,11 +5,9 @@ import (
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
-	"GoRoLingG/service/es_serivce"
-	"context"
+	"GoRoLingG/service/es_service"
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -26,6 +24,8 @@ type ArticleUpdateRequest struct {
 }
 
 func (ArticleApi) ArticleUpdateView(c *gin.Context) {
+	//_claims, _ := c.Get("claims")
+	//claims := _claims.(*jwt.CustomClaims)
 	var cr ArticleUpdateRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
@@ -59,13 +59,6 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		Tags:     cr.Tags,
 	}
 
-	//检测对应id要更新的文章是否存在
-	err = article.GetDataByID(cr.ID)
-	if err != nil {
-		res.FailWithMsg("对应id的文章不存在", c)
-		return
-	}
-
 	maps := structs.Map(&article)  //将article map化，好进行添加，这里因为用了structs，所以ArticleModel里面的对应参数要加上structs标签
 	var DataMap = map[string]any{} //用于获取map化后的将article实例的所有非空参数
 	// 去掉map内相关参数的空值，并将非空的value传进map里
@@ -96,24 +89,26 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		DataMap[key] = value
 	}
 
-	_, err = global.ESClient.
-		Update().
-		Index(models.ArticleModel{}.Index()).
-		Id(cr.ID).
-		Doc(DataMap). //因为ES更新文章要用map[...]...，所以前面创了一个DataMap去获取参数
-		Do(context.Background())
-	//这里不用担心tags传的是数据库没有的tag，因为到时候是前端发送请求过去，前端tags选择里必然是数据库里拥有的tag，没有的选不到
+	//检测对应id要更新的文章是否存在，注意，这一步会作用于article
+	err = article.GetDataByID(cr.ID)
 	if err != nil {
-		logrus.Error(err.Error())
+		res.FailWithMsg("对应id的文章不存在", c)
+		return
+	}
+
+	err = es_service.ArticleUpdate(cr.ID, DataMap)
+	//更新失败
+	if err != nil {
+		global.Log.Error(err)
 		res.FailWithMsg("文章更新失败", c)
 		return
 	}
 
-	err = es_serivce.ArticleUpdate(cr.ID, maps)
-	if err != nil {
-		global.Log.Error()
-		res.FailWithMsg("文章更新失败", c)
-		return
+	//更新成功，同步数据到全文搜索
+	newArticle, _ := es_service.CommonDetail(cr.ID)
+	if article.Content != newArticle.Content || article.Title != newArticle.Title {
+		es_service.DeleteFullTextSearchByID(cr.ID)
+		es_service.AsyncArticleByFullTextSearch(cr.ID, article.Title, newArticle.Content)
 	}
 
 	res.OKWithMsg("文章更新成功", c)

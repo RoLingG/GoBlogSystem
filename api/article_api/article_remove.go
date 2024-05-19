@@ -4,6 +4,8 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"GoRoLingG/service/es_service"
+	"GoRoLingG/utils/jwt"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -16,6 +18,8 @@ type IDListRequest struct {
 }
 
 func (ArticleApi) ArticleRemoveView(c *gin.Context) {
+	_claims, _ := c.Get("claims")
+	claims := _claims.(*jwt.CustomClaims)
 	var cr IDListRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
@@ -25,6 +29,7 @@ func (ArticleApi) ArticleRemoveView(c *gin.Context) {
 	}
 
 	//es中要批量操作得用bulk桶，将文章索引装入桶中，这样桶中就有文章索引的所有内部数据
+	//如果删除了用户收藏过的文章，该怎么办(应该顺带把文章关联的收藏也删了)
 	bulkService := global.ESClient.Bulk().
 		Index(models.ArticleModel{}.Index()).
 		Refresh("true")
@@ -40,7 +45,16 @@ func (ArticleApi) ArticleRemoveView(c *gin.Context) {
 		res.FailWithMsg("删除失败", c)
 		return
 	}
+	//删除成功，同步全文搜索索引数据
+	for _, articleID := range cr.IDList {
+		var collect models.UserCollectModel
+		err = global.DB.Take(&collect, "user_id = ? and article_id = ?", claims.UserID, articleID).Error
+		if err == nil {
+			// 找到则取消收藏文章
+			global.DB.Delete(&collect)
+		}
+		es_service.DeleteFullTextSearchByID(articleID)
+	}
 	res.OKWithMsg(fmt.Sprintf("成功删除 %d 篇文章", len(result.Succeeded())), c)
 	return
-
 }

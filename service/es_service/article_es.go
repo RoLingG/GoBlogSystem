@@ -1,4 +1,4 @@
-package es_serivce
+package es_service
 
 import (
 	"GoRoLingG/global"

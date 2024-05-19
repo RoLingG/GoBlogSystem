@@ -4,7 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
-	"GoRoLingG/service/es_serivce"
+	"GoRoLingG/service/es_service"
 	"GoRoLingG/utils/jwt"
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func (ArticleApi) ArticleUserCollectView(c *gin.Context) {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
-	article, err := es_serivce.CommonDetail(cr.ID)
+	article, err := es_service.CommonDetail(cr.ID)
 	if err != nil {
 		res.FailWithMsg("文章不存在", c)
 		return
@@ -43,7 +43,7 @@ func (ArticleApi) ArticleUserCollectView(c *gin.Context) {
 	}
 
 	// 更新文章收藏数
-	err = es_serivce.ArticleUpdate(cr.ID, map[string]any{
+	err = es_service.ArticleUpdate(cr.ID, map[string]any{
 		"collect_count": article.CollectCount + num,
 	})
 	if num == 1 {

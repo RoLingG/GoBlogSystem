@@ -186,7 +186,7 @@ func (article ArticleModel) RemoveIndex() error {
 }
 
 // Create 索引创建
-func (article ArticleModel) Create() (err error) {
+func (article *ArticleModel) Create() (err error) {
 	indexResponse, err := global.ESClient.Index().Index(article.Index()).BodyJson(article).Do(context.Background())
 	if err != nil {
 		logrus.Error(err.Error())
@@ -216,6 +216,7 @@ func (article ArticleModel) ISExistData() bool {
 	return false
 }
 
+// GetDataByID 注意，这一步会作用于原来的值(因为是指针的原因)
 func (article *ArticleModel) GetDataByID(id string) error {
 	res, err := global.ESClient.Get().Index(article.Index()).Id(id).Do(context.Background())
 	//判断对应id的文章是否存在

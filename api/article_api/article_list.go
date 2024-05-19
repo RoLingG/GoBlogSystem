@@ -4,7 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
-	"GoRoLingG/service/es_serivce"
+	"GoRoLingG/service/es_service"
 	"github.com/gin-gonic/gin"
 	"github.com/liu-cn/json-filter/filter"
 )
@@ -21,7 +21,7 @@ func (ArticleApi) ArticleListView(c *gin.Context) {
 		res.FailWithError(err, &cr, c)
 		return
 	}
-	list, count, err := es_serivce.CommonList(es_serivce.Option{
+	list, count, err := es_service.CommonList(es_service.Option{
 		PageInfo: cr.PageInfo,
 		Fields:   []string{"title", "content"},
 		Tag:      cr.Tag,

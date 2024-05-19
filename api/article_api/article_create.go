@@ -5,6 +5,7 @@ import (
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
+	"GoRoLingG/service/es_service"
 	"GoRoLingG/utils/jwt"
 	"fmt"
 	md "github.com/JohannesKaufmann/html-to-markdown"
@@ -130,5 +131,6 @@ func (ArticleApi) ArticleCreateView(c *gin.Context) {
 		res.FailWithMsg(err.Error(), c)
 		return
 	}
+	go es_service.AsyncArticleByFullTextSearch(article.ID, article.Title, article.Content) //异步的方式进行同步
 	res.OKWithMsg("文章发布成功", c)
 }
