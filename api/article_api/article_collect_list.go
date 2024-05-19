@@ -8,6 +8,7 @@ import (
 	"GoRoLingG/utils/jwt"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic/v7"
 )
@@ -40,7 +41,7 @@ func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 
 	//传id列表查es，去获取文章
 	var collectList = make([]CollectResponse, 0)
-	boolSearch := elastic.NewTermsQuery("_id", articleIDList...)
+	boolSearch := elastic.NewTermsQuery("_id", articleIDList...) //根据字段精确匹配要用NewTermsQuery()
 	result, err := global.ESClient.
 		Search(models.ArticleModel{}.Index()).
 		Query(boolSearch).
@@ -54,6 +55,7 @@ func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 	for _, hit := range result.Hits.Hits {
 		var article models.ArticleModel
 		err = json.Unmarshal(hit.Source, &article)
+		fmt.Println(article)
 		if err != nil {
 			global.Log.Error(err)
 			continue
