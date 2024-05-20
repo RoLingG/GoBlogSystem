@@ -62,8 +62,10 @@ func InitRouter() *gin.Engine {
 	routerGroup.MessageRouter()
 	//文章上传配置(article)api的路由
 	routerGroup.ArticleRouter()
-
+	//点赞上传配置(digg)api的路由
 	routerGroup.DiggRouter()
+	//评论上传配置(comment)api的路由
+	routerGroup.CommentRouter()
 
 	return router
 }
