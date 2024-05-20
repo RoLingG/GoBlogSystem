@@ -18,4 +18,5 @@ func (router RouterGroup) ArticleRouter() {
 	router.POST("/articleCollect", middleware.JwtAuth(), articleApi.ArticleUserCollectView)
 	router.GET("/articleCollectList", middleware.JwtAuth(), articleApi.ArticleUserCollectListView)
 	router.DELETE("/articleCollectRemove", middleware.JwtAuth(), articleApi.ArticleUserCollectRemoveView)
+	router.GET("/articleFullTextSearch", articleApi.FullTextSearchView) //全文搜索
 }

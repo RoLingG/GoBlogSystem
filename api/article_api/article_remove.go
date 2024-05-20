@@ -45,7 +45,7 @@ func (ArticleApi) ArticleRemoveView(c *gin.Context) {
 		res.FailWithMsg("删除失败", c)
 		return
 	}
-	//删除成功，同步全文搜索索引数据
+	//删除成功，同步全文搜索索引数据，顺便把有收藏过要删除文章的用户收藏给取消掉
 	for _, articleID := range cr.IDList {
 		var collect models.UserCollectModel
 		err = global.DB.Take(&collect, "user_id = ? and article_id = ?", claims.UserID, articleID).Error
