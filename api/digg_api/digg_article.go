@@ -3,7 +3,7 @@ package digg_api
 import (
 	"GoRoLingG/models"
 	"GoRoLingG/res"
-	"GoRoLingG/service"
+	"GoRoLingG/service/redis_service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +19,6 @@ func (DiggApi) DiggArticleView(c *gin.Context) {
 		res.FailWithMsg("文章id非法，点赞失败", c)
 		return
 	}
-	service.Service.RedisService.Digg(cr.ID)
+	redis_service.NewArticleDiggIndex().Set(cr.ID)
 	res.OKWithMsg("文章点赞成功", c)
 }

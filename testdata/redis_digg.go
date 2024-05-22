@@ -4,7 +4,7 @@ import (
 	"GoRoLingG/core"
 	"GoRoLingG/global"
 	"GoRoLingG/models"
-	"GoRoLingG/service"
+	"GoRoLingG/service/redis_service"
 	"context"
 	"encoding/json"
 	"github.com/olivere/elastic/v7"
@@ -32,7 +32,7 @@ func main() {
 		return
 	}
 
-	diggInfo := service.Service.RedisService.GetDiggInfo()
+	diggInfo := redis_service.NewArticleDiggIndex().GetInfo()
 	for _, hit := range result.Hits.Hits {
 		var article models.ArticleModel
 		err = json.Unmarshal(hit.Source, &article)
@@ -56,6 +56,5 @@ func main() {
 		}
 		logrus.Info(article.Title, "点赞数据同步成功， 点赞数", newDigg)
 	}
-	service.Service.RedisService.DiggClear()
-
+	redis_service.NewArticleDiggIndex().Clear()
 }

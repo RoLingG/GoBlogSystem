@@ -3,7 +3,8 @@ package main
 import (
 	"GoRoLingG/core"
 	"GoRoLingG/global"
-	"GoRoLingG/service"
+	"GoRoLingG/service/redis_service"
+	"fmt"
 )
 
 func main() {
@@ -12,7 +13,8 @@ func main() {
 	// 初始化日志
 	global.Log = core.InitLogger()
 	global.Redis = core.ConnectRedis()
-
-	service.Service.RedisService.Digg("c_LxiY8Bd9paV12IAy_B")
-	service.Service.RedisService.GetDiggInfo()
+	digg := redis_service.NewArticleDiggIndex()
+	digg.Set("iDA_lo8BgM_PmuvUtu50")
+	//service.Service.RedisService.Digg("iDA_lo8BgM_PmuvUtu50")
+	fmt.Println(digg.Get("iDA_lo8BgM_PmuvUtu50"))
 }

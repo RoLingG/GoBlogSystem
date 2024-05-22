@@ -4,8 +4,8 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
-	"GoRoLingG/service"
 	"GoRoLingG/service/es_service"
+	"GoRoLingG/service/redis_service"
 	"GoRoLingG/utils/jwt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -60,7 +60,7 @@ func (CommentApi) CommentCreateView(c *gin.Context) {
 		UserID:          claims.UserID,
 	})
 	// 拿到文章数，新的文章评论数存缓存里
-	service.Service.RedisService.Comment(cr.ArticleID)
+	redis_service.NewArticleCommentIndex().Get(cr.ArticleID)
 	res.OKWithMsg("文章评论成功", c)
 	return
 }
