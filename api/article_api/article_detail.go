@@ -16,7 +16,7 @@ func (ArticleApi) ArticleDetailView(c *gin.Context) {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
-	redis_service.NewArticleLookIndex().Get(cr.ID)
+	redis_service.NewArticleLookIndex().Set(cr.ID)
 	article, err := es_service.CommonDetail(cr.ID)
 	if err != nil {
 		global.Log.Error(err)
