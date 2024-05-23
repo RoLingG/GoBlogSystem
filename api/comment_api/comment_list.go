@@ -49,3 +49,18 @@ func FindSubComment(model models.CommentModel, subCommentList *[]models.CommentM
 	}
 	return
 }
+
+func FindSubCommentCount(model models.CommentModel) (subCommentList []models.CommentModel) {
+	findSubCommentList(model, &subCommentList)
+	return subCommentList
+}
+
+func findSubCommentList(model models.CommentModel, subCommentList *[]models.CommentModel) {
+	//根评论的子评论查出来,同时查出该评论的发布人部分信息
+	global.DB.Preload("SubComments").Take(&model)
+	for _, sub := range model.SubComments {
+		*subCommentList = append(*subCommentList, sub)
+		FindSubComment(sub, subCommentList) //子评论的子评论也是在根评论的下一级，属于同级关系，不会出现一直套娃的现象
+	}
+	return
+}

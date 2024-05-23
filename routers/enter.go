@@ -48,24 +48,26 @@ func InitRouter() *gin.Engine {
 	routerGroup := RouterGroup{apiRouterGroup}
 	//系统配置(settings)api的路由
 	routerGroup.SettingsRouter()
-	//图片上传配置(images)api的路由
+	//图片配置(images)api的路由
 	routerGroup.ImagesRouter()
-	//广告上传配置(advert)api的路由
+	//广告配置(advert)api的路由
 	routerGroup.AdvertRouter()
-	//菜单上传配置(menu)api的路由
+	//菜单配置(menu)api的路由
 	routerGroup.MenuRouter()
-	//用户上传配置(user)api的路由
+	//用户配置(user)api的路由
 	routerGroup.UserRouter()
-	//文章tag上传配置(tag)api的路由
+	//文章tag配置(tag)api的路由
 	routerGroup.TagRouter()
-	//消息上传配置(message)api的路由
+	//消息配置(message)api的路由
 	routerGroup.MessageRouter()
-	//文章上传配置(article)api的路由
+	//文章配置(article)api的路由
 	routerGroup.ArticleRouter()
-	//点赞上传配置(digg)api的路由
+	//点赞配置(digg)api的路由
 	routerGroup.DiggRouter()
-	//评论上传配置(comment)api的路由
+	//评论配置(comment)api的路由
 	routerGroup.CommentRouter()
+	//新闻配置(news)api的路由
+	routerGroup.NewsRouter()
 
 	return router
 }

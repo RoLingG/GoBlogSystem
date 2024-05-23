@@ -28,7 +28,7 @@ func (o *Option) GetForm() int {
 	return (o.Page - 1) * o.Limit
 }
 
-// CommonList 列表查询分页
+// CommonList 列表查询文章分页
 func CommonList(option Option) (list []models.ArticleModel, count int, err error) {
 	boolSearch := elastic.NewBoolQuery()
 	if option.Key != "" {
@@ -83,6 +83,7 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 	articleList := []models.ArticleModel{}
 	diggInfo := redis_service.NewArticleDiggIndex().GetInfo()
 	lookInfo := redis_service.NewArticleLookIndex().GetInfo()
+	commentInfo := redis_service.NewArticleCommentIndex().GetInfo()
 	for _, hit := range res.Hits.Hits {
 		var article models.ArticleModel
 		data, err := hit.Source.MarshalJSON()
@@ -146,6 +147,25 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 		} else {
 			article.LookCount = article.LookCount + look
 		}
+
+		//同步文章的评论数
+		comment, ok := commentInfo[hit.Id]
+		// 更新 ES 中的文章点赞数
+		article.CommentCount = article.CommentCount + comment
+		_, updateErr := global.ESClient.Update().
+			Index(models.ArticleModel{}.Index()).
+			Id(hit.Id).
+			Doc(map[string]int{
+				"comment_count": article.CommentCount,
+			}).
+			Do(context.Background())
+		if updateErr != nil {
+			logrus.Error(updateErr.Error())
+			continue
+		}
+		logrus.Info(article.Title, "点赞数更新成功，新点赞数为:", article.CommentCount)
+
+		//将当前文章加入文章列表中，便于显示给前端
 		articleList = append(articleList, article)
 	}
 	return articleList, count, err
@@ -165,7 +185,7 @@ func CommonDetail(id string) (article models.ArticleModel, err error) {
 		return
 	}
 	article.ID = res.Id
-	//访问一次文章详细内容，文章浏览量+1
+	//使用文章详情接口，访问一次文章详细内容，则文章浏览量+1
 	article.LookCount = article.LookCount + redis_service.NewArticleLookIndex().Get(res.Id)
 	return
 }

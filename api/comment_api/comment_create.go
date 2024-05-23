@@ -60,7 +60,12 @@ func (CommentApi) CommentCreateView(c *gin.Context) {
 		UserID:          claims.UserID,
 	})
 	// 拿到文章数，新的文章评论数存缓存里
-	redis_service.NewArticleCommentIndex().Get(cr.ArticleID)
+	redis_service.NewArticleCommentIndex().Set(cr.ArticleID)
+	//同步数据到es的对应文章中
+	article, err := es_service.CommonDetail(cr.ArticleID)
+	err = es_service.ArticleUpdate(cr.ArticleID, map[string]any{
+		"comment_count": article.CollectCount + 1,
+	})
 	res.OKWithMsg("文章评论成功", c)
 	return
 }

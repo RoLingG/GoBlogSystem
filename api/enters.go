@@ -8,6 +8,7 @@ import (
 	"GoRoLingG/api/images_api"
 	"GoRoLingG/api/menu_api"
 	"GoRoLingG/api/message_api"
+	"GoRoLingG/api/news_api"
 	"GoRoLingG/api/settings_api"
 	"GoRoLingG/api/tag_api"
 	"GoRoLingG/api/user_api"
@@ -24,6 +25,7 @@ type ApiGroup struct {
 	ArticleApi  article_api.ArticleApi
 	DiggApi     digg_api.DiggApi
 	CommentApi  comment_api.CommentApi
+	NewsApi     news_api.NewsApi
 }
 
 var ApiGroupApp = new(ApiGroup)
