@@ -2,8 +2,11 @@ package news_api
 
 import (
 	"GoRoLingG/res"
+	"GoRoLingG/service"
+	"GoRoLingG/service/redis_service"
 	"GoRoLingG/utils/request"
 	"encoding/json"
+	"fmt"
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -21,21 +24,14 @@ type Header struct {
 	UserAgent    string `form:"User-Agent" structs:"User-Agent"`
 }
 
-// NewsData这个类型对应的是NewsResponse的data，var response NewsResponse将解除json化的httpresponse的正文接手以后，里面就变成了
+// NewsData这个类型对应的是NewsResponse的Data，var response NewsResponse将解除json化的httpresponse的正文接手以后，里面就变成了
 //{200 [{1 那英别说了 汪苏泷快碎了 128.4万 https://s.weibo.com/weibo?q=那英别说了 汪苏泷快碎了}] 请求成功}的[{1 那英别说了 汪苏泷快碎了 128.4万 https://s.weibo.com/weibo?q=那英别说了 汪苏泷快碎了}]这部分就是正文，也就是Newdata结构类型对应的
 //这样做的目的就是为了简化NewsResponse里的代码
 
-type NewsData struct {
-	Index    int    `json:"index"`
-	Title    string `json:"title"`
-	HotValue string `json:"hotValue"`
-	Link     string `json:"link"`
-}
-
 type NewsResponse struct {
-	Code int        `json:"code"`
-	Data []NewsData `json:"data"`
-	Msg  string     `json:"msg"`
+	Code int                      `json:"code"`
+	Data []redis_service.NewsData `json:"data"`
+	Msg  string                   `json:"msg"`
 }
 
 const newsAPI = "https://api.codelife.cc/api/top/list"
@@ -53,7 +49,15 @@ func (NewsApi) NewsListView(c *gin.Context) {
 	if cr.Size == 0 {
 		cr.Size = 1
 	}
-
+	//设置redis内缓存存储新闻key名字
+	key := fmt.Sprintf("%s-%d", cr.ID, cr.Size)
+	//查看redis内是否有对应ID的文章(但是这样有个问题，就是每次查询新闻列表都用的缓存的数据)
+	//后话：更新了，RedisService.GetNews()和RedisService.SetNews()内redis的操作从HGet/HSet换成了Get/Set，这样就能够设置其在redis内的过期时间了
+	newsData, _ := service.Service.RedisService.GetNews(key)
+	if len(newsData) != 0 {
+		res.OKWithData(newsData, c)
+		return
+	}
 	//将header的数据map化
 	headersMap := structs.Map(headers)
 	//执行post请求，获取post过来的数据
@@ -77,5 +81,6 @@ func (NewsApi) NewsListView(c *gin.Context) {
 		return
 	}
 	res.OKWithData(response.Data, c)
+	service.Service.RedisService.SetNews(key, response.Data)
 	return
 }

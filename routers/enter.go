@@ -68,6 +68,8 @@ func InitRouter() *gin.Engine {
 	routerGroup.CommentRouter()
 	//新闻配置(news)api的路由
 	routerGroup.NewsRouter()
+	//聊天室配置(chat)api的路由
+	routerGroup.ChatRouter()
 
 	return router
 }
