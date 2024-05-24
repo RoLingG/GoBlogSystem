@@ -1,6 +1,7 @@
 package chat_api
 
 import (
+	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
 	"encoding/json"
 	"fmt"
@@ -16,22 +17,41 @@ import (
 // ConnGroupMap map[连接ip]连接对象
 var ConnGroupMap = map[string]*websocket.Conn{}
 
-type MsgType int
+type ChatUser struct {
+	Conn     *websocket.Conn
+	NickName string
+	Avatar   string
+}
+
+//var ConnGroupMap = map[string]ChatUser{}
 
 const (
-	TextMsg    MsgType = 1
-	ImageMsg   MsgType = 2
-	SystemMsg  MsgType = 3
-	InRoomMsg  MsgType = 4
-	OutRoomMsg MsgType = 5
+	TextMsg    ctype.MsgType = 1
+	ImageMsg   ctype.MsgType = 2
+	SystemMsg  ctype.MsgType = 3
+	InRoomMsg  ctype.MsgType = 4
+	OutRoomMsg ctype.MsgType = 5
 )
+
+//使用预先生成好的头像和名字
+//type GroupRequest struct {
+//	Msg      string  `json:"msg"`       //聊天的内容，暂不支持发送图片
+//	MsgType  MsgType `json:"msg_type"`  //聊天类型
+//}
+//type GroupResponse struct {
+//	NickName string  `json:"nick_name"` //前端生成
+//	Avatar   string  `json:"avatar"`    //头像
+//	Msg      string  `json:"msg"`       //聊天的内容，暂不支持发送图片
+//	MsgType  MsgType `json:"msg_type"`  //聊天类型
+//	Date time.Time `json:"date"` //消息的时间
+//}
 
 // GroupRequest 入参
 type GroupRequest struct {
-	NickName string  `json:"nick_name"` //前端生成
-	Avatar   string  `json:"avatar"`    //头像
-	Msg      string  `json:"msg"`       //聊天的内容，暂不支持发送图片
-	MsgType  MsgType `json:"msg_type"`  //聊天类型
+	NickName string        `json:"nick_name"` //前端生成
+	Avatar   string        `json:"avatar"`    //头像
+	Msg      string        `json:"msg"`       //聊天的内容，暂不支持发送图片
+	MsgType  ctype.MsgType `json:"msg_type"`  //聊天类型
 }
 
 // GroupResponse 出参
@@ -56,6 +76,15 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 		return
 	}
 	addr := conn.RemoteAddr().String()
+	//nickName := randomname.GenerateName()
+	//nickNameFirst := string([]rune(nickName)[0])
+	//avatar := fmt.Sprintf("upload/chat_avatar/%s.png", nickNameFirst)
+	//chatUser := ChatUser{
+	//	Conn:     conn,
+	//	NickName: nickName,
+	//	Avatar:   avatar,
+	//}
+	//ConnGroupMap[addr] = chatUser
 	ConnGroupMap[addr] = conn
 	for {
 		// 消息类型，消息，错误
@@ -70,10 +99,17 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 		}
 		//进行参数绑定
 		var request GroupRequest
+		request.Avatar = "upload/avatar/avatar.png"
 		err = json.Unmarshal(msg, &request)
 		if err != nil {
 			//参数绑定失败
-			conn.WriteMessage(websocket.TextMessage, []byte("xxx"))
+			request.MsgType = SystemMsg
+			request.Msg = "参数绑定失败"
+			SendMsg(addr, GroupResponse{
+				GroupRequest: request,
+				Date:         time.Now(),
+			})
+			conn.WriteMessage(websocket.TextMessage, []byte("参数绑定失败"))
 			continue
 		}
 		//用户信息不能为空
@@ -85,15 +121,30 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 		case TextMsg:
 			//用户发送消息不能为空
 			if strings.TrimSpace(request.Msg) == "" {
+				request.MsgType = SystemMsg
+				request.Msg = "发送消息不能为空"
+				SendMsg(addr, GroupResponse{
+					GroupRequest: request,
+					Date:         time.Now(),
+				})
 				continue
 			}
+			request.MsgType = TextMsg
 			SendGroupMsg(GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
 			})
 		case InRoomMsg:
+			request.MsgType = InRoomMsg
 			request.Msg = request.NickName + " 进入聊天室"
 			SendGroupMsg(GroupResponse{
+				GroupRequest: request,
+				Date:         time.Now(),
+			})
+		default:
+			request.MsgType = SystemMsg
+			request.Msg = "消息类型未知"
+			SendMsg(addr, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
 			})
@@ -112,4 +163,11 @@ func SendGroupMsg(response GroupResponse) {
 	for _, conn := range ConnGroupMap {
 		conn.WriteMessage(websocket.TextMessage, byteData)
 	}
+}
+
+// SendMsg 给某个用户发消息
+func SendMsg(addr string, response GroupResponse) {
+	byteData, _ := json.Marshal(response)
+	chatUser := ConnGroupMap[addr]
+	chatUser.WriteMessage(websocket.TextMessage, byteData)
 }
