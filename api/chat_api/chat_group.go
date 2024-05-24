@@ -1,12 +1,15 @@
 package chat_api
 
 import (
+	"GoRoLingG/global"
+	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 	"time"
@@ -91,7 +94,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			// 用户断开聊天
-			SendGroupMsg(GroupResponse{
+			SendGroupMsg(conn, GroupResponse{
 				GroupRequest: GroupRequest{Msg: addr + " 离开聊天室"},
 				Date:         time.Now(),
 			})
@@ -130,14 +133,14 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 				continue
 			}
 			request.MsgType = TextMsg
-			SendGroupMsg(GroupResponse{
+			SendGroupMsg(conn, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
 			})
 		case InRoomMsg:
 			request.MsgType = InRoomMsg
 			request.Msg = request.NickName + " 进入聊天室"
-			SendGroupMsg(GroupResponse{
+			SendGroupMsg(conn, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
 			})
@@ -157,8 +160,24 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 }
 
 // SendGroupMsg 群聊功能
-func SendGroupMsg(response GroupResponse) {
+func SendGroupMsg(conn *websocket.Conn, response GroupResponse) {
 	byteData, _ := json.Marshal(response)
+	userAddr := conn.RemoteAddr().String()
+	ip, addr := getIPAndAddr(userAddr)
+	err := global.DB.Create(&models.ChatModel{
+		NickName: response.NickName,
+		Avatar:   response.Avatar,
+		Content:  response.Msg,
+		IP:       ip,
+		Addr:     addr,
+		IsGroup:  true,
+		MsgType:  1,
+	}).Error
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
+
 	//用for循环轮询连接对象，给所有连接对象都发送某个用户发送的消息，以达到全局群聊的效果
 	for _, conn := range ConnGroupMap {
 		conn.WriteMessage(websocket.TextMessage, byteData)
@@ -169,5 +188,25 @@ func SendGroupMsg(response GroupResponse) {
 func SendMsg(addr string, response GroupResponse) {
 	byteData, _ := json.Marshal(response)
 	chatUser := ConnGroupMap[addr]
+	ip, userAddr := getIPAndAddr(addr)
+	err := global.DB.Create(&models.ChatModel{
+		NickName: response.NickName,
+		Avatar:   response.Avatar,
+		Content:  response.Msg,
+		IP:       ip,
+		Addr:     userAddr,
+		IsGroup:  false,
+		MsgType:  1,
+	}).Error
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
 	chatUser.WriteMessage(websocket.TextMessage, byteData)
+}
+
+func getIPAndAddr(addr string) (ip string, address string) {
+	addrList := strings.Split(addr, ":")
+	address = "内网"
+	return addrList[0], address
 }
