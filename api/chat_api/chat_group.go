@@ -60,7 +60,8 @@ type GroupRequest struct {
 // GroupResponse 出参
 type GroupResponse struct {
 	GroupRequest
-	Date time.Time `json:"date"` //消息的时间
+	Date        time.Time `json:"date"`         //消息的时间
+	OnlineCount int       `json:"online_count"` //在线人数
 }
 
 // ChatGroupView 聊天的基本框架
@@ -91,26 +92,30 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 	ConnGroupMap[addr] = conn
 	for {
 		// 消息类型，消息，错误
-		_, msg, err := conn.ReadMessage()
-		if err != nil {
+		_, msg, msgErr := conn.ReadMessage()
+		if msgErr != nil {
 			// 用户断开聊天
 			SendGroupMsg(conn, GroupResponse{
-				GroupRequest: GroupRequest{Msg: addr + " 离开聊天室"},
-				Date:         time.Now(),
+				GroupRequest: GroupRequest{
+					Msg: addr + " 离开聊天室",
+				},
+				Date:        time.Now(),
+				OnlineCount: len(ConnGroupMap) - 1,
 			})
 			break
 		}
 		//进行参数绑定
 		var request GroupRequest
 		request.Avatar = "upload/avatar/avatar.png"
-		err = json.Unmarshal(msg, &request)
-		if err != nil {
+		jsonErr := json.Unmarshal(msg, &request)
+		if jsonErr != nil {
 			//参数绑定失败
 			request.MsgType = SystemMsg
 			request.Msg = "参数绑定失败"
 			SendMsg(addr, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
+				OnlineCount:  len(ConnGroupMap),
 			})
 			conn.WriteMessage(websocket.TextMessage, []byte("参数绑定失败"))
 			continue
@@ -129,6 +134,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 				SendMsg(addr, GroupResponse{
 					GroupRequest: request,
 					Date:         time.Now(),
+					OnlineCount:  len(ConnGroupMap),
 				})
 				continue
 			}
@@ -136,6 +142,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 			SendGroupMsg(conn, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
+				OnlineCount:  len(ConnGroupMap),
 			})
 		case InRoomMsg:
 			request.MsgType = InRoomMsg
@@ -143,6 +150,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 			SendGroupMsg(conn, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
+				OnlineCount:  len(ConnGroupMap),
 			})
 		default:
 			request.MsgType = SystemMsg
@@ -150,6 +158,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 			SendMsg(addr, GroupResponse{
 				GroupRequest: request,
 				Date:         time.Now(),
+				OnlineCount:  len(ConnGroupMap),
 			})
 		}
 		// 发送消息
