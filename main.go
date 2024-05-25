@@ -16,6 +16,9 @@ import (
 func main() {
 	//读取配置文件，main中调用InitConfig
 	core.InitConfig()
+	//连接IP地址数据库
+	core.InitAddrDB()
+	defer global.AddrDB.Close() //主程序结束，则关闭IP地址数据库
 
 	//初始化日志
 	global.Log = core.InitLogger()
@@ -24,7 +27,7 @@ func main() {
 	global.DB = core.InitGorm()
 	//连接Redis
 	global.Redis = core.ConnectRedis()
-	//链接ES
+	//连接ES
 	global.ESClient = core.ConnectES()
 
 	//flag迁移数据库肯定是在连接数据库之后，路由连接之前

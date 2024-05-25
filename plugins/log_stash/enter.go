@@ -2,6 +2,7 @@ package log_stash
 
 import (
 	"GoRoLingG/global"
+	"GoRoLingG/utils"
 	"GoRoLingG/utils/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -22,10 +23,12 @@ func New(ip string, token string) *Log {
 			userID = claims.UserID
 		}
 	}
+
+	addr := utils.GetAddr(ip)
 	// 拿到用户id
 	return &Log{
 		ip:     ip,
-		addr:   "内网",
+		addr:   addr,
 		userID: userID,
 	}
 }

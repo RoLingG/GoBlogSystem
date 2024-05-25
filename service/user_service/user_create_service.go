@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
+	"GoRoLingG/utils"
 	"GoRoLingG/utils/pwd"
 	"errors"
 )
@@ -20,6 +21,7 @@ func (UserService) CreateUser(userName, nickName, password string, role ctype.Ro
 	// 对密码进行hash
 	hashedPwd := pwd.HashPwd(password)
 
+	addr := utils.GetAddr(ip)
 	// 入库
 	err = global.DB.Create(&models.UserModel{
 		NickName:   nickName,
@@ -29,7 +31,7 @@ func (UserService) CreateUser(userName, nickName, password string, role ctype.Ro
 		Role:       role,
 		Avatar:     Avatar, //使用默认头像
 		IP:         ip,
-		Address:    "内网地址",
+		Address:    addr,
 		SignStatus: ctype.SignEmail,
 	}).Error
 	if err != nil {

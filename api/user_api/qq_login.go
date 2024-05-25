@@ -6,6 +6,7 @@ import (
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/plugins/qq"
 	"GoRoLingG/res"
+	"GoRoLingG/utils"
 	"GoRoLingG/utils/jwt"
 	"GoRoLingG/utils/pwd"
 	"GoRoLingG/utils/random"
@@ -37,6 +38,7 @@ func (UserApi) QQLoginView(c *gin.Context) {
 			res.FailWithMsg("随机密码生成失败", c)
 			return
 		}
+		ip, addr := utils.GetAddrByGin(c) //根据IP算地址
 		hashedPwd := pwd.HashPwd(randomPwd)
 		userModel = models.UserModel{
 			NickName:   qqInfo.Nickname,
@@ -44,8 +46,8 @@ func (UserApi) QQLoginView(c *gin.Context) {
 			Password:   hashedPwd, //随机生成的12位密码(哈希)
 			Avatar:     qqInfo.Avatar,
 			Token:      openID,
-			Address:    "内网地址", //根据IP算地址
-			IP:         c.ClientIP(),
+			Address:    addr,
+			IP:         ip,
 			Role:       ctype.PermissionUser,
 			SignStatus: ctype.SignQQ,
 		}
@@ -69,13 +71,14 @@ func (UserApi) QQLoginView(c *gin.Context) {
 		return
 	}
 
+	ip, addr := utils.GetAddrByGin(c)
 	global.DB.Create(&models.LoginDataModel{
 		UserID:    userModel.ID,
-		IP:        c.ClientIP(),
+		IP:        ip,
 		NickName:  userModel.NickName,
 		Token:     token,
 		Device:    "",
-		Addr:      "内网",
+		Addr:      addr,
 		LoginType: ctype.SignQQ,
 	})
 

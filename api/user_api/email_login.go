@@ -6,6 +6,7 @@ import (
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/plugins/log_stash"
 	"GoRoLingG/res"
+	"GoRoLingG/utils"
 	"GoRoLingG/utils/jwt"
 	"GoRoLingG/utils/pwd"
 	"fmt"
@@ -59,7 +60,9 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		return
 	}
 
-	log = log_stash.New(c.ClientIP(), token)
+	ip, addr := utils.GetAddrByGin(c)
+
+	log = log_stash.New(ip, token)
 	log.Info("登录成功")
 
 	global.DB.Create(&models.LoginDataModel{
@@ -67,8 +70,8 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		IP:        c.ClientIP(),
 		NickName:  userModel.NickName,
 		Token:     token,
-		Device:    "",
-		Addr:      "内网",
+		Device:    ip,
+		Addr:      addr,
 		LoginType: ctype.SignEmail,
 	})
 

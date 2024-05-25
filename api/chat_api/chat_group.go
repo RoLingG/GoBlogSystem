@@ -5,6 +5,7 @@ import (
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
 	"GoRoLingG/res"
+	"GoRoLingG/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -216,6 +217,7 @@ func SendMsg(addr string, response GroupResponse) {
 
 func getIPAndAddr(addr string) (ip string, address string) {
 	addrList := strings.Split(addr, ":")
-	address = "内网"
-	return addrList[0], address
+	ip = addrList[0]
+	address = utils.GetAddr(ip)
+	return ip, address
 }
