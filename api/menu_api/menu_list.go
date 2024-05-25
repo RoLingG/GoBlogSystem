@@ -38,7 +38,7 @@ func (MenuApi) MenuListView(c *gin.Context) {
 		return
 	}
 	//因为每一个菜单项都是独立的，数据不同，因此menures是切片类型，存储多个菜单项的数据传输
-	var menures []MenuResponse
+	var menures = make([]MenuResponse, 0)
 	for _, menu := range menuList {
 		//menu就是一个菜单项，for循环遍历Menu表的每个菜单项
 		//var images []Image //当前菜单项所用图片合集，但是var images []Image这样子创建实例会导致其内部初始都为nil

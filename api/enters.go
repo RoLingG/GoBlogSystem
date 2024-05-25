@@ -5,8 +5,10 @@ import (
 	"GoRoLingG/api/article_api"
 	"GoRoLingG/api/chat_api"
 	"GoRoLingG/api/comment_api"
+	"GoRoLingG/api/data_api"
 	"GoRoLingG/api/digg_api"
 	"GoRoLingG/api/images_api"
+	"GoRoLingG/api/log_api"
 	"GoRoLingG/api/menu_api"
 	"GoRoLingG/api/message_api"
 	"GoRoLingG/api/news_api"
@@ -28,6 +30,8 @@ type ApiGroup struct {
 	CommentApi  comment_api.CommentApi
 	NewsApi     news_api.NewsApi
 	ChatApi     chat_api.ChatApi
+	LogApi      log_api.LogApi
+	DataApi     data_api.DataApi
 }
 
 var ApiGroupApp = new(ApiGroup)

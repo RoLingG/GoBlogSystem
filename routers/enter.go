@@ -70,6 +70,10 @@ func InitRouter() *gin.Engine {
 	routerGroup.NewsRouter()
 	//聊天室配置(chat)api的路由
 	routerGroup.ChatRouter()
+	//日志配置(log)api的路由
+	routerGroup.LogRouter()
+	//按日统计数据配置(date)api的路由
+	routerGroup.DataRouter()
 
 	return router
 }

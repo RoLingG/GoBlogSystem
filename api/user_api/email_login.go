@@ -3,6 +3,7 @@ package user_api
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
+	"GoRoLingG/models/ctype"
 	"GoRoLingG/plugins/log_stash"
 	"GoRoLingG/res"
 	"GoRoLingG/utils/jwt"
@@ -25,7 +26,7 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		return
 	}
 
-	log := log_stash.NewLogByGin(c)
+	log := log_stash.NewLogByGin(c) //因为这里一开始没有生成token，所以里面New()的token也就是空的，会导致报错，但没事，已经解决了！
 
 	var userModel models.UserModel
 	err = global.DB.Take(&userModel, "user_name = ? or email = ?", cr.UserName, cr.UserName).Error
@@ -57,7 +58,19 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		res.FailWithMsg("生成Token失败", c)
 		return
 	}
+
 	log = log_stash.New(c.ClientIP(), token)
 	log.Info("登录成功")
+
+	global.DB.Create(&models.LoginDataModel{
+		UserID:    userModel.ID,
+		IP:        c.ClientIP(),
+		NickName:  userModel.NickName,
+		Token:     token,
+		Device:    "",
+		Addr:      "内网",
+		LoginType: ctype.SignEmail,
+	})
+
 	res.OKWithData(token, c)
 }

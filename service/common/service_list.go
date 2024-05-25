@@ -43,7 +43,7 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 		for index, column := range option.Likes {
 			// 第一个模糊匹配和前面的关系是and关系，后面的和前面的模糊匹配是or的关系
 			if index == 0 {
-				likeQuery.Where(fmt.Sprintf("%s like ?", column), fmt.Sprintf("%%%s%%", option.Key))
+				likeQuery.Where(fmt.Sprintf("%s like ?", column), fmt.Sprintf("%%%s%%", option.Key)) //%%实际为输出一个%，所以这实际上是% key %
 			} else {
 				likeQuery.Or(fmt.Sprintf("%s like ?", column), fmt.Sprintf("%%%s%%", option.Key))
 			}

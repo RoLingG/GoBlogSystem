@@ -14,11 +14,13 @@ type Log struct {
 }
 
 func New(ip string, token string) *Log {
-	// 解析token
-	claims, err := jwt.ParseToken(token)
 	var userID uint
-	if err == nil {
-		userID = claims.UserID
+	// 解析token
+	if token != "" {
+		claims, err := jwt.ParseToken(token)
+		if err == nil {
+			userID = claims.UserID
+		}
 	}
 	// 拿到用户id
 	return &Log{
@@ -47,8 +49,6 @@ func (log Log) send(level LogLevel, content string) {
 		logrus.Error(err)
 	}
 }
-
-// 重写logrus里面的方法
 
 func (log Log) Debug(content string) {
 	log.send(DebugLevel, content)
