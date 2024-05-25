@@ -3,9 +3,11 @@ package user_api
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
+	"GoRoLingG/plugins/log_stash"
 	"GoRoLingG/res"
 	"GoRoLingG/utils/jwt"
 	"GoRoLingG/utils/pwd"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,11 +24,15 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		res.FailWithError(err, &cr, c)
 		return
 	}
+
+	log := log_stash.NewLogByGin(c)
+
 	var userModel models.UserModel
 	err = global.DB.Take(&userModel, "user_name = ? or email = ?", cr.UserName, cr.UserName).Error
 	if err != nil {
 		//没找到
 		global.Log.Warn("用户名不存在")
+		log.Warning(fmt.Sprintf("%s 用户名不存在", cr.UserName))
 		res.FailWithMsg("用户名或密码错误", c)
 		return
 	}
@@ -35,6 +41,7 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 	//如果密码正确isCheck就为true
 	if !isCheck {
 		global.Log.Warn("用户密码错误")
+		log.Warning(fmt.Sprintf("%s %s 用户密码错误", cr.UserName, cr.Password))
 		res.FailWithMsg("用户名或密码错误", c)
 		return
 	}
@@ -46,8 +53,11 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 	})
 	if tokenErr != nil {
 		global.Log.Error(tokenErr)
+		log.Error(fmt.Sprintf("%s 生成Token失败", err.Error()))
 		res.FailWithMsg("生成Token失败", c)
 		return
 	}
+	log = log_stash.New(c.ClientIP(), token)
+	log.Info("登录成功")
 	res.OKWithData(token, c)
 }

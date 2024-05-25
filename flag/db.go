@@ -3,6 +3,7 @@ package flag
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
+	"GoRoLingG/plugins/log_stash"
 )
 
 func Makemigrations() {
@@ -23,6 +24,7 @@ func Makemigrations() {
 		&models.FeedBackModel{},
 		&models.LoginDataModel{},
 		&models.ChatModel{},
+		&log_stash.LogStashModel{},
 	)
 	if err != nil {
 		global.Log.Error("[ Error ] 生成数据库表结构失败")
