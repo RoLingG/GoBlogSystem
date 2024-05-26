@@ -12,12 +12,18 @@ type Image struct {
 	Path string `json:"path"`
 }
 
-// MenuResponse 创建这个是为了精简传输的数据
 type MenuResponse struct {
 	models.MenuModel
 	MenuImage []Image `json:"menu_image"` //之所以这里有一个MenuImage是为了顶替MenuModel里面的连表MenuImage
 }
 
+// MenuListView 菜单列表
+// @Tags 菜单管理
+// @Summary 菜单列表
+// @Description	查看所有菜单项的菜单列表
+// @Produce json
+// @Router /api/menusList [get]
+// @Success 200 {object} res.Response{data=MenuResponse}
 func (MenuApi) MenuListView(c *gin.Context) {
 	//查菜单
 	var menuList []models.MenuModel                                                                  //用于获取所有的菜单项，一个菜单项拥有完整的菜单表结构，这样就可以为下面menuIDList获取菜单项对应的ID了

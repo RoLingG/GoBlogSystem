@@ -13,6 +13,15 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
+// ArticleUserCollectRemoveView 用户取消文章收藏
+// @Tags 文章管理
+// @Summary 用户取消文章收藏
+// @Description	用户取消文章收藏
+// @Param token header string true "Authorization token"
+// @Param data body models.ESIDListRequest true	"当前用户取消文章收藏的一些参数"
+// @Produce json
+// @Router /api/articleCollectRemove [delete]
+// @Success 200 {object} res.Response{}
 func (ArticleApi) ArticleUserCollectRemoveView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

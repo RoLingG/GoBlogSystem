@@ -1,6 +1,8 @@
 package routers
 
-import "GoRoLingG/api"
+import (
+	"GoRoLingG/api"
+)
 
 func (router RouterGroup) MenuRouter() {
 	menusApi := api.ApiGroupApp.MenuApi

@@ -27,6 +27,13 @@ type BucketsType struct {
 
 var DateCount = map[string]int{}
 
+// ArticleCalendarView 文章日历
+// @Tags 文章管理
+// @Summary 文章日历
+// @Description	查看近期文章发布的数量日历
+// @Produce json
+// @Router /api/articleCalendar [get]
+// @Success 200 {object} res.Response{data=CalendarResponse}
 func (ArticleApi) ArticleCalendarView(c *gin.Context) {
 	//es内数据以时间聚合，也就是以create_at进行聚合
 	agg := elastic.NewDateHistogramAggregation().Field("create_at").CalendarInterval("day") //小时发就是hour，分钟就是minute，天就是day

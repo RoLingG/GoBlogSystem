@@ -9,7 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 用户收藏或取消收藏文章
+// ArticleUserCollectView 收藏文章
+// @Tags 文章管理
+// @Summary 收藏文章
+// @Description	收藏文章
+// @Param token header string true "Authorization token"
+// @Param data body models.ESIDRequest true	"收藏文章的一些参数"
+// @Produce json
+// @Router /api/articleCollect [post]
+// @Success 200 {object} res.Response{}
 func (ArticleApi) ArticleUserCollectView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

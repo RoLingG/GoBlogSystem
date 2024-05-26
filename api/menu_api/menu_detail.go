@@ -7,6 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// MenuDetailView 菜单项详情列表
+// @Tags 菜单管理
+// @Summary 菜单详情列表
+// @Description	查看菜单项详情的列表
+// @Param id path int true "需要查询的菜单项ID"
+// @Produce json
+// @Router /api/menuDetailList/{id} [get]
+// @Success 200 {object} res.Response{}
 func (MenuApi) MenuDetailView(c *gin.Context) {
 	id := c.Param("id")
 	var menuModel models.MenuModel

@@ -34,6 +34,14 @@ type TagsResponse struct {
 	CreateAt      string   `json:"create_at"`
 }
 
+// ArticleTagsListView 文章标签列表
+// @Tags 文章管理
+// @Summary 文章标签列表
+// @Description	查询文章标签列表
+// @Param data body models.PageInfo true	"查询文章标签的一些参数"
+// @Produce json
+// @Router /api/articleTagsList [get]
+// @Success 200 {object} res.Response{data=res.ListResponse[TagsResponse]}
 func (ArticleApi) ArticleTagsListView(c *gin.Context) {
 	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)

@@ -10,10 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//type UserListResponse struct {
-//	models.UserModel
-//}
-
+// UserListView 用户列表
+// @Tags 用户管理
+// @Summary 用户列表
+// @Description	用户列表，用于展示目前所有用户
+// @Param token header string true "Authorization token"
+// @Param data query models.PageInfo false	"查询用户列表的一些参数"
+// @Router /api/userList [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=res.ListResponse[models.UserModel]}
 func (UserApi) UserListView(c *gin.Context) {
 	_claims, _ := c.Get("claims")         //从jwt.auth中获取claims
 	claims := _claims.(*jwt.CustomClaims) //断言

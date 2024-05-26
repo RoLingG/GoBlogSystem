@@ -12,6 +12,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// CommentRemoveView 删除评论
+// @Tags 评论管理
+// @Summary 删除评论
+// @Description	删除现有的评论
+// @Param id path int true "需要删除的评论ID"
+// @Router /api/commentRemove/{id} [delete]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (CommentApi) CommentRemoveView(c *gin.Context) {
 	var cr digg_api.CommentIDRequest
 	err := c.ShouldBindUri(&cr)

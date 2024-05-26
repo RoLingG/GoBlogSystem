@@ -12,7 +12,15 @@ type MessageRecordRequest struct {
 	UserID uint `json:"user_id" binding:"required" msg:"请输入查询的用户id"`
 }
 
-// MessageRecordView 消息记录接口
+// MessageRecordView 消息记录列表
+// @Tags 消息管理
+// @Summary 消息记录列表
+// @Description	查询当前用户所有的消息记录
+// @Param token header string true "Authorization token"
+// @Param data body MessageRecordRequest true "查询与ID用户的消息记录"
+// @Router /api/messageRecord [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=models.MessageModel}
 func (MessageApi) MessageRecordView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

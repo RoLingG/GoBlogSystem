@@ -13,6 +13,14 @@ type CommentListRequest struct {
 	ArticleID string `json:"article_id"`
 }
 
+// CommentListView 文章评论列表
+// @Tags 评论管理
+// @Summary 文章评论列表
+// @Description	查询文章评论列表
+// @Param data body CommentListRequest true	"查询评论列表的一些参数"
+// @Router /api/commentList [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=models.CommentModel}
 func (CommentApi) CommentListView(c *gin.Context) {
 	var cr CommentListRequest
 	err := c.ShouldBindJSON(&cr)

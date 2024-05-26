@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// DiggArticleView 文章点赞
+// @Tags 文章管理
+// @Summary 文章点赞
+// @Description	点赞文章
+// @Param id path string true	"需要点赞的文章ID"
+// @Param data body models.ESIDRequest true	"点赞文章的一些参数"
+// @Produce json
+// @Router /api/diggArticle/{id} [post]
+// @Success 200 {object} res.Response{}
 func (DiggApi) DiggArticleView(c *gin.Context) {
 	var cr models.ESIDRequest
 	err := c.ShouldBindUri(&cr) //通过uri去进行获取文章id

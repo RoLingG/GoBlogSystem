@@ -17,6 +17,15 @@ type CommentRequest struct {
 	ParentCommentID *uint  `json:"parent_comment_id"` // 父评论id
 }
 
+// CommentCreateView 添加评论
+// @Tags 评论管理
+// @Summary 创建评论
+// @Description	创建新的评论
+// @Param token header string true "Authorization token"
+// @Param data body CommentRequest true	"创建新评论的一些参数"
+// @Router /api/commentCreate [post]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (CommentApi) CommentCreateView(c *gin.Context) {
 	var cr CommentRequest
 	err := c.ShouldBindJSON(&cr)

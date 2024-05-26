@@ -18,6 +18,14 @@ type EmailLoginRequest struct {
 	Password string `json:"password" binding:"required" msg:"请输入用户密码"`
 }
 
+// EmailLoginView 用户名/邮箱登录
+// @Tags 用户管理
+// @Summary 用户名/邮箱登录
+// @Description	用户名/邮箱登录
+// @Param data body EmailLoginRequest true	"用户邮箱登录的一些参数"
+// @Produce json
+// @Router /api/emailLogin [post]
+// @Success 200 {object} res.Response{}
 func (UserApi) EmailLoginView(c *gin.Context) {
 	//通用参数绑定格式
 	var cr EmailLoginRequest

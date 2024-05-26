@@ -14,6 +14,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// QQLoginView 用户QQ登录
+// @Tags 用户管理
+// @Summary 用户QQ登录
+// @Description	用户QQ登录
+// @Param data query string true	"用户QQ登录的一些参数"
+// @Produce json
+// @Router /api/qqLogin [post]
 func (UserApi) QQLoginView(c *gin.Context) {
 	code := c.Query("code")
 	if code == "" {

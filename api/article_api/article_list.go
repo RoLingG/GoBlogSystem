@@ -14,6 +14,14 @@ type ArticleSearchRequest struct {
 	Tag string `json:"tag" form:"tag"`
 }
 
+// ArticleListView 文章列表
+// @Tags 文章管理
+// @Summary 文章列表
+// @Description	查询所有文章的列表
+// @Param data query ArticleSearchRequest true	"查询文章的一些参数"
+// @Produce json
+// @Router /api/articleList [get]
+// @Success 200 {object} res.Response{data=res.ListResponse[models.AdvertModel]}
 func (ArticleApi) ArticleListView(c *gin.Context) {
 	var cr ArticleSearchRequest
 	err := c.ShouldBindQuery(&cr)
@@ -41,5 +49,5 @@ func (ArticleApi) ArticleListView(c *gin.Context) {
 		res.OKWithList(list, int64(count), c)
 		return
 	}
-	res.OKWithList(filter.Omit("list", list), int64(count), c) //content上有omit(list)标签，当用filter过滤掉之后，返回给前端的json就不会有content了，这样写比较灵活
+	res.OKWithList(_list, int64(count), c) //content上有omit(list)标签，当用filter过滤掉之后，返回给前端的json就不会有content了，这样写比较灵活
 }

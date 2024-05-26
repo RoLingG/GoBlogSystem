@@ -13,7 +13,7 @@ type ImageSort struct {
 	Sort    int  `json:"sort"`
 }
 
-// 前端传过来的数据
+// MenuRequest 前端传过来的数据
 type MenuRequest struct {
 	MenuTitle     string      `json:"menu_title" binding:"required" structs:"menu_title" msg:"请完善菜单项名称"`
 	MenuPath      string      `json:"menu_path" binding:"required" structs:"menu_path" msg:"请完善菜单项路径"`
@@ -25,6 +25,14 @@ type MenuRequest struct {
 	ImageSortList []ImageSort `json:"image_sort_list" structs:"-"`                          //具体图片的顺序，要单独给ImageSortList创建一个类型是因为如果用[]imageModel要传的参数太多了，实际上我们只需要对应的ID和序号就行
 }
 
+// MenuCreateView 菜单项创建
+// @Tags 菜单管理
+// @Summary 菜单项创建
+// @Description	菜单内创建新的菜单项
+// @Param data body MenuRequest true	"新建菜单项的一些参数"
+// @Produce json
+// @Router /api/menusUpload [post]
+// @Success 200 {object} res.Response{}
 func (MenuApi) MenuCreateView(c *gin.Context) {
 	//cr为post传入过来的数据载体
 	var cr MenuRequest

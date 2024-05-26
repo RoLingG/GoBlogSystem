@@ -9,6 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// MenuRemoveView 菜单项删除
+// @Tags 菜单管理
+// @Summary 菜单项删除
+// @Description	菜单内删除存在的菜单项
+// @Param data body models.RemoveRequest true	"删除菜单项的一些参数"
+// @Produce json
+// @Router /api/menusRemove [delete]
+// @Success 200 {object} res.Response{}
 func (MenuApi) MenuRemoveView(c *gin.Context) {
 	var cr models.RemoveRequest
 	err := c.ShouldBindJSON(&cr)

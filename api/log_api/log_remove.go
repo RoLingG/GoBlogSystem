@@ -9,6 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// LogRemoveListView 日志记录删除
+// @Tags 日志管理
+// @Summary 日志记录删除
+// @Description	将日志记录从日志列表删除
+// @Param data body TagRequest true	"删除日志记录的一些参数"
+// @Router /api/logRemove [delete]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (LogApi) LogRemoveListView(c *gin.Context) {
 	var cr models.RemoveRequest
 	err := c.ShouldBindJSON(&cr)

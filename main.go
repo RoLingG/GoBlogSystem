@@ -61,7 +61,7 @@ func main() {
 		global.Log.Infof("gvb_Server 运行在: http://%s:%d/api", host, port) //传输路由连接log
 		global.Log.Infof("gvb_Server api文档 运行在: http://%s:%d/swagger/index.html#", host, port)
 	}
-	err := router.Run(addr)
+	err := router.Run(addr) //将路由运行到该地址下
 	if err != nil {
 		global.Log.Fatalf(err.Error())
 	}

@@ -7,6 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TagUpdateView 更新标签
+// @Tags 标签管理
+// @Summary 更新标签
+// @Description	更新现有的标签
+// @Param id path int true "需要更新的标签ID"
+// @Param data body TagRequest true	"更新现有标签的一些参数"
+// @Router /api/tagUpdate/{id} [put]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (TagApi) TagUpdateView(c *gin.Context) {
 	id := c.Param("id")
 	var cr TagRequest

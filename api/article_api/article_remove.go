@@ -17,6 +17,15 @@ type IDListRequest struct {
 	IDList []string `json:"id_list"`
 }
 
+// ArticleRemoveView 文章删除
+// @Tags 文章管理
+// @Summary 文章删除
+// @Description	删除文章
+// @Param token header string true "Authorization token"
+// @Param data body IDListRequest true	"删除文章的一些参数"
+// @Produce json
+// @Router /api/articleRemove [delete]
+// @Success 200 {object} res.Response{}
 func (ArticleApi) ArticleRemoveView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

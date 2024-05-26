@@ -14,6 +14,7 @@ import (
 
 // 接口程序数量减少，但是代码增多(待优化)
 // 某一项配置信息更新
+
 func (SettingsApi) SettingsInfoUpdateView(c *gin.Context) {
 	var cr SettingsUri
 	err := c.ShouldBindUri(&cr)

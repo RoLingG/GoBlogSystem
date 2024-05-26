@@ -37,6 +37,16 @@ type NewsResponse struct {
 const newsAPI = "https://api.codelife.cc/api/top/list"
 const timeout = 2 * time.Second
 
+// NewsListView 新闻列表
+// @Tags 新闻管理
+// @Summary 新闻列表
+// @Description	查询新闻列表
+// @Param Signaturekey header string true "itab新闻接口密钥"
+// @Param version header string true "itab新闻接口版本号"
+// @Param data body params true	"查询itab新闻的荷载ID和显示新闻多少Size"
+// @Router /api/newsList [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=res.ListResponse[NewsResponse]}
 func (NewsApi) NewsListView(c *gin.Context) {
 	var cr params      //params是为了给予itab需要的id以及传过来新闻的多少数量设置
 	var headers Header //Header是为了设置post过去时要用的header

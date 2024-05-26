@@ -8,15 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserRole struct {
+type UserRoleRequest struct {
 	Role     ctype.Role `json:"role" binding:"required,oneof=1 2 3 4" msg:"权限不足，操作失败"`
 	NickName string     `json:"nick_name"` //防止用户昵称非法，管理员有权限修改
 	UserID   uint       `json:"user_id" binding:"required" msg:"用户id错误"`
 }
 
-// UserUpdateRole 用户权限变更
+// UserUpdateAdminView 用户权限修改(管理员)
+// @Tags 用户管理
+// @Summary 管理员修改用户权限
+// @Description	管理员修改用户权限
+// @Param token header string true "Authorization token"
+// @Param data body UserRoleRequest true	"添加用户修改的一些参数"
+// @Produce json
+// @Router /api/userUpdateAdmin [put]
+// @Success 200 {object} res.Response{}
 func (UserApi) UserUpdateAdminView(c *gin.Context) {
-	var cr UserRole
+	var cr UserRoleRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
 		res.FailWithError(err, &cr, c)

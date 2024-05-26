@@ -23,6 +23,15 @@ type ArticleUpdateRequest struct {
 	ID       string   `json:"id"`
 }
 
+// ArticleUpdateView 文章更新
+// @Tags 文章管理
+// @Summary 文章更新
+// @Description	更新文章
+// @Param token header string true "Authorization token"
+// @Param data body ArticleUpdateRequest true	"更新文章的一些参数"
+// @Produce json
+// @Router /api/articleUpdate [put]
+// @Success 200 {object} res.Response{}
 func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 	//_claims, _ := c.Get("claims")
 	//claims := _claims.(*jwt.CustomClaims)

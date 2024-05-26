@@ -12,15 +12,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BindEmailView struct {
+type BindEmailRequest struct {
 	Email    string  `json:"email" binding:"required,email" msg:"邮箱非法"`
 	Password string  `json:"password" binding:"required" msg:"请输入密码"`
 	Code     *string `json:"code"`
 }
 
+// UserBindEmail 用户邮箱绑定
+// @Tags 用户管理
+// @Summary	用户邮箱绑定
+// @Description	当前登录的用户进行邮箱绑定
+// @Param	token header string true "Authorization token"
+// @Param	data body BindEmailRequest true "用户邮箱绑定的一些参数"
+// @Router /api/userBindEmail [post]
+// @Produce	json
+// @Success	200 {subject} res.Response{}
 func (UserApi) UserBindEmail(c *gin.Context) {
 	//用户绑定邮箱 第一次输入邮箱
-	var cr BindEmailView
+	var cr BindEmailRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
 		res.FailWithError(err, &cr, c)

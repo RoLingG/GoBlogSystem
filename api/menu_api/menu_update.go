@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// MenuUpdateView 菜单项更新
+// @Tags 菜单管理
+// @Summary 菜单项更新
+// @Description	菜单内更新存在的菜单项
+// @Param id path int true "需要更新的菜单项ID"
+// @Param data body MenuRequest true	"删除菜单项的一些参数"
+// @Produce json
+// @Router /api/menusUpdate/{id} [put]
+// @Success 200 {object} res.Response{}
 func (MenuApi) MenuUpdateView(c *gin.Context) {
 	//cr为post传入过来的数据载体
 	var cr MenuRequest

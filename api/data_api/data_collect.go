@@ -18,6 +18,13 @@ type DataCollectResponse struct {
 	TodaySignCount  int64 `json:"today_sign_count"`
 }
 
+// DataCollectView 后台数据收集
+// @Tags 数据收集管理
+// @Summary 后台数据收集
+// @Description	后台数据收集
+// @Router /api/dataCollect [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=DataCollectResponse}
 func (DataApi) DataCollectView(c *gin.Context) {
 	var cr DataCollectResponse
 	global.DB.Model(&models.UserModel{}).Select("count(id)").Scan(&cr.UserCount)

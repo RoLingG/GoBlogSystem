@@ -11,7 +11,14 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
-// FullTextSearchView 全文搜索
+// FullTextSearchView 全文搜索列表
+// @Tags 标签管理
+// @Summary 全文搜索列表
+// @Description	全文搜索列表
+// @Param data query models.PageInfo true	"全文搜索列表的一些参数"
+// @Router /api/articleFullTextSearch [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=res.ListResponse[models.FullTextSearchModel]}
 func (ArticleApi) FullTextSearchView(c *gin.Context) {
 	var cr models.PageInfo
 	_ = c.ShouldBindQuery(&cr)

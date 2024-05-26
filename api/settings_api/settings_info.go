@@ -10,7 +10,6 @@ type SettingsUri struct {
 	Name string `uri:"name"`
 }
 
-// 显示某一项配置信息
 func (SettingsApi) SettingsInfoView(c *gin.Context) {
 	var cr SettingsUri
 	err := c.ShouldBindUri(&cr)

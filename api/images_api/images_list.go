@@ -13,7 +13,7 @@ import (
 // @Tags 图片管理
 // @Summary 图片列表
 // @Description	图片列表，用于显示所有的图片
-// @Param data query models.PageModel false "查询参数"
+// @Param data query models.PageInfo false "查询参数"
 // @Produce json
 // @Router /api/imagesList [get]
 // @Success 200 {object} res.Response{data=res.ListResponse[models.ImageModel]}

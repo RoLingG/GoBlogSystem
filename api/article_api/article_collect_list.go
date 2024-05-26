@@ -19,6 +19,15 @@ type CollectResponse struct {
 	CreateAt string `json:"create_at"`
 }
 
+// ArticleUserCollectListView 用户文章收藏列表
+// @Tags 文章管理
+// @Summary 用户文章收藏列表
+// @Description	用户文章收藏列表
+// @Param token header string true "Authorization token"
+// @Param data query models.PageInfo true	"查询当前用户收藏文章的一些参数"
+// @Produce json
+// @Router /api/articleCollectList [get]
+// @Success 200 {object} res.Response{data=res.ListResponse[CollectResponse]}
 func (ArticleApi) ArticleUserCollectListView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)

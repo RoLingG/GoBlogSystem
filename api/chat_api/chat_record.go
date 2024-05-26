@@ -8,6 +8,14 @@ import (
 	"github.com/liu-cn/json-filter/filter"
 )
 
+// ChatRecordView 群聊聊天记录
+// @Tags 聊天管理
+// @Summary 群聊聊天记录
+// @Description	查询所有的群聊聊天记录
+// @Param data query models.PageInfo true	"查询群聊聊天记录的一些参数"
+// @Router /api/chatRecord [get]
+// @Produce json
+// @Success 200 {object} res.Response{data=models.ChatModel}
 func (ChatApi) ChatRecordView(c *gin.Context) {
 	var cr models.PageInfo
 	err := c.ShouldBindQuery(&cr)

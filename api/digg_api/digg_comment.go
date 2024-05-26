@@ -13,6 +13,14 @@ type CommentIDRequest struct {
 	ID uint `json:"id" form:"id" uri:"id"`
 }
 
+// DiggCommentView 点赞评论
+// @Tags 评论管理
+// @Summary 点赞评论
+// @Description	点赞评论
+// @Param id path int true "需要点赞的评论ID"
+// @Router /api/diggComment/{id} [post]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (DiggApi) DiggCommentView(c *gin.Context) {
 	var cr CommentIDRequest
 	err := c.ShouldBindUri(&cr)

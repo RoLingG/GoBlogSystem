@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// UserRemove 用户删除(管理员)
+// @Tags 用户管理
+// @Summary 管理员删除用户
+// @Description	管理员删除用户
+// @Param token header string true "Authorization token"
+// @Param data body models.RemoveRequest true	"用户删除的一些参数"
+// @Produce json
+// @Router /api/userRemove [delete]
+// @Success 200 {object} res.Response{}
 func (UserApi) UserRemove(c *gin.Context) {
 	var cr models.RemoveRequest
 	err := c.ShouldBindJSON(&cr)
