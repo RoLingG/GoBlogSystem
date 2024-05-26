@@ -6,6 +6,8 @@ import (
 	"GoRoLingG/flag"
 	"GoRoLingG/global"
 	"GoRoLingG/routers"
+	"GoRoLingG/utils"
+	"strings"
 )
 
 // @title GoRoLingG API文档
@@ -41,8 +43,24 @@ func main() {
 
 	//路由连接
 	router := routers.InitRouter()
+	host := global.Config.System.Host
+	port := global.Config.System.Port
 	addr := global.Config.System.Addr()
-	global.Log.Infof("gvb_Server运行在: %s", addr) //传输路由连接log
+
+	if host == "0.0.0.0" {
+		ipList := utils.GetIPList()
+		for _, ip := range ipList {
+			parts := strings.Split(ip, ".")
+			if parts[0] == "169" { //过滤掉访问不了的内网ip
+				continue
+			}
+			global.Log.Infof("gvb_Server 运行在: http://%s:%d/api", ip, port) //传输路由连接log
+			global.Log.Infof("gvb_Server api文档 运行在: http://%s:%d/swagger/index.html#", ip, port)
+		}
+	} else {
+		global.Log.Infof("gvb_Server 运行在: http://%s:%d/api", host, port) //传输路由连接log
+		global.Log.Infof("gvb_Server api文档 运行在: http://%s:%d/swagger/index.html#", host, port)
+	}
 	err := router.Run(addr)
 	if err != nil {
 		global.Log.Fatalf(err.Error())
