@@ -16,6 +16,7 @@ type Option struct {
 	models.PageInfo
 	Fields []string
 	Tag    string
+	Query  *elastic.BoolQuery
 }
 
 func (o *Option) GetForm() int {
@@ -101,69 +102,12 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 			article.Title = title[0]
 		}
 		article.ID = hit.Id
-		//设置一个文章redis内点赞数大于等于10自动同步es和redis数据的机制
-		//for循环文章，当redis内该哈希表对应的id文章点赞数大于等于10，则触发同步数据机制，更新es表对应文章的点赞数的同时删除redis内对应id文章的点赞数据
 		digg, ok := diggInfo[hit.Id]
-		if ok && digg >= 10 {
-			// 更新 ES 中的文章点赞数
-			article.DiggCount = article.DiggCount + digg
-			_, updateErr := global.ESClient.Update().
-				Index(models.ArticleModel{}.Index()).
-				Id(hit.Id).
-				Doc(map[string]int{
-					"digg_count": article.DiggCount,
-				}).
-				Do(context.Background())
-			if updateErr != nil {
-				logrus.Error(updateErr.Error())
-				continue
-			}
-			logrus.Info(article.Title, "点赞数更新成功，新点赞数为:", article.DiggCount)
-			// 从 Redis 中删除点赞数
-			redis_service.NewArticleDiggIndex().ClearByID(hit.Id)
-		} else {
-			article.DiggCount = article.DiggCount + digg
-		}
-		//设置一个文章redis内浏览量大于等于10自动同步es和redis数据的机制
-		//for循环文章，当redis内该哈希表对应的id文章浏览量大于等于10，则触发同步数据机制，更新es表对应文章的浏览量的同时删除redis内对应id文章的浏览量数据
+		article.DiggCount = article.DiggCount + digg
 		look, ok := lookInfo[hit.Id]
-		if ok && look >= 10 {
-			// 更新 ES 中的文章点赞数
-			article.LookCount = article.LookCount + look
-			_, updateErr := global.ESClient.Update().
-				Index(models.ArticleModel{}.Index()).
-				Id(hit.Id).
-				Doc(map[string]int{
-					"look_count": article.LookCount,
-				}).
-				Do(context.Background())
-			if updateErr != nil {
-				logrus.Error(updateErr.Error())
-				continue
-			}
-			logrus.Info(article.Title, "浏览数更新成功，新浏览数为:", article.LookCount)
-			// 从 Redis 中删除点赞数
-			redis_service.NewArticleLookIndex().ClearByID(hit.Id)
-		} else {
-			article.LookCount = article.LookCount + look
-		}
-
-		//同步文章的评论数
+		article.LookCount = article.LookCount + look
 		comment, ok := commentInfo[hit.Id]
-		// 更新 ES 中的文章点赞数
 		article.CommentCount = article.CommentCount + comment
-		_, updateErr := global.ESClient.Update().
-			Index(models.ArticleModel{}.Index()).
-			Id(hit.Id).
-			Doc(map[string]int{
-				"comment_count": article.CommentCount,
-			}).
-			Do(context.Background())
-		if updateErr != nil {
-			logrus.Error(updateErr.Error())
-			continue
-		}
-		logrus.Info(article.Title, "点赞数更新成功，新点赞数为:", article.CommentCount)
 
 		//将当前文章加入文章列表中，便于显示给前端
 		articleList = append(articleList, article)

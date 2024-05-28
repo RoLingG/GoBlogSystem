@@ -38,7 +38,7 @@ func getConfig(q config.QiNiu) storage.Config {
 	return cfg
 }
 
-// uploadImages 七牛云上传图片
+// UploadImages  七牛云上传图片
 func UploadImages(data []byte, imageName string, prefix string) (filePath string, err error) {
 	if !global.Config.QiNiu.Isenable {
 		return "", errors.New("请启用七牛云上传")
@@ -53,7 +53,7 @@ func UploadImages(data []byte, imageName string, prefix string) (filePath string
 	upToken := getToken(q)
 	cfg := getConfig(q)
 
-	formUploadr := storage.NewFormUploader(&cfg)
+	formUploader := storage.NewFormUploader(&cfg)
 	ret := storage.PutRet{}
 	putExtra := storage.PutExtra{
 		Params: map[string]string{},
@@ -63,7 +63,7 @@ func UploadImages(data []byte, imageName string, prefix string) (filePath string
 	//获取当前时间
 	now := time.Now().Format("20060102150405")
 	key := fmt.Sprintf("%s/%s_%s", prefix, now, imageName)
-	err = formUploadr.Put(context.Background(), &ret, upToken, key, bytes.NewReader(data), dataLen, &putExtra)
+	err = formUploader.Put(context.Background(), &ret, upToken, key, bytes.NewReader(data), dataLen, &putExtra)
 	if err != nil {
 		return "", err
 	}

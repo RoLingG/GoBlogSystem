@@ -5,14 +5,14 @@ import (
 	"github.com/fatih/structs"
 )
 
-// 迁移表结构的脚手架
+// Option 迁移表结构的脚手架
 type Option struct {
 	DB   bool
 	User string //-u admin 创建root用户 -u user 创建普通用户
-	ES   string //-es create 创建表索引 -es delete 删除表索引
+	ES   string //-es create 创建表索引; -es delete 删除表索引; -es -dump index_name 导出索引内数据到index_name.json; -es -load index_name 生成index_name的索引，并导入index_name.json中的数据;
 }
 
-// 解析命令行数
+// Parse 解析命令行数
 func Parse() Option {
 	db := sysflag.Bool("db", false, "初始化数据库")
 	user := sysflag.String("u", "", "创建用户")

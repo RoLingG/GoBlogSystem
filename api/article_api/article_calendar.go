@@ -62,7 +62,7 @@ func (ArticleApi) ArticleCalendarView(c *gin.Context) {
 	_ = json.Unmarshal(result.Aggregations["calendar"], &data) //将时间聚合的结果json解码并传给data(data的类型是一个同等于时间聚合json格式的type)
 	//fmt.Println(string(result.Aggregations["calendar"]))
 	//这个不能直接用，因为格式是{"buckets":[{"key_as_string":"2024-05-17 00:00:00","key":1715904000000,"doc_count":1}]}，但我们可以看出这是一个json嵌套，所以我们自己写一个对应的type去接收就可以获取对应的数据了
-	//所以上面就有一个BucketsType类型的data去接收
+	//所以上面就有一个BucketsType结构体的data去接收
 
 	var resultList = make([]CalendarResponse, 0) //实例化，并防止为空时输出null
 

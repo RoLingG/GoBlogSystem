@@ -72,6 +72,7 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 
 	log = log_stash.New(ip, token)
 	log.Info("登录成功")
+	global.DB.Debug().Model(&models.UserModel{}).Where("user_name = ?", cr.UserName).Update("token", token) //更新用户数据库的token
 
 	global.DB.Create(&models.LoginDataModel{
 		UserID:    userModel.ID,

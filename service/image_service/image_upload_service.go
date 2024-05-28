@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"path"
 	"strings"
+	"time"
 )
 
 var WhiteImagesList = []string{
@@ -29,19 +30,23 @@ type FileUploadResponse struct {
 	Msg       string `json:"msg"`
 }
 
-// 文件上传(主要是上传到数据库)
+// ImageUploadService 文件上传(主要是上传到数据库)
 func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes FileUploadResponse) {
 	//判断图片后缀是否为白名单内的后缀
 	//先获取图片上传完整路径(包括图片名)
 	yamlPath := global.Config.ImagesUpload.Path
-	filePath := path.Join(yamlPath, file.Filename)
+	//filePath := path.Join(yamlPath, file.Filename)
+	nameList := strings.Split(file.Filename, ".")
 	fileName := file.Filename
+	//获取图片后缀
+	suffix := strings.ToLower(path.Ext(fileName))
+	now := time.Now().Format("20060102150405")
+	fileName = nameList[0] + "_" + now + "." + suffix
+	filePath := path.Join(yamlPath, fileName)
 	//↓这里就和之前不一样了，因为本地存储拿的是这个uploadRes.FileName，但之前这个uploadRes.FileName是先定义为filename，再定义为filePath
 	//↓但filename的时候已经传过去了，会导致本地物理存储的位置没能定义到filePath指定的路径
 	uploadRes.FileName = filePath
 
-	//获取图片后缀
-	suffix := strings.ToLower(path.Ext(fileName))
 	//对应白名单判断图片后缀是否合法
 	if !utils.InList(suffix, WhiteImagesList) {
 		uploadRes.Msg = "图片后缀非法"
@@ -97,7 +102,7 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	}
 	//图片入库
 	global.DB.Create(&models.ImageModel{
-		Path:      filePath,
+		Path:      "/" + filePath,
 		Hash:      imageHash,
 		Name:      fileName,
 		ImageType: fileType,

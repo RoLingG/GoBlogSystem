@@ -61,10 +61,10 @@ func (MenuApi) MenuListView(c *gin.Context) {
 				Path: image.ImageModel.Path,
 			})
 		}
-		//获取到一个菜单项对应的图片集合后，就可以添加到回应类型中去了
+		//获取到一个菜单项对应的图片集合后，就可以添加到回应结构体中去了
 		menures = append(menures, MenuResponse{
 			MenuModel: menu,   //因为一个菜单项取自[]models.MenuModel，就是一个MenuModel，所以能传过去
-			MenuImage: images, //MenuImage要的是一个Image集合，我们自己写了一个简化版的Image类型传过去，将重要的图片数据传过去
+			MenuImage: images, //MenuImage要的是一个Image集合，我们自己写了一个简化版的Image结构体传过去，将重要的图片数据传过去
 		})
 	}
 	//结束后menures里面有每个菜单项的数据以及其所要的图片数据

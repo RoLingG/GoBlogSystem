@@ -185,7 +185,7 @@ func (article ArticleModel) RemoveIndex() error {
 	return nil
 }
 
-// Create 索引创建
+// Create 文章创建
 func (article *ArticleModel) Create() (err error) {
 	indexResponse, err := global.ESClient.Index().Index(article.Index()).BodyJson(article).Do(context.Background())
 	if err != nil {

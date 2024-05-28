@@ -30,9 +30,6 @@ func (DiggApi) DiggArticleView(c *gin.Context) {
 		return
 	}
 	redis_service.NewArticleDiggIndex().Set(cr.ID)
-	article, err := es_service.CommonDetail(cr.ID)
-	err = es_service.ArticleUpdate(cr.ID, map[string]any{
-		"digg_count": article.CollectCount + 1,
-	})
+	_, err = es_service.CommonDetail(cr.ID)
 	res.OKWithMsg("文章点赞成功", c)
 }

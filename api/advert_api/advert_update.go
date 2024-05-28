@@ -19,7 +19,7 @@ import (
 // @Produce json
 // @Success 200 {object} res.Response{data=string}
 func (AdvertApi) AdvertUpdateView(c *gin.Context) {
-	id := c.Param("id") //因为AdvertRequest类型里面没有ID，但是修改要id，所以我们从前端拿id来进行修改
+	id := c.Param("id") //因为AdvertRequest结构体里面没有ID，但是修改要id，所以我们从前端拿id来进行修改
 	var cr AdvertRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {

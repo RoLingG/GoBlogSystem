@@ -89,7 +89,7 @@ func (ArticleApi) ArticleTagsListView(c *gin.Context) {
 		return
 	}
 	//底下这些bucket的数据基本都可以在fmt.Println(string(result.Aggregations["tags"]))里看到什么字段对应什么参数
-	//然后用对应的type类型接过来以后实例化再for循环append进去就可以得到想要的实例类型组了
+	//然后用对应的结构体接过来以后实例化再for循环append进去就可以得到想要的实例类型组了
 	var tagType TagsType
 	var tagList = make([]*TagsResponse, 0)
 	_ = json.Unmarshal(result.Aggregations["tags"], &tagType)

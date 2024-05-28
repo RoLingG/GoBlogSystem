@@ -21,6 +21,13 @@ type RouterGroup struct {
 
 // InitRouter 路由初始化,建议每一个模块的路由都新建一个文件
 func InitRouter() *gin.Engine {
+	
+	//Router := gin.New()
+	//PublicGroup := Router.Group("")
+	//if global.Config.System.Env == "dev" {
+	//	PublicGroup.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
+	//}
+
 	gin.SetMode(global.Config.System.Env)
 	router := gin.Default()
 	//设置swagger路由，让网页也能访问swagger

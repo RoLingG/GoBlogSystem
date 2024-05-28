@@ -77,7 +77,7 @@ func (NewsApi) NewsListView(c *gin.Context) {
 		return
 	}
 
-	//实例化返回来的参数的对应类型NewsResponse
+	//实例化返回来的参数的对应结构体NewsResponse
 	var response NewsResponse
 	//获取请求的正文
 	byteData, err := io.ReadAll(httpResponse.Body)
