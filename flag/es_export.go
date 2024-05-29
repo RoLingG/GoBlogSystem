@@ -58,5 +58,5 @@ func esDump(index, mapping string) {
 	file.Write(byteData)
 	file.Close()
 
-	logrus.Infof("%s 索引内的数据导出成功，导出到了 %s", index, fileName)
+	logrus.Infof("%s 索引内的所有数据导出成功，导出到了 %s", index, fileName)
 }

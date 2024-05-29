@@ -26,14 +26,16 @@ func ESImport(jsonPath string) {
 
 	// 批量导入数据
 	bulk := global.ESClient.Bulk().Index(response.Index).Refresh("true")
-	for _, model := range response.Data {
+	for _, rawMessage := range response.Data {
 		var mapData map[string]any
-		_ = json.Unmarshal(model.Row, &mapData) //因为这里response.Data获取的是json文件的原始数据，带有换行
-		row, _ := json.Marshal(mapData)         //所以这里经过Unmarshal之后又要Marshal回去，将换行去掉
-		// 插入的数据，不能有换行
-		req := elastic.NewBulkCreateRequest().Id(model.ID).Doc(string(row)) //string化是因为es的Doc()需要一个字符画的json数据切片
+		_ = json.Unmarshal(rawMessage.Row, &mapData) //因为这里response.Data获取的是json文件的原始数据，带有换行
+		row, _ := json.Marshal(mapData)              //所以这里经过Unmarshal之后又要Marshal回去，将换行去掉
+		// 插入的数据，不能有换行，桶数据创建请求
+		req := elastic.NewBulkCreateRequest().Id(rawMessage.ID).Doc(string(row)) //string化是因为es的Doc()需要一个字符化的json数据切片
+		//将桶数据创建请求加入桶内
 		bulk.Add(req)
 	}
+	//执行桶内请求
 	res, err := bulk.Do(context.Background())
 	if err != nil {
 		logrus.Errorf("数据添加失败 err:%s", err.Error())
@@ -43,11 +45,14 @@ func ESImport(jsonPath string) {
 }
 
 func createIndexByJson(index, mapping string) error {
-	if indexExists(index) {
-		logrus.Infof("索引 %s 已存在，无需创建", index)
-		return nil
+	if global.ESClient == nil {
+		logrus.Fatalf("请配置es连接")
 	}
-	// 没有索引，则创建索引
+	if indexExists(index) {
+		//索引存在，则删除索引
+		removeIndex(index)
+	}
+	//创建索引
 	createIndex, err := global.ESClient.
 		CreateIndex(index).
 		BodyString(mapping).
@@ -76,4 +81,24 @@ func indexExists(index string) bool {
 	}
 	//不存在则直接返回
 	return exists //exists为false
+}
+
+func removeIndex(index string) error {
+	logrus.Info("索引存在，删除索引")
+	// 删除索引
+	deleteIndex, err := global.ESClient.
+		DeleteIndex(index).
+		Do(context.Background())
+	if err != nil {
+		logrus.Error("删除索引失败")
+		logrus.Error(err.Error())
+		return err
+	}
+	//确认索引的删除失败，则报错
+	if !deleteIndex.Acknowledged {
+		logrus.Error("删除索引失败")
+		return err
+	}
+	logrus.Info("索引删除成功")
+	return nil
 }
