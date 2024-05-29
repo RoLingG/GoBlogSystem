@@ -1,4 +1,4 @@
-package log_stash
+package log_stash_v1
 
 import "encoding/json"
 
@@ -21,13 +21,13 @@ func (level LogLevel) String() string {
 	var str string
 	switch level {
 	case DebugLevel:
-		str = "Debug"
+		str = "debug"
 	case InfoLevel:
-		str = "Info"
+		str = "info"
 	case WarningLevel:
-		str = "Warning"
+		str = "warning"
 	case ErrorLevel:
-		str = "Error"
+		str = "error"
 	default:
 		str = "未知日志等级"
 	}

@@ -3,7 +3,7 @@ package log_api
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
-	"GoRoLingG/plugins/log_stash"
+	"GoRoLingG/plugins/log_stash_v1"
 	"GoRoLingG/res"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -25,7 +25,7 @@ func (LogApi) LogRemoveListView(c *gin.Context) {
 		return
 	}
 
-	var logList []log_stash.LogStashModel
+	var logList []log_stash_v1.LogModel
 	count := global.DB.Find(&logList, cr.IDList).RowsAffected
 	if count == 0 {
 		res.FailWithMsg("日志不存在", c)

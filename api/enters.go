@@ -9,6 +9,7 @@ import (
 	"GoRoLingG/api/digg_api"
 	"GoRoLingG/api/images_api"
 	"GoRoLingG/api/log_api"
+	"GoRoLingG/api/log_v2_api"
 	"GoRoLingG/api/menu_api"
 	"GoRoLingG/api/message_api"
 	"GoRoLingG/api/news_api"
@@ -31,6 +32,7 @@ type ApiGroup struct {
 	NewsApi     news_api.NewsApi
 	ChatApi     chat_api.ChatApi
 	LogApi      log_api.LogApi
+	LogStash    log_v2_api.LogV2Api
 	DataApi     data_api.DataApi
 }
 

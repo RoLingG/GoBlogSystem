@@ -4,7 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/models/ctype"
-	"GoRoLingG/plugins/log_stash"
+	"GoRoLingG/plugins/log_stash_v1"
 	"GoRoLingG/res"
 	"GoRoLingG/utils"
 	"GoRoLingG/utils/jwt"
@@ -35,7 +35,7 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 		return
 	}
 
-	log := log_stash.NewLogByGin(c) //因为这里一开始没有生成token，所以里面New()的token也就是空的，会导致报错，但没事，已经解决了！
+	log := log_stash_v1.NewLogByGin(c) //因为这里一开始没有生成token，所以里面New()的token也就是空的，会导致报错，但没事，已经解决了！
 
 	var userModel models.UserModel
 	err = global.DB.Take(&userModel, "user_name = ? or email = ?", cr.UserName, cr.UserName).Error
@@ -70,7 +70,7 @@ func (UserApi) EmailLoginView(c *gin.Context) {
 
 	ip, addr := utils.GetAddrByGin(c)
 
-	log = log_stash.New(ip, token)
+	log = log_stash_v1.New(ip, token)
 	log.Info("登录成功")
 	global.DB.Debug().Model(&models.UserModel{}).Where("user_name = ?", cr.UserName).Update("token", token) //更新用户数据库的token
 

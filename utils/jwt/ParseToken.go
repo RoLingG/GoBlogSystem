@@ -7,10 +7,10 @@ import (
 	"github.com/dgrijalva/jwt-go/v4"
 )
 
-// ParesToken 解析Token
+// ParseToken  解析Token
 func ParseToken(tokenStr string) (*CustomClaims, error) {
-	MySecret = []byte(global.Config.JWT.Secret)                                                                //将密钥byte化用于反向解密
-	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) { //这里被赋值的token已经是进过解密之后的了
+	MySecret = []byte(global.Config.JWT.Secret)                                                                //将密钥byte化用于解析token
+	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) { //这里被赋值的token已经是进过解析之后的了，通过密钥解析，更安全
 		return MySecret, nil
 	})
 	if err != nil {

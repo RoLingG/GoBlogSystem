@@ -1,4 +1,4 @@
-package log_stash
+package log_stash_v2
 
 import (
 	"GoRoLingG/global"
@@ -51,17 +51,4 @@ func (log Log) send(level LogLevel, content string) {
 	if err != nil {
 		logrus.Error(err)
 	}
-}
-
-func (log Log) Debug(content string) {
-	log.send(DebugLevel, content)
-}
-func (log Log) Info(content string) {
-	log.send(InfoLevel, content)
-}
-func (log Log) Warning(content string) {
-	log.send(WarningLevel, content)
-}
-func (log Log) Error(content string) {
-	log.send(ErrorLevel, content)
 }
