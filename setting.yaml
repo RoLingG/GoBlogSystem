@@ -40,7 +40,7 @@ site_info:
   web: ""
   github_url: ""
 JWT:
-  secret: XXX
+  secret: RoLingGoBlog
   expires: 2
   issuer: "1234"
 QiNiu:
@@ -69,3 +69,13 @@ es:
   port: 9200
   user:
   password:
+chat_group:
+  isAnonymous: true
+  isShowTime: true
+  defaultLimit: 5
+  contentLength:  5
+  welcomeTitle: "欢迎来到群聊聊天室"
+  isOnlinePeople: true
+  isSendImage: false
+  isSendFile: false
+  isMd: false

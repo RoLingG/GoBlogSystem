@@ -28,7 +28,11 @@ func (SettingsApi) SettingsInfoView(c *gin.Context) {
 	case "qiniu":
 		res.OKWithData(global.Config.QiNiu, c)
 	case "jwt":
-		res.OKWithData(global.Config.JWT, c)
+		info := global.Config.JWT
+		info.Secret = "RoLingGoBlog"
+		res.OKWithData(info, c)
+	case "chat_group":
+		res.OKWithData(global.Config.ChatGroup, c)
 	default:
 		res.FailWithMsg("没有对应的配置信息", c)
 	}

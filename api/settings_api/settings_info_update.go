@@ -57,13 +57,22 @@ func (SettingsApi) SettingsInfoUpdateView(c *gin.Context) {
 		global.Config.QiNiu = Update_info
 		res.OKWithData(global.Config.QiNiu, c)
 	case "jwt":
-		var Update_info config.JWT
-		err := c.ShouldBindJSON(&Update_info)
+		var updateInfo config.JWT
+		err := c.ShouldBindJSON(&updateInfo)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)
 		}
-		global.Config.JWT = Update_info
+		global.Config.JWT = updateInfo
 		res.OKWithData(global.Config.JWT, c)
+	case "chat_group":
+		var chatGroupInfo config.ChatGroup
+		err = c.ShouldBindJSON(&chatGroupInfo)
+		if err != nil {
+			res.FailWithCode(res.ArgumentError, c)
+			return
+		}
+		global.Config.ChatGroup = chatGroupInfo
+		res.OKWithData(global.Config.ChatGroup, c)
 	default:
 		res.FailWithMsg("没有对应的配置信息", c)
 		return
