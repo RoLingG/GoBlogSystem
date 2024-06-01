@@ -21,7 +21,7 @@ type RouterGroup struct {
 
 // InitRouter 路由初始化,建议每一个模块的路由都新建一个文件
 func InitRouter() *gin.Engine {
-	
+
 	//Router := gin.New()
 	//PublicGroup := Router.Group("")
 	//if global.Config.System.Env == "dev" {
@@ -81,6 +81,8 @@ func InitRouter() *gin.Engine {
 	routerGroup.LogRouter()
 	//按日统计数据配置(date)api的路由
 	routerGroup.DataRouter()
+
+	routerGroup.RoleRouter()
 
 	return router
 }

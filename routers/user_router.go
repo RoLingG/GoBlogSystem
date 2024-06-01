@@ -34,4 +34,5 @@ func (router RouterGroup) UserRouter() {
 	router.GET("/qqLoginLink", userApi.QQLoginLinkView)
 	router.GET("/userInfo", middleware.JwtAuth(), userApi.UserInfoView)
 	router.PUT("/userInfoUpdate", middleware.JwtAuth(), userApi.UserInfoUpdateView)
+	router.PUT("/userUpdateNickName", middleware.JwtAuth(), userApi.UserUpdateNickNameView)
 }

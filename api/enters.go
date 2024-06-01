@@ -13,6 +13,7 @@ import (
 	"GoRoLingG/api/menu_api"
 	"GoRoLingG/api/message_api"
 	"GoRoLingG/api/news_api"
+	"GoRoLingG/api/role_api"
 	"GoRoLingG/api/settings_api"
 	"GoRoLingG/api/tag_api"
 	"GoRoLingG/api/user_api"
@@ -34,6 +35,7 @@ type ApiGroup struct {
 	LogApi      log_api.LogApi
 	LogStash    log_v2_api.LogV2Api
 	DataApi     data_api.DataApi
+	RoleApi     role_api.RoleApi
 }
 
 var ApiGroupApp = new(ApiGroup)
