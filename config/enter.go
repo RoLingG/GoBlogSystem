@@ -12,5 +12,5 @@ type Config struct {
 	QQ           QQ           `yaml:"QQ"`
 	ImagesUpload ImagesUpload `yaml:"images_upload"`
 	ES           ES           `yaml:"es"`
-	ChatGroup    ChatGroup    `yaml:"caht_group"`
+	ChatGroup    ChatGroup    `yaml:"chat_group"`
 }

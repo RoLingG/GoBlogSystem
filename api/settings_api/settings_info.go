@@ -28,9 +28,9 @@ func (SettingsApi) SettingsInfoView(c *gin.Context) {
 	case "qiniu":
 		res.OKWithData(global.Config.QiNiu, c)
 	case "jwt":
-		info := global.Config.JWT
-		info.Secret = "RoLingGoBlog"
-		res.OKWithData(info, c)
+		//info := global.Config.JWT
+		//info.Secret = "rolingg"
+		res.OKWithData(global.Config.JWT, c)
 	case "chat_group":
 		res.OKWithData(global.Config.ChatGroup, c)
 	default:

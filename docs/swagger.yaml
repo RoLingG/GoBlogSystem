@@ -266,6 +266,13 @@ definitions:
           type: integer
         type: array
     type: object
+  feedback_api.FeedbackCreateRequest:
+    properties:
+      content:
+        type: string
+      email:
+        type: string
+    type: object
   images_api.ImageResponse:
     properties:
       id:
@@ -542,6 +549,19 @@ definitions:
     - rev_user_id
     - send_user_id
     type: object
+  message_api.MessageUserListResponse:
+    properties:
+      avatar:
+        type: string
+      count:
+        type: integer
+      nick_name:
+        type: string
+      user_id:
+        type: integer
+      user_name:
+        type: string
+    type: object
   models.AdvertModel:
     properties:
       create_at:
@@ -695,6 +715,25 @@ definitions:
     properties:
       id:
         type: string
+    type: object
+  models.FeedBackModel:
+    properties:
+      applyContent:
+        description: 回复内容
+        type: string
+      content:
+        description: 问题反馈内容
+        type: string
+      create_at:
+        type: string
+      email:
+        description: 问题反馈人邮箱
+        type: string
+      id:
+        type: integer
+      is_apply:
+        description: 是否回复
+        type: boolean
     type: object
   models.FullTextSearchModel:
     properties:
@@ -881,12 +920,26 @@ definitions:
       list:
         $ref: '#/definitions/log_stash_v2.LogStashModel'
     type: object
+  res.ListResponse-message_api_MessageUserListResponse:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/message_api.MessageUserListResponse'
+    type: object
   res.ListResponse-models_AdvertModel:
     properties:
       count:
         type: integer
       list:
         $ref: '#/definitions/models.AdvertModel'
+    type: object
+  res.ListResponse-models_FeedBackModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.FeedBackModel'
     type: object
   res.ListResponse-models_FullTextSearchModel:
     properties:
@@ -901,6 +954,13 @@ definitions:
         type: integer
       list:
         $ref: '#/definitions/models.ImageModel'
+    type: object
+  res.ListResponse-models_MessageModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.MessageModel'
     type: object
   res.ListResponse-models_TagModel:
     properties:
@@ -930,6 +990,13 @@ definitions:
       data: {}
       msg:
         type: string
+    type: object
+  role_api.OptionResponse:
+    properties:
+      label:
+        type: string
+      value:
+        type: integer
     type: object
   tag_api.TagRequest:
     properties:
@@ -1016,6 +1083,17 @@ definitions:
     required:
     - role
     - user_id
+    type: object
+  user_api.UserUpdateNickNameRequest:
+    properties:
+      avatar:
+        type: string
+      link:
+        type: string
+      nick_name:
+        type: string
+      sign:
+        type: string
     type: object
   user_api.UserUpdateRequest:
     properties:
@@ -1531,6 +1609,25 @@ paths:
       summary: 群聊聊天记录
       tags:
       - 聊天管理
+  /api/chatRemove:
+    delete:
+      description: 删除群聊的聊天记录
+      parameters:
+      - description: 表示多个参数
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除群聊的聊天记录
+      tags:
+      - 聊天管理
   /api/commentCreate:
     post:
       description: 创建新的评论
@@ -1700,6 +1797,71 @@ paths:
       summary: 用户名/邮箱登录
       tags:
       - 用户管理
+  /api/feedbackCreate:
+    post:
+      description: 创建反馈
+      parameters:
+      - description: 创建反馈的一些参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/feedback_api.FeedbackCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建反馈
+      tags:
+      - 反馈管理
+  /api/feedbackList:
+    get:
+      description: 查询所有反馈的列表
+      parameters:
+      - description: 查询反馈的一些参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/feedback_api.FeedbackCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_FeedBackModel'
+              type: object
+      summary: 反馈列表
+      tags:
+      - 反馈管理
+  /api/feedbackRemove:
+    delete:
+      description: 批量删除反馈
+      parameters:
+      - description: 删除反馈的一些参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 反馈删除
+      tags:
+      - 反馈管理
   /api/imagesList:
     get:
       description: 图片列表，用于显示所有的图片
@@ -2242,6 +2404,31 @@ paths:
       summary: 消息记录列表
       tags:
       - 消息管理
+  /api/messageRecordRemove:
+    delete:
+      description: 删除用户的消息记录
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 查询参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除用户的消息记录
+      tags:
+      - 消息管理
   /api/messageUserList:
     get:
       description: 查询当前用户所有消息的列表
@@ -2264,6 +2451,150 @@ paths:
                   $ref: '#/definitions/message_api.Message'
               type: object
       summary: 消息列表
+      tags:
+      - 消息管理
+  /api/messageUserListByMyself:
+    get:
+      description: 我与其他用户的聊天列表
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/message_api.MessageUserListResponse'
+              type: object
+      summary: 我与其他用户的聊天列表
+      tags:
+      - 消息管理
+  /api/messageUserListByUser:
+    get:
+      description: 某个用户的聊天列表
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - in: query
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-message_api_MessageUserListResponse'
+              type: object
+      summary: 某个用户的聊天列表
+      tags:
+      - 消息管理
+  /api/messageUserRecord:
+    get:
+      description: 两个用户之间的聊天记录
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - in: query
+        name: rev_user_id
+        required: true
+        type: integer
+      - in: query
+        name: send_user_id
+        required: true
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_MessageModel'
+              type: object
+      summary: 两个用户之间的聊天记录
+      tags:
+      - 消息管理
+  /api/messageUserRecordByMyself:
+    get:
+      description: 当前用户与某个用户的聊天列表
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      - in: query
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_MessageModel'
+              type: object
+      summary: 当前用户与某个用户的聊天列表
       tags:
       - 消息管理
   /api/newsList:
@@ -2329,6 +2660,67 @@ paths:
       summary: 获取qq登录的跳转链接
       tags:
       - 用户管理
+  /api/receiveNewMessageList:
+    get:
+      description: 有消息的用户列表
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - in: query
+        name: nick_name
+        type: string
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-message_api_MessageUserListResponse'
+              type: object
+      summary: 有消息的用户列表
+      tags:
+      - 消息管理
+  /api/roleIDList:
+    get:
+      description: 查看所有用户权限的列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/role_api.OptionResponse'
+              type: object
+      summary: 查看所有用户权限的列表
+      tags:
+      - 权限管理
   /api/tagList:
     get:
       description: 标签列表，用于展示所有标签
@@ -2655,6 +3047,31 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: 管理员修改用户权限
+      tags:
+      - 用户管理
+  /api/userUpdateNickName:
+    put:
+      description: 修改当前登录人的昵称，签名，链接
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 昵称，签名，链接
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user_api.UserUpdateNickNameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 修改当前登录人的昵称，签名，链接
       tags:
       - 用户管理
   /api/userUpdatePassword:

@@ -81,8 +81,10 @@ func InitRouter() *gin.Engine {
 	routerGroup.LogRouter()
 	//按日统计数据配置(date)api的路由
 	routerGroup.DataRouter()
-
+	//用户权限(role)api的路由
 	routerGroup.RoleRouter()
+	//用户反馈(feedback)api的路由
+	routerGroup.FeedBackRouter()
 
 	return router
 }

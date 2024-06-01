@@ -3,8 +3,8 @@ package log_stash_v1
 import "time"
 
 type LogModel struct {
-	ID       uint      `gorm:"primarykey" json:"id"` // 主键ID
-	CreateAt time.Time `json:"create_at"`            // 创建时间
+	ID       uint      `gorm:"primarykey" json:"id"`                          // 主键ID
+	CreateAt time.Time `gorm:"default:current_timestamp(3)" json:"create_at"` // 创建时间
 	IP       string    `gorm:"size:32" json:"ip"`
 	Addr     string    `gorm:"size:64" json:"addr"`
 	Level    LogLevel  `gorm:"size:4" json:"level"`     // 日志的等级

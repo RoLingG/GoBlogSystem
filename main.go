@@ -89,7 +89,7 @@ func main() {
 
 	//定时任务
 	Cron := cron.New(cron.WithSeconds())
-	Cron.AddJob("0 */1 * * * *", Job{}) //每1分钟同步一次Redis缓存中的文章点赞数和文章浏览数
+	Cron.AddJob("0 */10 * * * *", Job{}) //每1分钟同步一次Redis缓存中的文章点赞数和文章浏览数
 	Cron.Start()
 
 	//flag迁移数据库肯定是在连接数据库之后，路由连接之前

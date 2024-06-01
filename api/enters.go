@@ -7,6 +7,7 @@ import (
 	"GoRoLingG/api/comment_api"
 	"GoRoLingG/api/data_api"
 	"GoRoLingG/api/digg_api"
+	"GoRoLingG/api/feedback_api"
 	"GoRoLingG/api/images_api"
 	"GoRoLingG/api/log_api"
 	"GoRoLingG/api/log_v2_api"
@@ -36,6 +37,7 @@ type ApiGroup struct {
 	LogStash    log_v2_api.LogV2Api
 	DataApi     data_api.DataApi
 	RoleApi     role_api.RoleApi
+	FeedbackApi feedback_api.FeedbackApi
 }
 
 var ApiGroupApp = new(ApiGroup)
