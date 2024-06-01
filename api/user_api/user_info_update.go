@@ -21,8 +21,8 @@ type UserUpdateRequest struct {
 // @Tags 用户管理
 // @Summary 用户信息更新
 // @Description 用户信息更新，修改当前登录人的昵称，签名，手机号
-// @Param token header string  true  "token"
-// @Param data body UserUpdateNicknameRequest  true  "昵称，签名，手机号"
+// @Param token header string  true  "Token"
+// @Param data body UserUpdateRequest  true  "昵称，签名，手机号"
 // @Produce json
 // @Router /api/userInfoUpdate [put]
 // @Success 200 {object} res.Response{}

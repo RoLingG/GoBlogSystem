@@ -13,7 +13,7 @@ import (
 // @Tags 日志管理
 // @Summary 日志记录删除
 // @Description	将日志记录从日志列表删除
-// @Param data body TagRequest true	"删除日志记录的一些参数"
+// @Param data body models.RemoveRequest true	"删除日志记录的一些参数"
 // @Router /api/logRemove [delete]
 // @Produce json
 // @Success 200 {object} res.Response{}

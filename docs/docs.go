@@ -229,6 +229,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/articleCategoryList": {
+            "get": {
+                "description": "文章分类列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章管理"
+                ],
+                "summary": "文章分类列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/article_api.CategoryResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/articleCollect": {
             "post": {
                 "description": "收藏文章",
@@ -358,6 +393,35 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.ESIDListRequest"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/articleContent/{id}": {
+            "get": {
+                "description": "获取文章正文",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章管理"
+                ],
+                "summary": "获取文章正文",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -518,6 +582,19 @@ const docTemplate = `{
                 ],
                 "summary": "文章列表",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否是当前用户发布的文章",
+                        "name": "is_user",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "模糊匹配的关键字",
@@ -857,6 +934,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/dataCollect": {
+            "get": {
+                "description": "后台数据收集",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据收集管理"
+                ],
+                "summary": "后台数据收集",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/data_api.DataCollectResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dateLogin": {
+            "get": {
+                "description": "七日内登录/注册数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据收集管理"
+                ],
+                "summary": "七日内登录/注册数据",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/data_api.DateCountResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/diggArticle/{id}": {
             "post": {
                 "description": "点赞文章",
@@ -1169,6 +1310,317 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logList": {
+            "get": {
+                "description": "查询日志列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "日志管理"
+                ],
+                "summary": "日志列表v1",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "模糊匹配的关键字",
+                        "name": "key",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "integer",
+                        "x-enum-varnames": [
+                            "DebugLevel",
+                            "InfoLevel",
+                            "WarningLevel",
+                            "ErrorLevel"
+                        ],
+                        "name": "level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页限制显示量",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页数",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/log_stash_v1.LogModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logRemove": {
+            "delete": {
+                "description": "将日志记录从日志列表删除",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "日志管理"
+                ],
+                "summary": "日志记录删除",
+                "parameters": [
+                    {
+                        "description": "删除日志记录的一些参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RemoveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logV2Read": {
+            "get": {
+                "description": "日志读取\n1. 前端判断这个日志的读取状态，未读就去请求这个接口，让这个日志变成已读的\n2. 如果是已读状态，就不需要调这个接口了",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "日志管理V2"
+                ],
+                "summary": "日志读取",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logV2Remove": {
+            "delete": {
+                "description": "删除日志",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "日志管理V2"
+                ],
+                "summary": "删除日志",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/log_v2_api.LogRemoveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logs/v2": {
+            "get": {
+                "description": "日志列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "日志管理V2"
+                ],
+                "summary": "日志列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "感觉地址查询",
+                        "name": "addr",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "查某一天的，格式是年月日",
+                        "name": "date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "根据ip查询",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "模糊匹配的关键字",
+                        "name": "key",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "x-enum-varnames": [
+                            "Info",
+                            "Warning",
+                            "Error"
+                        ],
+                        "description": "日志查询的等级",
+                        "name": "level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页限制显示量",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页数",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "登录状态查询  true  成功  false 失败",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "x-enum-varnames": [
+                            "LoginType",
+                            "ActionType",
+                            "RuntimeType"
+                        ],
+                        "description": "日志的类型   1 登录日志  2 操作日志  3 运行日志",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "根据用户id查询",
+                        "name": "userID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "查用户名",
+                        "name": "userName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.ListResponse-log_stash_v2_LogStashModel"
                                         }
                                     }
                                 }
@@ -1625,6 +2077,26 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/qqLoginLink": {
+            "get": {
+                "description": "获取qq登录的跳转链接,data就是qq的跳转地址",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取qq登录的跳转链接",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/tagList": {
             "get": {
                 "description": "标签列表，用于展示所有标签",
@@ -1674,6 +2146,41 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/res.ListResponse-models_TagModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tagNameList": {
+            "get": {
+                "description": "标签名称列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "标签管理"
+                ],
+                "summary": "标签名称列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/tag_api.TagResponse"
+                                            }
                                         }
                                     }
                                 }
@@ -1846,6 +2353,85 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/user_api.UserCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/userInfo": {
+            "get": {
+                "description": "根据Token获取用户信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.UserModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/userInfoUpdate": {
+            "put": {
+                "description": "用户信息更新，修改当前登录人的昵称，签名，手机号",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户信息更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "昵称，签名，手机号",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.UserUpdateRequest"
                         }
                     }
                 ],
@@ -2189,6 +2775,17 @@ const docTemplate = `{
                 }
             }
         },
+        "article_api.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "article_api.CollectResponse": {
             "type": "object",
             "properties": {
@@ -2388,6 +2985,52 @@ const docTemplate = `{
                 "SignEmail"
             ]
         },
+        "data_api.DataCollectResponse": {
+            "type": "object",
+            "properties": {
+                "article_count": {
+                    "type": "integer"
+                },
+                "chat_group_count": {
+                    "type": "integer"
+                },
+                "message_count": {
+                    "type": "integer"
+                },
+                "today_login_count": {
+                    "type": "integer"
+                },
+                "today_sign_count": {
+                    "type": "integer"
+                },
+                "user_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "data_api.DateCountResponse": {
+            "type": "object",
+            "properties": {
+                "date_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "login_data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "sign_data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "images_api.ImageResponse": {
             "type": "object",
             "properties": {
@@ -2414,6 +3057,175 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "log_stash_v1.LogLevel": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "x-enum-varnames": [
+                "DebugLevel",
+                "InfoLevel",
+                "WarningLevel",
+                "ErrorLevel"
+            ]
+        },
+        "log_stash_v1.LogModel": {
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "type": "string"
+                },
+                "content": {
+                    "description": "日志消息内容",
+                    "type": "string"
+                },
+                "create_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "level": {
+                    "description": "日志的等级",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/log_stash_v1.LogLevel"
+                        }
+                    ]
+                },
+                "user_id": {
+                    "description": "登录用户的用户id，需要自己在查询的时候做关联查询",
+                    "type": "integer"
+                }
+            }
+        },
+        "log_stash_v2.LogLevel": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "Info",
+                "Warning",
+                "Error"
+            ]
+        },
+        "log_stash_v2.LogStashModel": {
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "description": "造成日志的地址",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "日志内容",
+                    "type": "string"
+                },
+                "create_at": {
+                    "description": "日志创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "日志ID",
+                    "type": "integer"
+                },
+                "ip": {
+                    "description": "造成日志的IP",
+                    "type": "string"
+                },
+                "log_level": {
+                    "description": "日志等级",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/log_stash_v2.LogLevel"
+                        }
+                    ]
+                },
+                "read_status": {
+                    "description": "阅读状态 true：已读 false：未读",
+                    "type": "boolean"
+                },
+                "service_name": {
+                    "description": "服务名",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "登录状态",
+                    "type": "boolean"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "日志类型 1：登录 2：操作 3：运行",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/log_stash_v2.LogType"
+                        }
+                    ]
+                },
+                "user_id": {
+                    "description": "登录用户的用户id",
+                    "type": "integer"
+                },
+                "user_name": {
+                    "description": "登录用户的用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "log_stash_v2.LogType": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "LoginType",
+                "ActionType",
+                "RuntimeType"
+            ]
+        },
+        "log_v2_api.LogRemoveRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "description": "年月日格式的结束时间",
+                    "type": "string"
+                },
+                "id_list": {
+                    "description": "可以传id列表删除",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "ip": {
+                    "description": "根据用户ip删除",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "年月日格式的开始时间",
+                    "type": "string"
+                },
+                "userID": {
+                    "description": "根据用户删除日志",
+                    "type": "integer"
                 }
             }
         },
@@ -3026,6 +3838,10 @@ const docTemplate = `{
                         }
                     ]
                 },
+                "signature": {
+                    "description": "用户签名",
+                    "type": "string"
+                },
                 "telephone": {
                     "type": "string"
                 },
@@ -3101,6 +3917,17 @@ const docTemplate = `{
                 },
                 "list": {
                     "$ref": "#/definitions/article_api.TagsResponse"
+                }
+            }
+        },
+        "res.ListResponse-log_stash_v2_LogStashModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "list": {
+                    "$ref": "#/definitions/log_stash_v2.LogStashModel"
                 }
             }
         },
@@ -3189,6 +4016,17 @@ const docTemplate = `{
             ],
             "properties": {
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "tag_api.TagResponse": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }
@@ -3298,6 +4136,20 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "user_api.UserUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "nick_name": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                },
+                "telephone": {
+                    "type": "string"
                 }
             }
         }

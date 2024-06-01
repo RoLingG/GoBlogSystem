@@ -85,6 +85,13 @@ definitions:
       date:
         type: string
     type: object
+  article_api.CategoryResponse:
+    properties:
+      label:
+        type: string
+      value:
+        type: string
+    type: object
   article_api.CollectResponse:
     properties:
       abstract:
@@ -229,6 +236,36 @@ definitions:
     - SignQQ
     - SignGitee
     - SignEmail
+  data_api.DataCollectResponse:
+    properties:
+      article_count:
+        type: integer
+      chat_group_count:
+        type: integer
+      message_count:
+        type: integer
+      today_login_count:
+        type: integer
+      today_sign_count:
+        type: integer
+      user_count:
+        type: integer
+    type: object
+  data_api.DateCountResponse:
+    properties:
+      date_list:
+        items:
+          type: string
+        type: array
+      login_data:
+        items:
+          type: integer
+        type: array
+      sign_data:
+        items:
+          type: integer
+        type: array
+    type: object
   images_api.ImageResponse:
     properties:
       id:
@@ -247,6 +284,125 @@ definitions:
     required:
     - id
     - name
+    type: object
+  log_stash_v1.LogLevel:
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-varnames:
+    - DebugLevel
+    - InfoLevel
+    - WarningLevel
+    - ErrorLevel
+  log_stash_v1.LogModel:
+    properties:
+      addr:
+        type: string
+      content:
+        description: 日志消息内容
+        type: string
+      create_at:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      ip:
+        type: string
+      level:
+        allOf:
+        - $ref: '#/definitions/log_stash_v1.LogLevel'
+        description: 日志的等级
+      user_id:
+        description: 登录用户的用户id，需要自己在查询的时候做关联查询
+        type: integer
+    type: object
+  log_stash_v2.LogLevel:
+    enum:
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - Info
+    - Warning
+    - Error
+  log_stash_v2.LogStashModel:
+    properties:
+      addr:
+        description: 造成日志的地址
+        type: string
+      content:
+        description: 日志内容
+        type: string
+      create_at:
+        description: 日志创建时间
+        type: string
+      id:
+        description: 日志ID
+        type: integer
+      ip:
+        description: 造成日志的IP
+        type: string
+      log_level:
+        allOf:
+        - $ref: '#/definitions/log_stash_v2.LogLevel'
+        description: 日志等级
+      read_status:
+        description: 阅读状态 true：已读 false：未读
+        type: boolean
+      service_name:
+        description: 服务名
+        type: string
+      status:
+        description: 登录状态
+        type: boolean
+      title:
+        description: 标题
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/log_stash_v2.LogType'
+        description: 日志类型 1：登录 2：操作 3：运行
+      user_id:
+        description: 登录用户的用户id
+        type: integer
+      user_name:
+        description: 登录用户的用户名
+        type: string
+    type: object
+  log_stash_v2.LogType:
+    enum:
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - LoginType
+    - ActionType
+    - RuntimeType
+  log_v2_api.LogRemoveRequest:
+    properties:
+      endTime:
+        description: 年月日格式的结束时间
+        type: string
+      id_list:
+        description: 可以传id列表删除
+        items:
+          type: integer
+        type: array
+      ip:
+        description: 根据用户ip删除
+        type: string
+      startTime:
+        description: 年月日格式的开始时间
+        type: string
+      userID:
+        description: 根据用户删除日志
+        type: integer
     type: object
   menu_api.Image:
     properties:
@@ -665,6 +821,9 @@ definitions:
         allOf:
         - $ref: '#/definitions/ctype.SignStatus'
         description: 注册来源
+      signature:
+        description: 用户签名
+        type: string
       telephone:
         type: string
       token:
@@ -714,6 +873,13 @@ definitions:
         type: integer
       list:
         $ref: '#/definitions/article_api.TagsResponse'
+    type: object
+  res.ListResponse-log_stash_v2_LogStashModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/log_stash_v2.LogStashModel'
     type: object
   res.ListResponse-models_AdvertModel:
     properties:
@@ -771,6 +937,13 @@ definitions:
         type: string
     required:
     - title
+    type: object
+  tag_api.TagResponse:
+    properties:
+      label:
+        type: string
+      value:
+        type: string
     type: object
   user_api.BindEmailRequest:
     properties:
@@ -843,6 +1016,15 @@ definitions:
     required:
     - role
     - user_id
+    type: object
+  user_api.UserUpdateRequest:
+    properties:
+      nick_name:
+        type: string
+      signature:
+        type: string
+      telephone:
+        type: string
     type: object
 host: 127.0.0.01:8080
 info:
@@ -979,6 +1161,26 @@ paths:
       summary: 文章日历
       tags:
       - 文章管理
+  /api/articleCategoryList:
+    get:
+      description: 文章分类列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/article_api.CategoryResponse'
+                  type: array
+              type: object
+      summary: 文章分类列表
+      tags:
+      - 文章管理
   /api/articleCollect:
     post:
       description: 收藏文章
@@ -1069,6 +1271,25 @@ paths:
       summary: 用户取消文章收藏
       tags:
       - 文章管理
+  /api/articleContent/{id}:
+    get:
+      description: 获取文章正文
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 获取文章正文
+      tags:
+      - 文章管理
   /api/articleCreate:
     post:
       description: 添加新文章
@@ -1157,6 +1378,15 @@ paths:
     get:
       description: 查询所有文章的列表
       parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 是否是当前用户发布的文章
+        in: query
+        name: is_user
+        type: boolean
       - description: 模糊匹配的关键字
         in: query
         name: key
@@ -1370,6 +1600,42 @@ paths:
       summary: 删除评论
       tags:
       - 评论管理
+  /api/dataCollect:
+    get:
+      description: 后台数据收集
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/data_api.DataCollectResponse'
+              type: object
+      summary: 后台数据收集
+      tags:
+      - 数据收集管理
+  /api/dateLogin:
+    get:
+      description: 七日内登录/注册数据
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/data_api.DateCountResponse'
+              type: object
+      summary: 七日内登录/注册数据
+      tags:
+      - 数据收集管理
   /api/diggArticle/{id}:
     post:
       description: 点赞文章
@@ -1565,6 +1831,212 @@ paths:
       summary: 添加图片
       tags:
       - 图片管理
+  /api/logList:
+    get:
+      description: 查询日志列表
+      parameters:
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        in: query
+        name: level
+        type: integer
+        x-enum-varnames:
+        - DebugLevel
+        - InfoLevel
+        - WarningLevel
+        - ErrorLevel
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/log_stash_v1.LogModel'
+              type: object
+      summary: 日志列表v1
+      tags:
+      - 日志管理
+  /api/logRemove:
+    delete:
+      description: 将日志记录从日志列表删除
+      parameters:
+      - description: 删除日志记录的一些参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 日志记录删除
+      tags:
+      - 日志管理
+  /api/logV2Read:
+    get:
+      description: |-
+        日志读取
+        1. 前端判断这个日志的读取状态，未读就去请求这个接口，让这个日志变成已读的
+        2. 如果是已读状态，就不需要调这个接口了
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 日志读取
+      tags:
+      - 日志管理V2
+  /api/logV2Remove:
+    delete:
+      description: 删除日志
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/log_v2_api.LogRemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除日志
+      tags:
+      - 日志管理V2
+  /api/logs/v2:
+    get:
+      description: 日志列表
+      parameters:
+      - description: 感觉地址查询
+        in: query
+        name: addr
+        type: string
+      - description: 查某一天的，格式是年月日
+        in: query
+        name: date
+        type: string
+      - description: 根据ip查询
+        in: query
+        name: ip
+        type: string
+      - description: 模糊匹配的关键字
+        in: query
+        name: key
+        type: string
+      - description: 日志查询的等级
+        enum:
+        - 1
+        - 2
+        - 3
+        in: query
+        name: level
+        type: integer
+        x-enum-varnames:
+        - Info
+        - Warning
+        - Error
+      - description: 每页限制显示量
+        in: query
+        name: limit
+        type: integer
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 排序
+        in: query
+        name: sort
+        type: string
+      - description: 登录状态查询  true  成功  false 失败
+        in: query
+        name: status
+        type: boolean
+      - description: 日志的类型   1 登录日志  2 操作日志  3 运行日志
+        enum:
+        - 1
+        - 2
+        - 3
+        in: query
+        name: type
+        type: integer
+        x-enum-varnames:
+        - LoginType
+        - ActionType
+        - RuntimeType
+      - description: 根据用户id查询
+        in: query
+        name: userID
+        type: integer
+      - description: 查用户名
+        in: query
+        name: userName
+        type: string
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-log_stash_v2_LogStashModel'
+              type: object
+      summary: 日志列表
+      tags:
+      - 日志管理V2
   /api/menuDetailList/{id}:
     get:
       description: 查看菜单项详情的列表
@@ -1844,6 +2316,19 @@ paths:
       summary: 用户QQ登录
       tags:
       - 用户管理
+  /api/qqLoginLink:
+    get:
+      description: 获取qq登录的跳转链接,data就是qq的跳转地址
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 获取qq登录的跳转链接
+      tags:
+      - 用户管理
   /api/tagList:
     get:
       description: 标签列表，用于展示所有标签
@@ -1877,6 +2362,26 @@ paths:
                   $ref: '#/definitions/res.ListResponse-models_TagModel'
               type: object
       summary: 标签列表
+      tags:
+      - 标签管理
+  /api/tagNameList:
+    get:
+      description: 标签名称列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/tag_api.TagResponse'
+                  type: array
+              type: object
+      summary: 标签名称列表
       tags:
       - 标签管理
   /api/tagRemove:
@@ -1992,6 +2497,55 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: 添加用户
+      tags:
+      - 用户管理
+  /api/userInfo:
+    get:
+      description: 根据Token获取用户信息
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.UserModel'
+              type: object
+      summary: 用户信息
+      tags:
+      - 用户管理
+  /api/userInfoUpdate:
+    put:
+      description: 用户信息更新，修改当前登录人的昵称，签名，手机号
+      parameters:
+      - description: Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 昵称，签名，手机号
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user_api.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 用户信息更新
       tags:
       - 用户管理
   /api/userList:
