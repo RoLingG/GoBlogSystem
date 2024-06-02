@@ -1167,17 +1167,6 @@ const docTemplate = `{
                     "反馈管理"
                 ],
                 "summary": "反馈列表",
-                "parameters": [
-                    {
-                        "description": "查询反馈的一些参数",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/feedback_api.FeedbackCreateRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1737,7 +1726,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "token",
+                        "description": "Token",
                         "name": "token",
                         "in": "header",
                         "required": true

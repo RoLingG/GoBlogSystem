@@ -4,6 +4,8 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"GoRoLingG/utils"
+	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,14 +30,22 @@ func (FeedbackApi) FeedbackCreateView(c *gin.Context) {
 		return
 	}
 
-	err = global.DB.Create(&models.FeedBackModel{
+	//检测邮箱是否合法
+	if !utils.IsValidEmail(cr.Email) {
+		res.FailWithMsg("邮箱输入非法，请重新输入", c)
+		return
+	}
+
+	var feedback = models.FeedBackModel{
 		Email:   cr.Email,
 		Content: cr.Content,
-	}).Error
+	}
+	maps := structs.Map(feedback)
+	err = global.DB.Create(&feedback).Error
 	if err != nil {
 		res.FailWithMsg("反馈失败", c)
 		return
 	}
 
-	res.OKWithMsg("反馈成功", c)
+	res.OKWithDataAndMsg(maps, "反馈成功", c)
 }

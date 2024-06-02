@@ -2,6 +2,7 @@ package log_stash_v1
 
 import (
 	"GoRoLingG/global"
+	"GoRoLingG/utils"
 	"GoRoLingG/utils/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -20,11 +21,12 @@ func New(ip string, token string) *Log {
 	if err == nil {
 		userID = claims.UserID
 	}
+	addr := utils.GetAddr(ip)
 
 	// 拿到用户id
 	return &Log{
 		ip:     ip,
-		addr:   "内网",
+		addr:   addr,
 		userId: userID,
 	}
 }
@@ -32,6 +34,12 @@ func New(ip string, token string) *Log {
 func NewLogByGin(c *gin.Context) *Log {
 	ip := c.ClientIP()
 	token := c.Request.Header.Get("token")
+	// 检查 token 是否为空
+	if token == "" {
+		// 可以选择返回一个错误或者一个默认的 Log 实例
+		logrus.Warn("No token found in request header")
+		return &Log{ip: ip, addr: "未知", userId: 0}
+	}
 	return New(ip, token)
 }
 

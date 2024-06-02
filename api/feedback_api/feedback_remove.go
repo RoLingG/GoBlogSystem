@@ -25,7 +25,7 @@ func (FeedbackApi) FeedbackRemoveView(c *gin.Context) {
 	}
 
 	var feedbackList []models.FeedBackModel
-	count := global.DB.Find(&models.FeedBackModel{}, feedbackList).RowsAffected
+	count := global.DB.Find(&feedbackList, cr.IDList).RowsAffected
 	if count == 0 {
 		res.FailWithMsg("反馈不存在，删除失败", c)
 		return

@@ -1820,13 +1820,6 @@ paths:
   /api/feedbackList:
     get:
       description: 查询所有反馈的列表
-      parameters:
-      - description: 查询反馈的一些参数
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/feedback_api.FeedbackCreateRequest'
       produces:
       - application/json
       responses:
@@ -2179,7 +2172,7 @@ paths:
         in: query
         name: userName
         type: string
-      - description: token
+      - description: Token
         in: header
         name: token
         required: true

@@ -43,8 +43,8 @@ func (UserApi) UserBindEmail(c *gin.Context) {
 		//生成四位验证码，将验证码存入session，保证前后一致
 		code := random.RandCode(4)
 		//写入session
-		session.Set("valid_code", code)
-		session.Set("email_for_binding", cr.Email)
+		session.Set("valid_code", code)            //验证码
+		session.Set("email_for_binding", cr.Email) //发送到的邮箱
 		//保存会话
 		err = session.Save()
 		if err != nil {

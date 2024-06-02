@@ -44,7 +44,7 @@ func send(name, subject, body string) error {
 	e := global.Config.Email
 	return sendMail(
 		e.User,
-		e.Password,
+		e.Password, //邮箱的ssl密钥(?算是密钥吧，每个人特有的)
 		e.Host,
 		e.Port,
 		name,
@@ -60,7 +60,7 @@ func sendMail(userName, authCode, host string, port int, mailTo, sendName string
 	m.SetHeader("To", mailTo)                                //发给谁
 	m.SetHeader("Subject", subject)                          //主题
 	m.SetBody("text/html", body)                             //内容
-	d := gomail.NewDialer(host, port, userName, authCode)
-	err := d.DialAndSend(m)
+	d := gomail.NewDialer(host, port, userName, authCode)    //新建拨号器
+	err := d.DialAndSend(m)                                  //拨号与发送，这里的拨号指的是拨号配置的邮箱，成功便发送
 	return err
 }

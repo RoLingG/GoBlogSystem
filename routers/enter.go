@@ -81,7 +81,7 @@ func InitRouter() *gin.Engine {
 	routerGroup.LogRouter()
 	//按日统计数据配置(date)api的路由
 	routerGroup.DataRouter()
-	//用户权限(role)api的路由
+	//用户权限(role)api的路由	目前没啥用，只能看所有用户的权限类型有什么，例如有可以看些特殊的，像被ban的那些
 	routerGroup.RoleRouter()
 	//用户反馈(feedback)api的路由
 	routerGroup.FeedBackRouter()

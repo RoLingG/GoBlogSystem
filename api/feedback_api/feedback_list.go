@@ -11,7 +11,6 @@ import (
 // @Tags 反馈管理
 // @Summary 反馈列表
 // @Description	查询所有反馈的列表
-// @Param data body FeedbackCreateRequest true	"查询反馈的一些参数"
 // @Router /api/feedbackList [get]
 // @Produce json
 // @Success 200 {object} res.Response{data=res.ListResponse[models.FeedBackModel]}
