@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"time"
 )
@@ -19,6 +20,10 @@ type DateCountResponse struct {
 	SignData  []int    `json:"sign_data"`
 }
 
+type LoginRequest struct {
+	Date int `json:"date" form:"date"` // 1 七天 2 一个月 3 两个月 4 三个月 5 六个月  6 一年
+}
+
 // SevenLogin 七日内登录/注册数据
 // @Tags 数据收集管理
 // @Summary 七日内登录/注册数据
@@ -27,48 +32,77 @@ type DateCountResponse struct {
 // @Produce json
 // @Success 200 {object} res.Response{data=DateCountResponse}
 func (DataApi) SevenLogin(c *gin.Context) {
-	var loginDateCount, signDateCount []DateCount
-
-	var loginDateCountMap = map[string]int{}
-	var signDateCountMap = map[string]int{}
-	var loginCountList, signCountList []int
-	now := time.Now()
-
-	global.DB.Model(models.LoginDataModel{}).
-		Where("date_sub(curdate(), interval 7 day) <= create_at").
-		Select("date_format(create_at, '%Y-%m-%d') as date", "count(id) as count").
-		Group("date").
-		Scan(&loginDateCount)
-	global.DB.Model(models.UserModel{}).
-		Where("date_sub(curdate(), interval 7 day) <= create_at").
-		Select("date_format(create_at, '%Y-%m-%d') as date", "count(id) as count").
-		Group("date").
-		Scan(&signDateCount)
-
-	//因为loginDateCount里面的数据都是[{日期 计数}]，所以将loginDateCount内的数据存进map里，方便操作
-	for _, count := range loginDateCount {
-		loginDateCountMap[count.Date] = count.Count
-	}
-	//同上
-	for _, count := range signDateCount {
-		signDateCountMap[count.Date] = count.Count
+	var cr LoginRequest
+	err := c.ShouldBindQuery(&cr)
+	if err != nil {
+		res.FailWithMsg("参数绑定出错", c)
+		return
 	}
 
-	var dateList []string
-	//当天之前的七天之内的数据统计存储
-	for i := -6; i <= 0; i++ {
-		day := now.AddDate(0, 0, i).Format("2006-01-02") //获取当天的日期
-		loginCount := loginDateCountMap[day]             //获取当天登录计数
-		signCount := signDateCountMap[day]               //获取当天注册计数
-		dateList = append(dateList, day)
-		loginCountList = append(loginCountList, loginCount)
-		signCountList = append(signCountList, signCount)
+	var dateMap = map[int]int{
+		0: 7,
+		1: 7,
+		2: 30,
+		3: 60,
+		4: 90,
+		5: 180,
+		6: 365,
 	}
 
-	res.OKWithData(DateCountResponse{
-		DateList:  dateList,
-		LoginData: loginCountList,
-		SignData:  signCountList,
-	}, c)
+	var response DateCountResponse
 
+	var dateType = dateMap[cr.Date]
+	global.DB.Where("").Where(fmt.Sprintf("date_sub(curdate(), interval %d day) <= create_at", dateType))
+	//获取时间范围最早的那一天→现在	addDay也就是时间范围最早第一天，例如我要找七天前的，那么addDay就是七天前的第一天
+	preDay := time.Now().AddDate(0, 0, -dateType)
+	for i := 1; i <= dateType; i++ {
+		//获取需要统计数量的时间范围
+		response.DateList = append(response.DateList, preDay.AddDate(0, 0, i).Format("2006-01-02"))
+	}
+
+	type dateCountType struct {
+		Date  string `json:"date"`
+		Count int    `json:"count"`
+	}
+
+	//统计登录用户数(日为单位)
+	var dateLoginCountList []dateCountType
+	//以日为单位获取出用户登录数量
+	global.DB.Model(models.LoginDataModel{}).Where(global.DB.Where("")).
+		Select(
+			"date_format(create_at, '%Y-%m-%d') as date",
+			"count(id) as count").
+		Group("date").Scan(&dateLoginCountList)
+	var dateLoginCountMap = map[string]int{}
+	for _, countType := range dateLoginCountList {
+		//以日为key，以数量为value进行存储
+		dateLoginCountMap[countType.Date] = countType.Count
+	}
+	for _, s := range response.DateList {
+		//在时间范围内，获取范围内每天的数据计数
+		count, _ := dateLoginCountMap[s]
+		response.LoginData = append(response.LoginData, count)
+	}
+
+	//统计注册用户数(日为单位)
+	var dateSignCountList []dateCountType
+	//以日为单位获取出用户注册数量
+	global.DB.Model(models.UserModel{}).Where(global.DB.Where("")).
+		Select(
+			"date_format(create_at, '%Y-%m-%d') as date",
+			"count(id) as count").
+		Group("date").Scan(&dateSignCountList)
+	var dateSignCountMap = map[string]int{}
+	for _, countType := range dateSignCountList {
+		//以日为key，以数量为value进行存储
+		dateSignCountMap[countType.Date] = countType.Count
+	}
+	for _, s := range response.DateList {
+		//在时间范围内，获取范围内每天的数据计数
+		count, _ := dateSignCountMap[s]
+		//顺序计数
+		response.SignData = append(response.SignData, count)
+	}
+
+	res.OKWithData(response, c)
 }

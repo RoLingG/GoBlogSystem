@@ -16,6 +16,7 @@ type DataCollectResponse struct {
 	ChatGroupCount  int64 `json:"chat_group_count"`
 	TodayLoginCount int64 `json:"today_login_count"`
 	TodaySignCount  int64 `json:"today_sign_count"`
+	FlowCount       int64 `json:"flow_count"`
 }
 
 // DataCollectView 后台数据收集
