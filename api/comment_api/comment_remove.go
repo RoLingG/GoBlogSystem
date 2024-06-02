@@ -7,6 +7,7 @@ import (
 	"GoRoLingG/res"
 	"GoRoLingG/service/redis_service"
 	"GoRoLingG/utils"
+	"GoRoLingG/utils/jwt"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ import (
 // @Tags 评论管理
 // @Summary 删除评论
 // @Description	删除现有的评论
+// @Param token header string true "Token"
 // @Param id path int true "需要删除的评论ID"
 // @Router /api/commentRemove/{id} [delete]
 // @Produce json
@@ -27,6 +29,8 @@ func (CommentApi) CommentRemoveView(c *gin.Context) {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
+	_claims, _ := c.Get("claims")
+	claims := _claims.(*jwt.CustomClaims)
 
 	var commentModel models.CommentModel
 	//获取评论，如果获取不到则评论不存在
@@ -35,6 +39,12 @@ func (CommentApi) CommentRemoveView(c *gin.Context) {
 		res.FailWithMsg("评论不存在", c)
 		return
 	}
+	// 这条评论只能由当前登录人删除，或者管理员
+	if !(commentModel.UserID == claims.UserID || claims.Role == 1) {
+		res.FailWithMsg("权限不足，不可删除", c)
+		return
+	}
+
 	//统计要删除评论下的子评论数，总删除量要把评论本身算上
 	subCommentList := FindSubCommentCount(commentModel)
 	CommentCount := len(subCommentList) + 1
@@ -54,6 +64,7 @@ func (CommentApi) CommentRemoveView(c *gin.Context) {
 		//将当前评论下的所有子评论id加进要删除的评论id列表中
 		deleteCommentIDList = append(deleteCommentIDList, model.ID)
 	}
+
 	// 反转后逐个删除
 	utils.Reverse(deleteCommentIDList)
 	//记得把评论本身也删了，别光删子评论了
