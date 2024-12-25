@@ -85,6 +85,8 @@ func InitRouter() *gin.Engine {
 	routerGroup.RoleRouter()
 	//用户反馈(feedback)api的路由
 	routerGroup.FeedBackRouter()
+	//大模型(largeModel)api的路由
+	routerGroup.LargeScaleModelRouter()
 
 	return router
 }

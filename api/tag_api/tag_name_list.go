@@ -24,30 +24,31 @@ type TagResponse struct {
 // @Produce json
 // @Success 200 {object} res.Response{data=[]TagResponse}
 func (TagApi) TagNameListView(c *gin.Context) {
+	//之所以有下面这个结构体是因为聚合之后的结果byteData反序列化解构之后对应的结构体就长这样（
 	type T struct {
-		DocCountErrorUpperBound int `json:"doc_count_error_upper_bound"`
-		SumOtherDocCount        int `json:"sum_other_doc_count"`
-		Buckets                 []struct {
+		DocCountErrorUpperBound int        `json:"doc_count_error_upper_bound"`
+		SumOtherDocCount        int        `json:"sum_other_doc_count"`
+		Buckets                 []struct { //这里面存的就是聚合之后的结果了
 			Key      string `json:"key"`
 			DocCount int    `json:"doc_count"`
 		} `json:"buckets"`
 	}
 	query := elastic.NewBoolQuery()
-	//将领域为tags的每项进行聚合，将文章现有的所有tag都聚合出来
+	//创建一个名为tags的聚合
 	aggregation := elastic.NewTermsAggregation().Field("tags")
 	result, err := global.ESClient.
 		Search(models.ArticleModel{}.Index()).
 		Query(query).
-		Aggregation("tags", aggregation). //将聚合的结果都归类到tags下，以k-v的形式保存
+		Aggregation("tags", aggregation). //将es索引内字段为tags聚合的结果都归类到aggregation聚合下，以k-v的形式保存
 		Size(0).
 		Do(context.Background())
 	if err != nil {
 		logrus.Error(err)
 		return
 	}
-	byteData := result.Aggregations["tags"] //获取文章中tags的聚合结果
+	byteData := result.Aggregations["tags"] //获取文章中tags字段的聚合结果
 	var tagType T
-	_ = json.Unmarshal(byteData, &tagType) //将搜索的结果json解析到类型T的tagType内
+	_ = json.Unmarshal(byteData, &tagType) //将搜索的结果反序列化到类型T的tagType内
 
 	var tagList = make([]TagResponse, 0)
 	for _, bucket := range tagType.Buckets {

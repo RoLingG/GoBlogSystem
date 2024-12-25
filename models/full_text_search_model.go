@@ -15,7 +15,7 @@ type FullTextSearchModel struct {
 }
 
 func (FullTextSearchModel) Index() string {
-	return "full_text_search_index"
+	return global.Config.ES.FullTextSearchIndex
 }
 
 func (FullTextSearchModel) Mapping() string {

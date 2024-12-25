@@ -44,7 +44,7 @@ type ArticleModel struct {
 //var client *elastic.Client
 
 func (ArticleModel) Index() string {
-	return "article_index"
+	return global.Config.ES.ArticleIndex
 }
 
 func (ArticleModel) Mapping() string {
