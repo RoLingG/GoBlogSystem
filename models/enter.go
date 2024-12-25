@@ -2,6 +2,12 @@ package models
 
 import "time"
 
+const (
+	AdminRole   = 1
+	UserRole    = 2
+	TouristRole = 3
+)
+
 type Model struct {
 	ID       uint      `gorm:"primarykey" json:"id"`
 	CreateAt time.Time `gorm:"default:current_timestamp(3)" json:"create_at"`
@@ -23,6 +29,15 @@ type PageInfo struct {
 	Key   string `form:"key"`   //模糊匹配的关键字
 	Limit int    `form:"limit"` //每页限制显示量
 	Sort  string `form:"sort"`  //排序
+}
+
+type Options[T any] struct {
+	Label string `json:"label"`
+	Value T      `json:"value"`
+}
+
+type IDRequest struct {
+	ID string `json:"id" form:"id" uri:"id"`
 }
 
 type RemoveRequest struct {

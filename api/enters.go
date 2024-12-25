@@ -9,6 +9,7 @@ import (
 	"GoRoLingG/api/digg_api"
 	"GoRoLingG/api/feedback_api"
 	"GoRoLingG/api/images_api"
+	"GoRoLingG/api/large_scale_model_api"
 	"GoRoLingG/api/log_api"
 	"GoRoLingG/api/log_v2_api"
 	"GoRoLingG/api/menu_api"
@@ -21,23 +22,24 @@ import (
 )
 
 type ApiGroup struct {
-	SettingsApi settings_api.SettingsApi
-	ImagesApi   images_api.ImagesApi
-	AdvertApi   advert_api.AdvertApi
-	MenuApi     menu_api.MenuApi
-	UserApi     user_api.UserApi
-	TagApi      tag_api.TagApi
-	MessageApi  message_api.MessageApi
-	ArticleApi  article_api.ArticleApi
-	DiggApi     digg_api.DiggApi
-	CommentApi  comment_api.CommentApi
-	NewsApi     news_api.NewsApi
-	ChatApi     chat_api.ChatApi
-	LogApi      log_api.LogApi
-	LogStash    log_v2_api.LogV2Api
-	DataApi     data_api.DataApi
-	RoleApi     role_api.RoleApi
-	FeedbackApi feedback_api.FeedbackApi
+	SettingsApi        settings_api.SettingsApi
+	ImagesApi          images_api.ImagesApi
+	AdvertApi          advert_api.AdvertApi
+	MenuApi            menu_api.MenuApi
+	UserApi            user_api.UserApi
+	TagApi             tag_api.TagApi
+	MessageApi         message_api.MessageApi
+	ArticleApi         article_api.ArticleApi
+	DiggApi            digg_api.DiggApi
+	CommentApi         comment_api.CommentApi
+	NewsApi            news_api.NewsApi
+	ChatApi            chat_api.ChatApi
+	LogApi             log_api.LogApi
+	LogStash           log_v2_api.LogV2Api
+	DataApi            data_api.DataApi
+	RoleApi            role_api.RoleApi
+	FeedbackApi        feedback_api.FeedbackApi
+	LargeScaleModelApi large_scale_model_api.LargeScaleModelApi
 }
 
 var ApiGroupApp = new(ApiGroup)

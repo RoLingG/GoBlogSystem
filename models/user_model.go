@@ -19,4 +19,5 @@ type UserModel struct {
 	Role       ctype.Role       `gorm:"size:4;default:1" json:"role,select(info)"` //角色权限：1为管理员，2为用户，3为游客
 	SignStatus ctype.SignStatus `gorm:"type=smallint(6)" json:"sign_status"`       //注册来源
 	Signature  string           `gorm:"size:48" json:"signature"`                  //用户签名
+	Scope      int              `gorm:"default:0" json:"scope,select(info)"`       //用户积分
 }

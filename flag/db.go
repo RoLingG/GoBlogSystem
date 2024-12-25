@@ -7,7 +7,7 @@ import (
 	"GoRoLingG/plugins/log_stash_v2"
 )
 
-func Makemigrations() {
+func MakeMigrations() {
 	var err error
 	//global.DB.SetupJoinTable(&models.UserModel{}, "CollectModels", &models.UserCollectModel{})
 	global.DB.SetupJoinTable(&models.MenuModel{}, "MenuImage", &models.MenuImageModel{})
@@ -25,6 +25,12 @@ func Makemigrations() {
 		&models.FeedBackModel{},
 		&models.LoginDataModel{},
 		&models.ChatModel{},
+		&models.UserScopeModel{},
+		&models.AutoReplyModel{},
+		&models.LargeScaleModelRoleModel{},
+		&models.LargeScaleModelTagModel{},
+		&models.LargeScaleModelChatModel{},
+		&models.LargeScaleModelSessionModel{},
 		&log_stash_v1.LogModel{},
 		&log_stash_v2.LogStashModel{},
 	)

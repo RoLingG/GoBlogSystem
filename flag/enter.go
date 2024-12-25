@@ -50,7 +50,7 @@ func IsWebStop(option Option) (f bool) {
 // SwitchOption 根据命令执行不同的函数
 func SwitchOption(option Option) {
 	if option.DB {
-		Makemigrations()
+		MakeMigrations()
 		return
 	}
 	if option.User == "admin" || option.User == "user" {
