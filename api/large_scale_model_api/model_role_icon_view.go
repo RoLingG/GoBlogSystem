@@ -18,7 +18,7 @@ func (LargeScaleModelApi) ModelRoleIconsView(c *gin.Context) {
 	}
 	var list []models.Options[string]
 	for _, entry := range dir {
-		key := "/" + path.Join("uploads/role_icons", entry.Name())
+		key := path.Join("upload/role_icon", entry.Name())
 		list = append(list, models.Options[string]{
 			Label: key,
 			Value: key,

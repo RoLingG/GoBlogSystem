@@ -8,6 +8,7 @@ import (
 )
 
 type MessageUserListByUserRequest struct {
+	models.PageInfo
 	UserID uint `json:"user_id" form:"user_id" binding:"required"`
 }
 
@@ -28,6 +29,12 @@ func (MessageApi) MessageUserListByUser(c *gin.Context) {
 		return
 	}
 
+	if cr.Limit == 0 {
+		cr.Limit = 10
+	}
+
+	offset := (cr.Page - 1) * cr.Limit
+
 	type resType struct {
 		SendUserID uint
 		RevUserID  uint
@@ -37,7 +44,7 @@ func (MessageApi) MessageUserListByUser(c *gin.Context) {
 	var _list []resType
 	global.DB.Model(models.MessageModel{}).Where("send_user_id = ? or rev_user_id = ?", cr.UserID, cr.UserID).
 		Group("send_user_id").
-		Group("rev_user_id").Select("send_user_id", "rev_user_id", "count(id) as count").Scan(&_list)
+		Group("rev_user_id").Limit(cr.Limit).Offset(offset).Select("send_user_id", "rev_user_id", "count(id) as count").Scan(&_list)
 
 	var userMessageMap = map[uint]int{}
 

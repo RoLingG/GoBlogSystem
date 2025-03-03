@@ -59,7 +59,7 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 		}
 
 		//如果成功，且是上传到本地，则还要而外进行判断
-		if !global.Config.QiNiu.Isenable {
+		if !global.Config.QiNiu.IsEnable {
 			//ImageUploadService方法将图片上传到数据库，但本地还得保存一份图片
 			err = c.SaveUploadedFile(file, uploadRes.FileName)
 			if err != nil {

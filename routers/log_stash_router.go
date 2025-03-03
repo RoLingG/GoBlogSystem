@@ -4,7 +4,7 @@ import "GoRoLingG/api"
 
 func (router RouterGroup) LogStashRouter() {
 	logStashApi := api.ApiGroupApp.LogStash
-	router.GET("/logV2List", logStashApi.LogListView)
-	router.GET("/logV2Read", logStashApi.LogReadView)
-	router.DELETE("/logV2Remove", logStashApi.LogRemoveView)
+	router.GET("/log_v2", logStashApi.LogListView)
+	router.GET("/log_v2_read", logStashApi.LogReadView)
+	router.DELETE("/log_v2_remove", logStashApi.LogRemoveView)
 }

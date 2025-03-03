@@ -40,7 +40,7 @@ func getConfig(q config.QiNiu) storage.Config {
 
 // UploadImages  七牛云上传图片
 func UploadImages(data []byte, imageName string, prefix string) (filePath string, err error) {
-	if !global.Config.QiNiu.Isenable {
+	if !global.Config.QiNiu.IsEnable {
 		return "", errors.New("请启用七牛云上传")
 	}
 	q := global.Config.QiNiu

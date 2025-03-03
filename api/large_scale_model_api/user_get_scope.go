@@ -25,6 +25,10 @@ func (LargeScaleModelApi) UserGetScopeView(c *gin.Context) {
 		res.FailWithMsg("参数错误", c)
 		return
 	}
+	if cr.Status == false {
+		res.OKWithMsg("已取消领取积分", c)
+		return
+	}
 
 	// 查这个用户当天能不能领取这个积分
 	var userScopeModel models.UserScopeModel

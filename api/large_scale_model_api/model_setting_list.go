@@ -47,10 +47,10 @@ func (LargeScaleModelApi) ModelSettingView(c *gin.Context) {
 
 	res.OKWithData(ModelSetting{
 		ModelSetting: config.ModelSetting{
-			Name:   global.Config.LargeScaleModel.ModelSetting.Name,
 			Enable: global.Config.LargeScaleModel.ModelSetting.Enable,
 			Title:  global.Config.LargeScaleModel.ModelSetting.Title,
 			Slogan: global.Config.LargeScaleModel.ModelSetting.Slogan,
+			Order:  global.Config.LargeScaleModel.ModelSetting.Order,
 		},
 		Help: "",
 	}, c)

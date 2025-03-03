@@ -12,8 +12,8 @@ import (
 )
 
 type CommentRequest struct {
-	ArticleID       string `json:"article_id" binding:"required" msg:"请选择文章"`
-	Content         string `json:"content" binding:"required" msg:"请输入评论内容"`
+	ArticleID       string `json:"article_id"`
+	Content         string `json:"content"`
 	ParentCommentID *uint  `json:"parent_comment_id"` // 父评论id
 }
 
@@ -27,15 +27,14 @@ type CommentRequest struct {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func (CommentApi) CommentCreateView(c *gin.Context) {
+	_claims, _ := c.Get("claims")
+	claims := _claims.(*jwt.CustomClaims)
 	var cr CommentRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
 		res.FailWithError(err, &cr, c)
 		return
 	}
-	_claims, _ := c.Get("claims")
-	claims := _claims.(*jwt.CustomClaims)
-
 	//查对应id的文章详情，看文章是否存在，报错则不存在
 	_, err = es_service.CommonDetail(cr.ArticleID)
 	if err != nil {

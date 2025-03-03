@@ -29,6 +29,7 @@ type PageInfo struct {
 	Key   string `form:"key"`   //模糊匹配的关键字
 	Limit int    `form:"limit"` //每页限制显示量
 	Sort  string `form:"sort"`  //排序
+	Role  []int  `form:"role"`  //筛选角色权限
 }
 
 type Options[T any] struct {

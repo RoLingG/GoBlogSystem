@@ -3,7 +3,8 @@ package config
 type ModelSetting struct {
 	Name      string `yaml:"name" json:"name"`
 	Enable    bool   `yaml:"enable" json:"enable"`
-	ApiKey    string `yaml:"api-key" json:"api-key"`
+	Order     int    `yaml:"order" json:"order"`
+	ApiKey    string `yaml:"api_key" json:"api_key"`
 	ApiSecret string `yaml:"api_secret" json:"api_secret"`
 	Title     string `yaml:"title" json:"title"`
 	Prompt    string `yaml:"prompt" json:"prompt"`
@@ -11,9 +12,9 @@ type ModelSetting struct {
 }
 
 type ModelOption struct {
-	Label   string `yaml:"label" json:"label"`
-	Value   string `yaml:"value" json:"value"`
-	Disable bool   `yaml:"disable" json:"disable"`
+	Label    string `yaml:"label" json:"label"`
+	Value    string `yaml:"value" json:"value"`
+	Disabled bool   `yaml:"disabled" json:"disabled"`
 }
 
 type LargeScaleModel struct {

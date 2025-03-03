@@ -15,6 +15,7 @@ func (LargeScaleModelApi) ModelRoleListView(c *gin.Context) {
 	list, count, _ := common.CommonList(models.LargeScaleModelRoleModel{}, common.Option{
 		PageInfo: cr,
 		Likes:    []string{"name"}, //模糊匹配
+		Preload:  []string{"Tags"},
 	})
 	res.OKWithList(list, count, c)
 	return

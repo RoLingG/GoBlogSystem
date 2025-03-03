@@ -50,13 +50,15 @@ func (LargeScaleModelApi) ModelSessionCreateView(c *gin.Context) {
 	var sessionList []models.LargeScaleModelSessionModel
 	global.DB.Preload("ChatList").Find(&sessionList, "user_id = ? and role_id = ?", user.ID, cr.RoleID)
 	var empty bool
+	var sessionID uint
 	for _, session := range sessionList {
-		if len(session.ChatList) <= 1 {
+		if len(session.ChatList) <= 0 {
 			empty = true
+			sessionID = session.ID
 		}
 	}
 	if empty {
-		res.FailWithMsg("已存在新的未对话会话", c)
+		res.OK(sessionID, "已存在新的未对话会话", c)
 		return
 	}
 

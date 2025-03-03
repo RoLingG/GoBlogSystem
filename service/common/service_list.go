@@ -13,6 +13,7 @@ type Option struct {
 	Debug           bool     // 是否打印sql
 	Where           *gorm.DB // 额外的查询
 	Preload         []string // 预加载的字段列表
+	RoleBool        bool     // 是否开启 role 查询条件
 }
 
 func CommonList[T any](model T, option Option) (list []T, count int64, err error) {
@@ -32,9 +33,18 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 	if option.Limit == 0 {
 		option.Limit = 10
 	}
+
 	// 如果有高级查询就加上
 	if option.Where != nil {
 		query.Where(option.Where)
+	}
+
+	//默认所有角色全部选上
+	if option.RoleBool {
+		if len(option.Role) == 0 {
+			option.Role = []int{1, 2, 3}
+		}
+		query.Where("role IN (?)", option.Role)
 	}
 
 	// 模糊匹配

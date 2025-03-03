@@ -12,7 +12,7 @@ type AdvertRequest struct {
 	Title  string `json:"title" binding:"required" msg:"请输入标题"`
 	Href   string `json:"href" binding:"required" msg:"请输入广告跳转链接"`
 	Images string `json:"images" binding:"required" msg:"请输入广告图片链接"`
-	IsShow bool   `gorm:"default:false" json:"is_show" msg:"选择是否显示,默认为false"`
+	IsShow *bool  `json:"is_show" msg:"选择是否显示,默认为false"`
 	//这里其实可以不用设置初始值，不设置会出现false读不到是因为gin传不了零值，bool的零值就是false
 	//想要gin能接受零值，就用*bool
 }
@@ -50,18 +50,18 @@ func (AdvertApi) AdvertCreateView(c *gin.Context) {
 		res.FailWithMsg("链接非法，请输入合法的跳转链接", c)
 		return
 	}
-	isValid = utils.ValidateURL(cr.Images)
-	if !isValid {
-		res.FailWithMsg("图片链接非法，请输入合法的图片链接", c)
-		return
-	}
+	//isValid = utils.ValidateURL(cr.Images)
+	//if !isValid {
+	//	res.FailWithMsg("图片链接非法，请输入合法的图片链接", c)
+	//	return
+	//}
 
 	//入库
 	err = global.DB.Create(&models.AdvertModel{
 		Title:  cr.Title,
 		Href:   cr.Href,
 		Images: cr.Images,
-		IsShow: cr.IsShow,
+		IsShow: *cr.IsShow,
 	}).Error
 	if err != nil {
 		global.Log.Error(err)

@@ -9,9 +9,9 @@ import (
 )
 
 type TagUpdateRequest struct {
-	ID        uint   `json:"id"`                            // 更新使用
-	RoleTitle string `json:"role_title" binding:"required"` // 名称
-	Color     string `json:"color" binding:"required"`      // 颜色
+	ID    uint   `json:"id"`                       // 更新使用
+	Title string `json:"title" binding:"required"` // 名称
+	Color string `json:"color" binding:"required"` // 颜色
 }
 
 // LargeScaleModelTagUpdateView 大模型角色标签新增和更新
@@ -26,13 +26,13 @@ func (LargeScaleModelApi) LargeScaleModelTagUpdateView(c *gin.Context) {
 	if cr.ID == 0 {
 		//增加标签
 		var tagModel models.LargeScaleModelTagModel
-		err = global.DB.Take(&tagModel, "role_title = ?", cr.RoleTitle).Error
+		err = global.DB.Take(&tagModel, "role_title = ?", cr.Title).Error
 		if err == nil {
 			res.FailWithMsg("标签名称不能相同", c)
 			return
 		}
 		err = global.DB.Create(&models.LargeScaleModelTagModel{
-			RoleTitle: cr.RoleTitle,
+			RoleTitle: cr.Title,
 			Color:     cr.Color,
 		}).Error
 		if err != nil {
@@ -52,13 +52,13 @@ func (LargeScaleModelApi) LargeScaleModelTagUpdateView(c *gin.Context) {
 	}
 	// 存在，角色标签名重复校验
 	var tagModelExist models.LargeScaleModelTagModel
-	err = global.DB.Take(&tagModelExist, "role_title = ? and id <> ?", cr.RoleTitle, cr.ID).Error
-	if err != nil {
+	err = global.DB.Take(&tagModelExist, "role_title = ? and id <> ?", cr.Title, cr.ID).Error
+	if err == nil {
 		res.FailWithMsg("和已有的角色标签名重复", c)
 		return
 	}
 	err = global.DB.Model(&tagModel).Updates(map[string]any{
-		"role_title": cr.RoleTitle,
+		"role_title": cr.Title,
 		"color":      cr.Color,
 	}).Error
 	if err != nil {

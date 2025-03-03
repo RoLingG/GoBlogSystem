@@ -10,7 +10,7 @@ import (
 )
 
 type ChatListRequest struct {
-	SessionID uint `json:"session_id" form:"session_ID" binding:"require"`
+	SessionID uint `json:"session_id" form:"session_id" binding:"required"`
 	models.PageInfo
 }
 
@@ -26,7 +26,7 @@ type ChatListResponse struct {
 // ModelChatListView 大模型对话列表接口
 func (LargeScaleModelApi) ModelChatListView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
-	claims := _claims.(jwt.CustomClaims)
+	claims := _claims.(*jwt.CustomClaims)
 	var cr ChatListRequest
 	err := c.ShouldBindQuery(&cr)
 	if err != nil {
@@ -46,6 +46,8 @@ func (LargeScaleModelApi) ModelChatListView(c *gin.Context) {
 			return
 		}
 	}
+
+	cr.Sort = "create_at asc"
 	_list, count, _ := common.CommonList(models.LargeScaleModelChatModel{SessionID: cr.SessionID}, common.Option{
 		PageInfo: cr.PageInfo,
 		Preload:  []string{"RoleModel", "UserModel"},

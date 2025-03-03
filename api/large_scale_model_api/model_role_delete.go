@@ -36,5 +36,5 @@ func (LargeScaleModelApi) ModelRoleDeleteView(c *gin.Context) {
 		}
 		logrus.Infof("删除大模型角色 %d 个", len(roleList))
 	}
-	res.OKWithMsg("删除大模型角色标签成功", c)
+	res.OKWithMsg("删除大模型角色成功", c)
 }

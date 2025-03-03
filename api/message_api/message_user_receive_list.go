@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +25,7 @@ type MessageUserListResponse struct {
 // @Tags 消息管理
 // @Summary 有消息的用户列表
 // @Description 有消息的用户列表
-// @Router /api/receiveNewMessageList [get]
+// @Router /api/messageUserReceiveList [get]
 // @Param token header string  true  "token"
 // @Param data query MessageUserListRequest   false  "查询参数"
 // @Produce json
@@ -34,13 +35,19 @@ func (MessageApi) MessageUserReceiveList(c *gin.Context) {
 	c.ShouldBindQuery(&cr)
 
 	var count int64
-	global.DB.Model(models.MessageModel{}).Where(models.MessageModel{SendUserNickName: cr.NickName}).Group("send_user_id").Count(&count)
-
+	global.DB.Debug().Model(models.MessageModel{}).Where(models.MessageModel{SendUserNickName: cr.NickName}).Group("send_user_id").Count(&count)
 	type resType struct {
 		SendUserID uint
 		Count      int // 发送人的个数2
 	}
-	offset := (cr.Page - 1) * cr.Limit
+
+	var limit int
+	limit = cr.Limit
+	if limit == 0 {
+		limit = 10
+	}
+	fmt.Println(limit)
+	offset := (cr.Page - 1) * limit
 
 	var _list []resType
 	global.DB.Model(models.MessageModel{}).Where(models.MessageModel{SendUserNickName: cr.NickName}).
@@ -56,7 +63,7 @@ func (MessageApi) MessageUserReceiveList(c *gin.Context) {
 		userIDList = append(userIDList, uid) //获取所有发送人的id
 	}
 	var userList []models.UserModel
-	global.DB.Find(&userList, userIDList) //将userIDList对应的所有用户数据获取出来
+	global.DB.Debug().Find(&userList, userIDList) //将userIDList对应的所有用户数据获取出来
 	var userMap = map[uint]models.UserModel{}
 	for _, user := range userList {
 		userMap[user.ID] = user //userMap根据用户的id去对应用户的数据

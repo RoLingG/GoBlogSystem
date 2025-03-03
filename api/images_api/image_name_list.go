@@ -24,7 +24,11 @@ type ImageResponse struct {
 // @Success 200 {object} res.Response{data=[]ImageResponse}
 func (ImagesApi) ImageNameListView(c *gin.Context) {
 	var imageList []ImageResponse
-	global.DB.Debug().Model(models.ImageModel{}).Select("id", "name", "path").Scan(&imageList)
+	err := global.DB.Model(models.ImageModel{}).Select("id", "name", "path").Limit(100).Scan(&imageList).Error
+	if err != nil {
+		res.FailWithMsg("获取图片精简列表失败", c)
+		return
+	}
 	res.OKWithData(imageList, c)
 	return
 }

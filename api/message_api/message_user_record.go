@@ -38,6 +38,7 @@ func (MessageApi) MessageUserRecordView(c *gin.Context) {
 	list, count, _ := common.CommonList(models.MessageModel{}, common.Option{
 		PageInfo: cr.PageInfo,
 		Where:    sqlCondition,
+		RoleBool: false,
 	})
 
 	res.OKWithList(list, count, c)

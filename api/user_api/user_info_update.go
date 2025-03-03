@@ -15,6 +15,8 @@ type UserUpdateRequest struct {
 	NickName  string `json:"nick_name" structs:"nick_name"`
 	Signature string `json:"signature" structs:"signature"`
 	Telephone string `json:"telephone" structs:"telephone"`
+	Avatar    string `json:"avatar" structs:"avatar"`
+	Blog      string `json:"blog" structs:"blog"`
 }
 
 // UserInfoUpdateView 用户信息更新
@@ -36,10 +38,15 @@ func (UserApi) UserInfoUpdateView(c *gin.Context) {
 		res.FailWithCode(res.ArgumentError, c)
 		return
 	}
-	if len(cr.Telephone) != 11 {
-		cr.Telephone = ""
-		logrus.Errorf("输入的手机号非法，已将用户手机号重置为空号")
+	if cr.Telephone != "" {
+		if len(cr.Telephone) != 11 {
+			cr.Telephone = ""
+			logrus.Errorf("输入的手机号非法，已将用户手机号重置为空号")
+			res.FailWithMsg("非11位手机号，输入非法", c)
+			return
+		}
 	}
+
 	var newMaps = map[string]interface{}{}
 	maps := structs.Map(cr)
 	for key, v := range maps {

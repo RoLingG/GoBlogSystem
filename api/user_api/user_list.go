@@ -31,6 +31,8 @@ func (UserApi) UserListView(c *gin.Context) {
 	list, count, err := common.CommonList(models.UserModel{}, common.Option{
 		PageInfo: cr,
 		Debug:    false,
+		Likes:    []string{"nick_name"},
+		RoleBool: true,
 	})
 	if err != nil {
 		res.FailWithMsg(err.Error(), c)

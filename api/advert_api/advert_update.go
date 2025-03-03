@@ -57,21 +57,22 @@ func (AdvertApi) AdvertUpdateView(c *gin.Context) {
 			return
 		}
 	}
-	if cr.Images != "" {
-		fmt.Println(cr.Images)
-		isValid = utils.ValidateURL(cr.Images)
-		if !isValid {
-			res.FailWithMsg("图片链接非法，请输入合法的图片链接", c)
-			return
-		}
-	}
-
+	//if cr.Images != "" {
+	//	fmt.Println(cr.Images)
+	//	isValid = utils.ValidateURL(cr.Images)
+	//	if !isValid {
+	//		res.FailWithMsg("图片链接非法，请输入合法的图片链接", c)
+	//		return
+	//	}
+	//}
+	fmt.Println("IsShow:", *cr.IsShow)
 	//入库，这里updates的结构体实例如果属性过多的话，可以找个结构体转map的函数去进行快速转换，这样就方便很多，要用的话可以终端输入go get github.com/fatih/structs
-	err = global.DB.Debug().Where(id).Updates(&models.AdvertModel{
+	//注：这里用select进行指定字段更新的原因是因为bool类型在gorm框架里默认是false为零值，如果这样会直接updates更新多字段自动识别会略过bool的零值，导致字段更新问题出现。
+	err = global.DB.Debug().Where(id).Select("Title", "Href", "Images", "IsShow").Updates(&models.AdvertModel{
 		Title:  cr.Title,
 		Href:   cr.Href,
 		Images: cr.Images,
-		IsShow: cr.IsShow,
+		IsShow: *cr.IsShow,
 	}).Error
 	if err != nil {
 		global.Log.Error(err)
