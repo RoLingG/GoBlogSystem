@@ -21,7 +21,7 @@ func (LargeScaleModelApi) UserScopeEnableView(c *gin.Context) {
 
 	// 查这个用户，今天能不能领取这个积分
 	var userScopeModel models.UserScopeModel
-	err := global.DB.Take(&userScopeModel, "user_id = ? and to_days(created_at)=to_days(now())", userID).Error
+	err := global.DB.Take(&userScopeModel, "user_id = ? and to_days(create_at)=to_days(now())", userID).Error
 	var response UserScopeEnableResponse
 	if err == nil {
 		// 查到了，即当天获取过积分

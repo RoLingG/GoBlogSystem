@@ -46,7 +46,7 @@ func (CommentApi) CommentRemoveView(c *gin.Context) {
 	}
 
 	//统计要删除评论下的子评论数，总删除量要把评论本身算上
-	subCommentList := FindSubCommentCount(commentModel)
+	subCommentList := models.FindAllSubCommentList(commentModel)
 	CommentCount := len(subCommentList) + 1
 	redis_service.NewArticleCommentIndex().SetCount(commentModel.ArticleID, -CommentCount)
 

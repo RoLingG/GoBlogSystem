@@ -3,6 +3,7 @@ package models
 import (
 	"GoRoLingG/global"
 	"GoRoLingG/models/ctype"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"os"
 )
@@ -23,7 +24,7 @@ func (image ImageModel) BeforeDelete(db *gorm.DB) (err error) {
 		err = os.Remove(image.Path)
 		if err != nil {
 			global.Log.Error(err)
-			return
+			logrus.Error(err)
 		}
 	}
 	return nil

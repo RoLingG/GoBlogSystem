@@ -4,6 +4,7 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -35,6 +36,7 @@ func (LargeScaleModelApi) ModelRoleUpdateView(c *gin.Context) {
 		tagList = make([]models.LargeScaleModelTagModel, 0)
 	} else {
 		global.DB.Find(&tagList, cr.TagList)
+		fmt.Println(len(tagList), len(cr.TagList))
 		if len(cr.TagList) != len(tagList) {
 			res.FailWithMsg("标签选择不一致", c)
 			return

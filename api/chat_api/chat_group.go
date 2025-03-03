@@ -30,8 +30,8 @@ type ChatUser struct {
 //var ConnGroupMap = map[string]ChatUser{}
 
 const (
-	TextMsg    ctype.MsgType = 1
-	ImageMsg   ctype.MsgType = 2
+	ImageMsg   ctype.MsgType = 1
+	TextMsg    ctype.MsgType = 2
 	SystemMsg  ctype.MsgType = 3
 	InRoomMsg  ctype.MsgType = 4
 	OutRoomMsg ctype.MsgType = 5
@@ -125,6 +125,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 		if strings.TrimSpace(request.Avatar) == "" || strings.TrimSpace(request.NickName) == "" {
 			continue
 		}
+		fmt.Println(request)
 		//判断前端传过来的消息类型
 		switch request.MsgType {
 		case TextMsg:
@@ -145,7 +146,7 @@ func (ChatApi) ChatGroupView(c *gin.Context) {
 				Date:         time.Now(),
 				OnlineCount:  len(ConnGroupMap),
 			})
-		case InRoomMsg:
+		case 3:
 			request.MsgType = InRoomMsg
 			request.Msg = request.NickName + " 进入聊天室"
 			SendGroupMsg(conn, GroupResponse{
@@ -181,7 +182,7 @@ func SendGroupMsg(conn *websocket.Conn, response GroupResponse) {
 		IP:       ip,
 		Addr:     addr,
 		IsGroup:  true,
-		MsgType:  1,
+		MsgType:  response.MsgType,
 	}).Error
 	if err != nil {
 		logrus.Error(err)

@@ -21,9 +21,8 @@ import (
 func (ArticleApi) ArticleUserCollectView(c *gin.Context) {
 	_claims, _ := c.Get("claims")
 	claims := _claims.(*jwt.CustomClaims)
-	//实例化es的id列表
 	var cr models.ESIDRequest
-	err := c.ShouldBindJSON(&cr) //通过uri去进行获取文章id
+	err := c.ShouldBindUri(&cr) //通过uri去进行获取文章id
 	if err != nil {
 		res.FailWithCode(res.ArgumentError, c)
 		return

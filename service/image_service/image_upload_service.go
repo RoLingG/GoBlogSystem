@@ -41,7 +41,7 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	//获取图片后缀
 	suffix := strings.ToLower(path.Ext(fileName))
 	now := time.Now().Format("20060102150405")
-	fileName = nameList[0] + "_" + now + "." + suffix
+	fileName = nameList[0] + "_" + now + suffix
 	filePath := path.Join(yamlPath, fileName)
 	//↓这里就和之前不一样了，因为本地存储拿的是这个uploadRes.FileName，但之前这个uploadRes.FileName是先定义为filename，再定义为filePath
 	//↓但filename的时候已经传过去了，会导致本地物理存储的位置没能定义到filePath指定的路径
@@ -85,7 +85,7 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	uploadRes.IsSuccess = true
 
 	//判断是否将图片存储于七牛云
-	if global.Config.QiNiu.Isenable {
+	if global.Config.QiNiu.IsEnable {
 		//qiniu.UploadImages()方法会返回一个七牛云的CDN地址，和一个对应的key
 		filePath, err = qiniu.UploadImages(byteData, fileName, global.Config.QiNiu.Prefix)
 		if err != nil {
@@ -102,7 +102,7 @@ func (ImageService) ImageUploadService(file *multipart.FileHeader) (uploadRes Fi
 	}
 	//图片入库
 	global.DB.Create(&models.ImageModel{
-		Path:      "/" + filePath,
+		Path:      filePath,
 		Hash:      imageHash,
 		Name:      fileName,
 		ImageType: fileType,

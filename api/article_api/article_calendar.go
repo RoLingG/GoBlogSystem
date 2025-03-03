@@ -84,5 +84,4 @@ func (ArticleApi) ArticleCalendarView(c *gin.Context) {
 	}
 
 	res.OKWithData(resultList, c)
-
 }

@@ -23,14 +23,6 @@ type LogListRequest struct {
 }
 
 // LogListView 日志列表
-// @Tags 日志管理V2
-// @Summary 日志列表
-// @Description 日志列表
-// @Param data query LogListRequest true "参数"
-// @Param token header string true "Token"
-// @Router /api/logs/v2 [get]
-// @Produce json
-// @Success 200 {object} res.Response{data=res.ListResponse[log_stash_v2.LogStashModel]}
 func (LogV2Api) LogListView(c *gin.Context) {
 	var cr LogListRequest
 	c.ShouldBindQuery(&cr)

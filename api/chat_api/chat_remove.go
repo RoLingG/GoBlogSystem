@@ -24,6 +24,7 @@ func (ChatApi) ChatRemoveView(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(cr.IDList)
 	var chatList []models.ChatModel
 	global.DB.Find(&chatList, cr.IDList)
 	if len(chatList) > 0 {

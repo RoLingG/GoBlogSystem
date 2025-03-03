@@ -6,28 +6,33 @@ import (
 	"GoRoLingG/utils/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type Log struct {
-	ip     string `json:"ip"`
-	addr   string `json:"addr"`
-	userId uint   `json:"user_id"`
+	ip       string `json:"ip"`
+	addr     string `json:"addr"`
+	userId   uint   `json:"user_id"`
+	nickName string `json:"nick_name"`
 }
 
 func New(ip string, token string) *Log {
 	// 解析token
 	claims, err := jwt.ParseToken(token)
 	var userID uint
+	var nickName string
 	if err == nil {
 		userID = claims.UserID
+		nickName = claims.NickName
 	}
 	addr := utils.GetAddr(ip)
 
 	// 拿到用户id
 	return &Log{
-		ip:     ip,
-		addr:   addr,
-		userId: userID,
+		ip:       ip,
+		addr:     addr,
+		userId:   userID,
+		nickName: nickName,
 	}
 }
 
@@ -57,12 +62,16 @@ func (l Log) Error(content string) {
 }
 
 func (l Log) send(level LogLevel, content string) {
+	now := time.Now()                             // 获取当前时间
+	createAt := now.Format("2006-01-02 15:04:05") // 格式化为指定格式
 	err := global.DB.Create(&LogModel{
-		IP:      l.ip,
-		Addr:    l.addr,
-		Level:   level,
-		Content: content,
-		UserID:  l.userId,
+		CreateAt: createAt,
+		IP:       l.ip,
+		Addr:     l.addr,
+		Level:    level,
+		Content:  content,
+		UserID:   l.userId,
+		NickName: l.nickName,
 	}).Error
 	if err != nil {
 		logrus.Error(err)

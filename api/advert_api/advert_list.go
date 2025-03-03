@@ -34,6 +34,7 @@ func (AdvertApi) AdvertListView(c *gin.Context) {
 	list, count, err := common.CommonList(models.AdvertModel{IsShow: isShow}, common.Option{
 		PageInfo: cr,
 		Debug:    true,
+		Likes:    []string{"title"},
 	})
 
 	if err != nil {

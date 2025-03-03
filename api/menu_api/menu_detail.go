@@ -4,8 +4,13 @@ import (
 	"GoRoLingG/global"
 	"GoRoLingG/models"
 	"GoRoLingG/res"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
+
+type menuDetailRequest struct {
+	Path string `form:"path"`
+}
 
 // MenuDetailView 菜单项详情列表
 // @Tags 菜单管理
@@ -16,17 +21,19 @@ import (
 // @Router /api/menuDetailList/{id} [get]
 // @Success 200 {object} res.Response{}
 func (MenuApi) MenuDetailView(c *gin.Context) {
-	id := c.Param("id")
+	var cr menuDetailRequest
+	c.ShouldBindQuery(&cr)
 	var menuModel models.MenuModel
-	err := global.DB.Debug().Take(&menuModel, id).Error
+	fmt.Println(cr.Path)
+	err := global.DB.Debug().Where("menu_path = ?", cr.Path).Take(&menuModel).Error
 	if err != nil {
 		global.Log.Error(err)
-		res.FailWithMsg("菜单ID获取失败，请检查是否有菜单内菜单项", c)
+		res.FailWithMsg("菜单获取失败，请检查是否有菜单内菜单项", c)
 		return
 	}
 	//查连接表
 	var menuImages []models.MenuImageModel
-	err = global.DB.Debug().Preload("ImageModel").Order("sort desc").Find(&menuImages).Select("menu_id = ?", id).Error
+	err = global.DB.Debug().Preload("ImageModel").Order("sort desc").Find(&menuImages).Select("menu_path = ?", cr.Path).Error
 	if err != nil {
 		global.Log.Error(err)
 		res.FailWithMsg("菜单项图片数据获取失败，请检查是否菜单项是否有图片", c)

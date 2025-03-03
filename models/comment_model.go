@@ -6,9 +6,9 @@ import (
 )
 
 type CommentModel struct {
-	Model              `json:",select(c)"`
+	Model              `json:",select(comment)"`
 	SubComments        []CommentModel `gorm:"foreignKey:ParentCommentID" json:"sub_comments,select(comment)"` // 子评论列表
-	ParentCommentModel *CommentModel  `gorm:"foreignKey:ParentCommentID" json:"comment_model"`                // 父级评论
+	ParentCommentModel *CommentModel  `gorm:"foreignKey:ParentCommentID" json:"comment_model,omit(comment)"`  // 父级评论
 	ParentCommentID    *uint          `json:"parent_comment_id,select(comment)"`                              // 父评论id
 	Content            string         `gorm:"size:256" json:"content,select(comment)"`                        // 评论内容
 	DiggCount          int            `gorm:"size:8;default:0;" json:"digg_count,select(comment)"`            // 点赞数
@@ -36,12 +36,14 @@ func FindAllSubCommentList(com CommentModel) (subList []CommentModel) {
 
 // GetCommentTree 获取评论树
 func GetCommentTree(rootComment *CommentModel) *CommentModel {
-	global.DB.Preload("User").Preload("SubComments").Find(rootComment)
-
+	var subComments []*CommentModel
+	global.DB.Preload("User").Where("parent_comment_id = ?", rootComment.ID).Find(&subComments)
 	// 递归获取子评论树
-	for _, subComment := range rootComment.SubComments {
-		GetCommentTree(&subComment)
+	// 将子评论指针数组转换为值数组
+	rootComment.SubComments = make([]CommentModel, len(subComments))
+	for i, subComment := range subComments {
+		rootComment.SubComments[i] = *subComment
+		GetCommentTree(&rootComment.SubComments[i]) // 递归调用
 	}
-
 	return rootComment
 }

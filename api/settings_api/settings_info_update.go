@@ -25,36 +25,36 @@ func (SettingsApi) SettingsInfoUpdateView(c *gin.Context) {
 
 	switch cr.Name {
 	case "site":
-		var Update_info config.SiteInfo
-		err := c.ShouldBindJSON(&Update_info)
+		var updateInfo config.SiteInfo
+		err := c.ShouldBindJSON(&updateInfo)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)
 		}
-		global.Config.SiteInfo = Update_info
+		global.Config.SiteInfo = updateInfo
 		res.OKWithData(global.Config.SiteInfo, c)
 	case "email":
-		var Update_info config.Email
-		err := c.ShouldBindJSON(&Update_info)
+		var updateInfo config.Email
+		err := c.ShouldBindJSON(&updateInfo)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)
 		}
-		global.Config.Email = Update_info
+		global.Config.Email = updateInfo
 		res.OKWithData(global.Config.Email, c)
 	case "qq":
-		var Update_info config.QQ
-		err := c.ShouldBindJSON(&Update_info)
+		var updateInfo config.QQ
+		err := c.ShouldBindJSON(&updateInfo)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)
 		}
-		global.Config.QQ = Update_info
+		global.Config.QQ = updateInfo
 		res.OKWithData(global.Config.QQ, c)
 	case "qiniu":
-		var Update_info config.QiNiu
-		err := c.ShouldBindJSON(&Update_info)
+		var updateInfo config.QiNiu
+		err := c.ShouldBindJSON(&updateInfo)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)
 		}
-		global.Config.QiNiu = Update_info
+		global.Config.QiNiu = updateInfo
 		res.OKWithData(global.Config.QiNiu, c)
 	case "jwt":
 		var jwtInfo config.JWT

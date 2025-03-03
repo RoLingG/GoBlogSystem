@@ -43,6 +43,11 @@ func (CommentApi) CommentByArticleListView(c *gin.Context) {
 		ArticleID string
 		Count     int
 	}
+
+	if cr.Limit == 0 {
+		cr.Limit = 10
+	}
+
 	offset := (cr.Page - 1) * cr.Limit
 
 	var _list []T

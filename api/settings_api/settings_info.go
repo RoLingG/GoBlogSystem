@@ -22,17 +22,25 @@ func (SettingsApi) SettingsInfoView(c *gin.Context) {
 	case "site":
 		res.OKWithData(global.Config.SiteInfo, c)
 	case "email":
+		emailInfo := global.Config.Email
+		emailInfo.Password = "******"
 		res.OKWithData(global.Config.Email, c)
 	case "qq":
+		qqInfo := global.Config.QQ
+		qqInfo.Key = "******"
 		res.OKWithData(global.Config.QQ, c)
 	case "qiniu":
+		qiNiuInfo := global.Config.QiNiu
+		qiNiuInfo.SecretKey = "******"
 		res.OKWithData(global.Config.QiNiu, c)
 	case "jwt":
-		//info := global.Config.JWT
-		//info.Secret = "rolingg"
+		jwt := global.Config.JWT
+		jwt.Secret = "******"
 		res.OKWithData(global.Config.JWT, c)
 	case "chat_group":
 		res.OKWithData(global.Config.ChatGroup, c)
+	case "large_scale_model":
+		res.OKWithData(global.Config.LargeScaleModel.ModelSetting, c)
 	default:
 		res.FailWithMsg("没有对应的配置信息", c)
 	}

@@ -14,24 +14,31 @@ import (
 
 type Option struct {
 	models.PageInfo
-	Fields []string
-	Tag    string
-	Query  *elastic.BoolQuery
+	Fields          []string
+	Tag             string
+	Date            string
+	ArticleCategory string
+	Query           *elastic.BoolQuery
 }
 
 func (o *Option) GetForm() int {
-	if o.Page == 0 {
-		o.Page = 1
+	page := o.Page
+	limit := o.Limit
+	if page == 0 {
+		page = 1
 	}
-	if o.Limit == 0 {
-		o.Limit = 10
+	if limit == 0 {
+		limit = 10
 	}
-	return (o.Page - 1) * o.Limit
+	return (page - 1) * limit
 }
 
 // CommonList 列表查询文章分页
 func CommonList(option Option) (list []models.ArticleModel, count int, err error) {
-	boolSearch := elastic.NewBoolQuery()
+	boolSearch := option.Query
+	if boolSearch == nil {
+		boolSearch = elastic.NewBoolQuery()
+	}
 	if option.Key != "" {
 		boolSearch.Must(
 			elastic.NewMultiMatchQuery(option.Key, option.Fields...),
@@ -40,6 +47,19 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 	if option.Tag != "" {
 		boolSearch.Must(
 			elastic.NewMultiMatchQuery(option.Tag, "tags"),
+		)
+	}
+	if option.Date != "" {
+		oldDate := option.Date + " " + "00:00:00"
+		newDate := option.Date + " " + "23:59:59"
+		boolSearch.Must(
+			elastic.NewRangeQuery("create_at").Gte(oldDate).Lte(newDate),
+		)
+	}
+
+	if option.ArticleCategory != "" {
+		boolSearch.Must(
+			elastic.NewMultiMatchQuery(option.ArticleCategory, "category"),
 		)
 	}
 
@@ -67,7 +87,6 @@ func CommonList(option Option) (list []models.ArticleModel, count int, err error
 			}
 		}
 	}
-
 	res, err := global.ESClient.
 		Search(models.ArticleModel{}.Index()).
 		Query(boolSearch).

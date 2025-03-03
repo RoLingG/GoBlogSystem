@@ -14,7 +14,7 @@ import (
 
 type BindEmailRequest struct {
 	Email    string  `json:"email" binding:"required,email" msg:"邮箱非法"`
-	Password string  `json:"password" binding:"required" msg:"请输入密码"`
+	Password string  `json:"password"`
 	Code     *string `json:"code"`
 }
 

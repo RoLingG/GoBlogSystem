@@ -13,6 +13,7 @@ type JwtPayLoad struct {
 	NickName string `json:"nick_name"`
 	Role     int    `json:"role"` //用户权限 1.管理员 2.普通用户 3.游客
 	UserID   uint   `json:"user_id"`
+	Avatar   string `json:"avatar"`
 }
 
 // CustomClaims jwt声明
